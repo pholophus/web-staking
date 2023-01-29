@@ -24,13 +24,14 @@ const MetaBtn = () => {
     }
   }
 
+  const checkMetamaskAvailability = async () => {
+    if (!ethereum) {
+      sethaveMetamask(false);
+    }
+    sethaveMetamask(true);
+  };
+
   useEffect(() => {
-    const checkMetamaskAvailability = async () => {
-      if (!ethereum) {
-        sethaveMetamask(false);
-      }
-      sethaveMetamask(true);
-    };
     checkMetamaskAvailability();
     checkIfAccountChanged();
   }, []);
