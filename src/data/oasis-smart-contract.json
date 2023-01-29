@@ -1,0 +1,134 @@
+[
+    {
+      "type": "single",
+      "days": 90,
+      "ver": 1,
+      "masterchef":"0x3261FB00d9c83673E1D5D8B86c28dad8E6226B07",
+      "reward": "0x7020b0Cf0Da0933E7cF3101B050f0dC5dcE0dDA3",
+      "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+      "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+      "APR":"",
+      "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 180,
+        "ver": 1,
+        "masterchef":"0x7493c353C6BEc84E4Ba9D411763a15A22188F194",
+        "reward": "0xFb6DaeFCD4ee73d95AdC98696c495f128815a311",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 360,
+        "ver": 1,
+        "masterchef":"0x46F6B6A02e9005C546CFed8f1B774E882597137d",
+        "reward": "0xDBf58A98140D2B973AF75E8E4346960dA188af72",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 90,
+        "ver": 2,
+        "masterchef":"0x3CF4210B523a65ed6DC02fD44A788A6681cb5d78",
+        "reward": "0xA3606529566d18F868300bC9823E387bE3163102",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 180,
+        "ver": 2,
+        "masterchef":"0x8CB064E08f4e0b35c393190F50B6bb240b05429e",
+        "reward": "0xF5F288A2368E06c5Ae17270bAB567b37A4d95F11",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 360,
+        "ver": 2,
+        "masterchef":"0x819EB6AC3eA0ef55EeBbD86A6c6dB7899f53d360",
+        "reward": "0xEE890b418C22caca408cc796af574F07B35Edb52",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 90,
+        "ver": 3,
+        "masterchef":"0x5B62aBa2d5C0721c427fb9970EB9B32bA3236111",
+        "reward": "0x08FF289BBD31019D85072Ff84b5cF042D3157487",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 180,
+        "ver": 3,
+        "masterchef":"0x1F739C72D4C47f5679882685F0619608c762e543",
+        "reward": "0x10ea45569eF76Fd885E6161600D8Ddcd3C438206",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "single",
+        "days": 360,
+        "ver": 3,
+        "masterchef":"0x9780B747706faF05fED427A9f16a2dceae58cAF5",
+        "reward": "0xCa04B8f7A3785fA53C36df7775BF497438bE7E0c",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+      "type": "lp",
+      "days": 90,
+      "ver": 1,
+      "masterchef":"0xE212AdF5ca38355954CDA67E51487714Ac617707",
+      "reward": "0x4E2b37796e4D87A84e14DfA36b9587BC37935529",
+      "staked":"0xa487E06cB74790a09948a69C81A44a12f8FFA6C3",
+      "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+      "APR":"",
+      "totalBlockTime": ""
+    },
+    {
+        "type": "lp",
+        "days": 180,
+        "ver": 1,
+        "masterchef":"0x23176151af02e40d50D94b54A5313A637216eDbD",
+        "reward": "0x57C64fC5730e86A7c6CC8aaAf6571d72B3F7c543",
+        "staked":"0xa487E06cB74790a09948a69C81A44a12f8FFA6C3",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    },
+    {
+        "type": "lp",
+        "days": 360,
+        "ver": 1,
+        "masterchef":"0x714301090f68D5762ad219F6b2D1C3149D238340",
+        "reward": "0x5DFaaD102134de77e7FF9eC6D979ABF03035E84d",
+        "staked":"0xa487E06cB74790a09948a69C81A44a12f8FFA6C3",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
+    }
+  ]
