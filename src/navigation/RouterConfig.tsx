@@ -4,12 +4,12 @@ export const RouterConfig = () => {
     return (
         <Routes>
             {/* List all public routes here */}
-            <Route path={ROOT} element={<Home />} />
+            {/* <Route path={ROOT} element={<Home />} /> */}
 
 
             {/**404 page */}
             <Route path="*">
-                <NotFound/>
+                {/* <NotFound/> */}
             </Route>
         </Routes>
     )

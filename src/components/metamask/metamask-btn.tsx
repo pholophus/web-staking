@@ -16,7 +16,7 @@ const MetaBtn = () => {
       const {ethereum} = window;
       ethereum.on('accountsChanged', (accounts: any) => {
         console.log("Account changed to:", accounts[0]);
-        setCurrentAccount(accounts[0]);
+        setAccountAddress(accounts[0]);
       });
 
     } catch (error) {
@@ -31,9 +31,27 @@ const MetaBtn = () => {
     sethaveMetamask(true);
   };
 
+  const checkConnectivity = async () => {
+
+    const accounts = await ethereum.request({method: 'eth_accounts'}); 
+
+    if(accounts.length > 0){
+      const accounts = await ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      
+      setAccountAddress(accounts[0]);
+      setIsConnected(true)
+    }else{
+      setIsConnected(false)
+    }
+
+  }
+
   useEffect(() => {
     checkMetamaskAvailability();
     checkIfAccountChanged();
+    checkConnectivity();
   }, []);
 
   const connectWallet = async () => {
@@ -44,10 +62,7 @@ const MetaBtn = () => {
       const accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
-      let balance = await provider.getBalance(accounts[0]);
-      let bal = ethers.utils.formatEther(balance);
       setAccountAddress(accounts[0]);
-      setAccountBalance(bal);
       setIsConnected(true);
     } catch (error) {
       setIsConnected(false);
@@ -56,29 +71,19 @@ const MetaBtn = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        {haveMetamask ? (
-          <div className="App-header">
-            {isConnected ? (
+      {haveMetamask ? (
+          <div>
+            {isConnected && (
               <div className="card">
                 <div className="card-row">
-                  <h3>Wallet Address:</h3>
                   <p>
                     {accountAddress.slice(0, 4)}...
                     {accountAddress.slice(38, 42)}
                   </p>
                 </div>
-                <div className="card-row">
-                  <h3>Wallet Balance:</h3>
-                  <p>{accountBalance}</p>
-                </div>
               </div>
-            ) : (
-              <p>All is well</p>
             )}
-            {isConnected ? (
-              <p className="info">🎉 Connected Successfully</p>
-            ) : (
+            {isConnected == false && (
               <button className="btn" onClick={connectWallet}>
                 Connect
               </button>
@@ -87,7 +92,6 @@ const MetaBtn = () => {
         ) : (
           <p>Please Install MataMask</p>
         )}
-      </header>
     </div>
   );
 }

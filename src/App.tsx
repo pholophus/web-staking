@@ -1,31 +1,23 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './index.css';
 // ROUTER
 import { BrowserRouter } from "react-router-dom";
 import { RouterConfig } from "../src/navigation/RouterConfig";
 // Redux
 import { Provider } from "react-redux";
-import {store} from "../src/redux/store";
-
+// import {store} from "../src/redux/store";
 
 import MetaBtn from './components/metamask/metamask-btn';
+import Navbar from './components/dashboard/Navbar';
+import Container from './components/dashboard/Container';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Provider store={store}>
-          <BrowserRouter>
-            <RouterConfig/>
-          </BrowserRouter>
-        </Provider>
-        <MetaBtn/>
-      </header>
+      <Navbar/>
+      <Container/>
     </div>
   );
 }
