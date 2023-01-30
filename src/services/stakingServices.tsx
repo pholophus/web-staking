@@ -9,13 +9,10 @@ import oasis from "../data/abi/oasis.json"
 import rewardLocker from "../data/abi/rewardLocker.json"
 import pancakeSwap from "../data/abi/pancakeswapABI.json"
 
-const [currentAccount, setCurrentAccount] = useState(""); 
+// const [getAccount(), setgetAccount()] = useState(""); 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const { ethereum } = window;
-
-useEffect(() => {
-    getAccount();
-}, []);
+const web3 = new Web3(window.ethereum);
 
 /**
  * get account
@@ -25,7 +22,7 @@ const getAccount = async () => {
         const {ethereum} = window;
         ethereum.on('accountsChanged', (accounts: any) => {
         console.log("Account changed to:", accounts[0]);
-        setCurrentAccount(accounts[0]);
+        return accounts[0];
         });
 
     } catch (error) {
@@ -36,7 +33,7 @@ const getAccount = async () => {
 /**
  * loop every smart contract 
  * */
-const readSC = async () => {
+export const readSC = async () => {
 
     const listSC: any = [];
     
@@ -49,16 +46,16 @@ const readSC = async () => {
 
                 switch (key){
                     case "masterchef":
-                        (sc as any)[key] = await new (window as any).web3.eth.Contract(masterchef, value);
+                        (sc as any)[key] = await new web3.eth.Contract(masterchef, value);
                         break;
                     case "reward":
-                        (sc as any)[key] = await new (window as any).web3.eth.Contract(rewardLocker, value);
+                        (sc as any)[key] = await new web3.eth.Contract(rewardLocker, value);
                         break;
                     case "staked":
-                        (sc as any)[key] = await new (window as any).web3.eth.Contract(lp, value);
+                        (sc as any)[key] = await new web3.eth.Contract(lp, value);
                         break;
                     case "rewardToken":
-                        (sc as any)[key] = await new (window as any).web3.eth.Contract(oasis, value);
+                        (sc as any)[key] = await new web3.eth.Contract(oasis, value);
                         break;
                     default:
                         (sc as any)[key] = value;
@@ -68,6 +65,8 @@ const readSC = async () => {
 
         listSC.push(sc);
    }
+
+   return listSC
     
 
 }
@@ -123,7 +122,7 @@ const unactiveSC = async (listSC: SCClass[]) => {
 const claimReward = async (sc: SCClass) => {
 
     try {
-        await sc.masterchef.methods.harvestAll().send({from: currentAccount})
+        await sc.masterchef.methods.harvestAll().send({from: getAccount()})
     } catch (error) {
         
     }
@@ -135,7 +134,7 @@ const claimReward = async (sc: SCClass) => {
 const APR = async (scGroup:SCClass) => {
 
     try {
-        const pancakeSC = await new (window as any).web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
+        const pancakeSC = await new web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
 
         const oasisPerBlock = scGroup.masterchef.methods.oasisPerBlock().call();
 
@@ -181,7 +180,7 @@ const APR = async (scGroup:SCClass) => {
  */
 const pendingAmount = async (sc: any) => {
     try {
-        const pendingAmout = await sc.methods.pendingOasis(0, currentAccount).call();
+        const pendingAmout = await sc.methods.pendingOasis(0, getAccount()).call();
 
         return parseFloat(Web3.utils.fromWei(pendingAmout, 'ether')).toFixed(2);
 
@@ -195,7 +194,7 @@ const pendingAmount = async (sc: any) => {
  */
 const amountStaked = async (sc: any) => {
     try {
-        const userInfo = await sc.methods.userInfo(0, currentAccount).call();
+        const userInfo = await sc.methods.userInfo(0, getAccount()).call();
 
         return parseFloat(Web3.utils.fromWei(userInfo.amount, 'ether')).toFixed(2);
 
@@ -211,7 +210,7 @@ const stake = async (sc:SCClass, amount: any) => {
 
     try {
 
-        await sc.masterchef.methods.deposit(0,  Web3.utils.toWei(amount, 'ether'), 0).send({from: currentAccount});
+        await sc.masterchef.methods.deposit(0,  Web3.utils.toWei(amount, 'ether'), 0).send({from: getAccount()});
 
     } catch (error) {
         
@@ -231,7 +230,7 @@ const myFarm = async (listSC: SCClass[]) => {
         try{
             const stakeAddress = listSCJson[index].staked;
 
-            const escrowBalance = await sc.reward.methods.accountEscrowedBalance(currentAccount, stakeAddress).call();
+            const escrowBalance = await sc.reward.methods.accountEscrowedBalance(getAccount(), stakeAddress).call();
     
             if(parseFloat(Web3.utils.fromWei(escrowBalance, 'ether')) > 0) mySC.push(sc);
 
@@ -253,7 +252,7 @@ const myFarm = async (listSC: SCClass[]) => {
 const collectReward = async (sc: SCClass) => {
 
     try {
-        await sc.reward.methods.vestCompletedSchedule("0xb19289b436b2f7a92891ac391d8f52580d3087e4").send({from: currentAccount})
+        await sc.reward.methods.vestCompletedSchedule("0xb19289b436b2f7a92891ac391d8f52580d3087e4").send({from: getAccount()})
 
     } catch (error) {
         
@@ -267,7 +266,7 @@ const unstake = async (sc: SCClass, amount: any) => {
     
     try {
 
-        await sc.masterchef.methods.withdraw(0,  Web3.utils.toWei(amount, 'ether'), 0).send({from: currentAccount});
+        await sc.masterchef.methods.withdraw(0,  Web3.utils.toWei(amount, 'ether'), 0).send({from: getAccount()});
 
     } catch (error) {
         
@@ -314,7 +313,7 @@ const unstake = async (sc: SCClass, amount: any) => {
     try {
         const stakeAddress = sc.type == "single" ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4" : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
 
-        const vestedBalance = await sc.reward.methods.accountVestedBalance(currentAccount, stakeAddress).call();
+        const vestedBalance = await sc.reward.methods.accountVestedBalance(getAccount(), stakeAddress).call();
 
         return vestedBalance
 
@@ -330,7 +329,7 @@ const unstake = async (sc: SCClass, amount: any) => {
     try {
         const stakeAddress = sc.type == "single" ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4" : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
 
-        const vestList = await sc.reward.methods.getVestingSchedules(currentAccount, stakeAddress).call();
+        const vestList = await sc.reward.methods.getVestingSchedules(getAccount(), stakeAddress).call();
 
         /**
          * 
@@ -352,7 +351,7 @@ const unstake = async (sc: SCClass, amount: any) => {
  const convertUSD = async (amount: any, ) => {
     try {
 
-        const pancakeSC = await new (window as any).web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
+        const pancakeSC = await new web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
 
         //amount needs to be in wei
         const oasisConversion = pancakeSC.methods.getAmountsOut(amount, ["0xb19289b436b2f7a92891ac391d8f52580d3087e4", "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();

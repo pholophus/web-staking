@@ -1,12 +1,13 @@
 import React from "react";
-import MetaBtn from "../metamask/metamask-btn";
+import List from "../dashboard/List";
+
 
 const Container = () => {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
   return (
     <>
-        <div className="w-full md:w-[1000px] md:mx-auto bg-pink-500">
-            ssssssdddddddddddddddddsssssssssssss
+        <div className="w-full md:w-[1100px] md:mx-auto">
+            <List/>
         </div>
     </>
   );
