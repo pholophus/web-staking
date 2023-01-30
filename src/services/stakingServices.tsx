@@ -46,16 +46,16 @@ export const readSC = async () => {
 
                 switch (key){
                     case "masterchef":
-                        (sc as any)[key] = await new web3.eth.Contract(masterchef, value);
+                        (sc as any)[key] = await new web3.eth.Contract(masterchef as any, value as any);
                         break;
                     case "reward":
-                        (sc as any)[key] = await new web3.eth.Contract(rewardLocker, value);
+                        (sc as any)[key] = await new web3.eth.Contract(rewardLocker as any, value as any);
                         break;
                     case "staked":
-                        (sc as any)[key] = await new web3.eth.Contract(lp, value);
+                        (sc as any)[key] = await new web3.eth.Contract(lp as any, value as any);
                         break;
                     case "rewardToken":
-                        (sc as any)[key] = await new web3.eth.Contract(oasis, value);
+                        (sc as any)[key] = await new web3.eth.Contract(oasis as any, value as any);
                         break;
                     default:
                         (sc as any)[key] = value;
@@ -134,7 +134,7 @@ const claimReward = async (sc: SCClass) => {
 const APR = async (scGroup:SCClass) => {
 
     try {
-        const pancakeSC = await new web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
+        const pancakeSC = await new web3.eth.Contract(pancakeSwap as any, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
 
         const oasisPerBlock = scGroup.masterchef.methods.oasisPerBlock().call();
 
@@ -351,7 +351,7 @@ const unstake = async (sc: SCClass, amount: any) => {
  const convertUSD = async (amount: any, ) => {
     try {
 
-        const pancakeSC = await new web3.eth.Contract(pancakeSwap, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
+        const pancakeSC = await new web3.eth.Contract(pancakeSwap as any, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
 
         //amount needs to be in wei
         const oasisConversion = pancakeSC.methods.getAmountsOut(amount, ["0xb19289b436b2f7a92891ac391d8f52580d3087e4", "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
