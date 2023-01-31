@@ -5,4 +5,4 @@
  * I think it makes is easy to maintain when you have a long long list as your app gradually scales.
  */ 
 
- export {readSC} from './stakingServices';
+ export {readSC, activeSC, unactiveSC, myFarm, poolEndTime, APR, totalStakePool, percentagePool} from './stakingServices';

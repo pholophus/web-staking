@@ -19,13 +19,15 @@ const web3 = new Web3(window.ethereum);
  */
 const getAccount = async () => {
     try {
-        const {ethereum} = window;
-        ethereum.on('accountsChanged', (accounts: any) => {
-        console.log("Account changed to:", accounts[0]);
-        return accounts[0];
+
+        const accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
         });
 
+        return accounts[0];
+
     } catch (error) {
+
         console.log(error);
     }
 }
@@ -74,7 +76,7 @@ export const readSC = async () => {
 /**
  * filter active smart contract
  */
-const activeSC = async (listSC: SCClass[]) => {
+export const activeSC = async (listSC: SCClass[]) => {
 
     const activeSC: any = [];
 
@@ -83,7 +85,7 @@ const activeSC = async (listSC: SCClass[]) => {
         try{
             const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
     
-            if((Date.now()/ 1000) > poolInfo.unlockDate) activeSC.push(sc)
+            if((Date.now()/ 1000) < poolInfo.unlockDate) activeSC.push(sc)
     
         }catch(e){
     
@@ -92,12 +94,15 @@ const activeSC = async (listSC: SCClass[]) => {
     
         }
     }
+
+    return activeSC
 }
 
 /**
  * filter unactive smart contract
  */
-const unactiveSC = async (listSC: SCClass[]) => {
+export const unactiveSC = async (listSC: SCClass[]) => {
+
     const unactiveSC: any = [];
 
     for(const sc of listSC){
@@ -105,7 +110,7 @@ const unactiveSC = async (listSC: SCClass[]) => {
         try{
             const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
     
-            if((Date.now()/ 1000) < poolInfo.unlockDate) unactiveSC.push(sc)
+            if((Date.now()/ 1000) > poolInfo.unlockDate) unactiveSC.push(sc)
     
         }catch(e){
     
@@ -114,6 +119,8 @@ const unactiveSC = async (listSC: SCClass[]) => {
     
         }
     }
+
+    return unactiveSC
 }
 
 /**
@@ -131,43 +138,52 @@ const claimReward = async (sc: SCClass) => {
 /**
  * APR calculation process
  */
-const APR = async (scGroup:SCClass) => {
+export const APR = async (sc:SCClass) => {
 
     try {
         const pancakeSC = await new web3.eth.Contract(pancakeSwap as any, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
 
-        const oasisPerBlock = scGroup.masterchef.methods.oasisPerBlock().call();
+        const oasisPerBlock = await sc.masterchef.methods.oasisPerBlock().call();
 
-        const poolInfo = scGroup.masterchef.methods.poolInfo().call;
+        const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
         const emissionPerBlock = Web3.utils.fromWei(oasisPerBlock, 'ether');
+
+        const emmissionRate = parseFloat(emissionPerBlock) * 10368000 
 
         /**
          * single APR callculation
          */
-        if(scGroup.type == "single") return ((parseFloat(emissionPerBlock) * 10368000 ) / poolInfo.totalDeposited) * 100;
+        if(sc.type == "single") {
+
+            const APR = (emmissionRate / parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited))) * 100;
+            
+            return APR.toFixed(2);
+        };
         
         /**
          * lp APR callculation
          */
-        const getReserves = scGroup.staked.methods.getReserves().call();
+        const getReserves = await sc.staked.methods.getReserves().call();
 
         const oasisAmount = Web3.utils.fromWei(getReserves._reserve0, 'ether');
         const bnbAmount = Web3.utils.fromWei(getReserves._reserve1, 'ether');
         
-        const oasisConversion = pancakeSC.methods.getAmountsOut("1000000000000000000", ["0xb19289b436b2f7a92891ac391d8f52580d3087e4", "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
-        const bnbConversion = pancakeSC.methods.getAmountsOut("1000000000000000000", ["0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
+        const oasisConversion = await pancakeSC.methods.getAmountsOut("1000000000000000000", ["0xb19289b436b2f7a92891ac391d8f52580d3087e4", "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
+        const bnbConversion = await pancakeSC.methods.getAmountsOut("1000000000000000000", ["0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
 
         const oasisUSD = Web3.utils.fromWei(oasisConversion[2], 'ether');
         const bnbUSD = Web3.utils.fromWei(bnbConversion[1], 'ether');
 
         const totalUSD = (parseFloat(oasisAmount) * parseFloat(oasisUSD)) + (parseFloat(bnbAmount) * parseFloat(bnbUSD));
 
-        const totalSupply = scGroup.staked.methods.totalSupply().call();
+        const totalSupply = await sc.staked.methods.totalSupply().call();
 
         const priceLP = totalUSD/parseFloat(Web3.utils.fromWei(totalSupply, 'ether'));
 
-        return ((parseFloat(emissionPerBlock) * 10368000 ) / (poolInfo.totalDeposited * priceLP)) * 100; 
+        const APR = (emmissionRate / ( parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited)) * priceLP)) * 100
+        
+        return APR.toFixed(2); 
 
     } catch (error) {
          
@@ -178,9 +194,9 @@ const APR = async (scGroup:SCClass) => {
 /**
  * user pending amount
  */
-const pendingAmount = async (sc: any) => {
+const pendingAmount = async (sc: SCClass) => {
     try {
-        const pendingAmout = await sc.methods.pendingOasis(0, getAccount()).call();
+        const pendingAmout = await sc.masterchef.methods.pendingOasis(0, getAccount()).call();
 
         return parseFloat(Web3.utils.fromWei(pendingAmout, 'ether')).toFixed(2);
 
@@ -192,9 +208,9 @@ const pendingAmount = async (sc: any) => {
 /**
  * user staked amount
  */
-const amountStaked = async (sc: any) => {
+const amountStaked = async (sc: SCClass) => {
     try {
-        const userInfo = await sc.methods.userInfo(0, getAccount()).call();
+        const userInfo = await sc.masterchef.methods.userInfo(0, getAccount()).call();
 
         return parseFloat(Web3.utils.fromWei(userInfo.amount, 'ether')).toFixed(2);
 
@@ -220,21 +236,19 @@ const stake = async (sc:SCClass, amount: any) => {
 /**
  * filter farm user involved
  */
-const myFarm = async (listSC: SCClass[]) => {
+export const myFarm = async (listSC: SCClass[]) => {
 
     const mySC: any = [];
-    var index = 0;
 
     for(const sc of listSC){
 
         try{
-            const stakeAddress = listSCJson[index].staked;
+            const stakeAddress = sc.type == "single" ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4" : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
 
-            const escrowBalance = await sc.reward.methods.accountEscrowedBalance(getAccount(), stakeAddress).call();
-    
+            const currentAcc = await getAccount();
+            const escrowBalance = await sc.reward.methods.accountEscrowedBalance(currentAcc, stakeAddress).call();
+     
             if(parseFloat(Web3.utils.fromWei(escrowBalance, 'ether')) > 0) mySC.push(sc);
-
-            index++;
     
         }catch(e){
     
@@ -242,6 +256,8 @@ const myFarm = async (listSC: SCClass[]) => {
             console.log(e)
     
         }
+
+        return mySC
     }
 }
 
@@ -276,12 +292,21 @@ const unstake = async (sc: SCClass, amount: any) => {
 /**
  * pool end time process
  */
- const poolEndTime = async (sc: SCClass) => {
+ export const poolEndTime = async (sc: SCClass) => {
 
     try {
-        const poolInfo = await sc.masterchef.methods.poolInfo().call();
+        const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
-        return timeConversion(parseInt(poolInfo.unlockDate) - (Date.now()/ 1000));
+        console.log("poolInfo time", poolInfo.unlockDate)
+        console.log("current time ", Math.ceil((Date.now()/ 1000)))
+
+        var timeLeft = parseInt(poolInfo.unlockDate) - Math.ceil((Date.now()/ 1000))
+
+        timeLeft = timeLeft > 0 ? timeLeft : 0
+
+        console.log("time left", timeLeft)
+
+        return timeConversion(timeLeft);
 
     } catch (error) {
         
@@ -291,13 +316,29 @@ const unstake = async (sc: SCClass, amount: any) => {
 /**
  * total amount stake of pool
  */
- const totalStakePool = async (sc: SCClass) => {
+export const totalStakePool = async (sc: SCClass) => {
 
     try {
         
-        const poolInfo = await sc.masterchef.methods.poolInfo().call();
+        const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
-        return poolInfo.totalDeposited 
+        return parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited)).toFixed(2);
+
+    } catch (error) {
+        
+    }
+
+}
+
+export const percentagePool = async (sc: SCClass) => {
+
+    try {
+        
+        const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
+
+        const percentagePool = parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited)) / parseFloat(Web3.utils.fromWei(poolInfo.poolLimit));
+
+        return percentagePool.toFixed(2);
 
     } catch (error) {
         
@@ -348,7 +389,7 @@ const unstake = async (sc: SCClass, amount: any) => {
 /**
  * convert usd amount
  */
- const convertUSD = async (amount: any, ) => {
+ const convertUSD = async (amount: any) => {
     try {
 
         const pancakeSC = await new web3.eth.Contract(pancakeSwap as any, "0x10ED43C718714eb63d5aA57B78B54704E256024E");
@@ -367,8 +408,9 @@ const unstake = async (sc: SCClass, amount: any) => {
     }
 }
 
-const timeConversion = async (milliseconds: any) => {
-    const seconds = milliseconds / 1000;
+const timeConversion = async (seconds: any) => {
+    if(seconds == 0) return `0D:0H:0M`;
+
     const minutes = seconds / 60;
     const hours = minutes / 60;
     const days = Math.floor(hours / 24);
@@ -376,5 +418,5 @@ const timeConversion = async (milliseconds: any) => {
     const remainingHours = Math.floor(hours % 24);
     const remainingMinutes = Math.floor(minutes % 60);
 
-    return `${days}:${remainingHours}:${remainingMinutes}`;
+    return `${days}D:${remainingHours}H:${remainingMinutes}M`;
 }

@@ -1,15 +1,83 @@
 import React, { useEffect, useState } from "react";
 import MetaBtn from "../metamask/metamask-btn";
-import {readSC} from "../../services";
+import {readSC, activeSC, unactiveSC, myFarm, poolEndTime, APR, totalStakePool, percentagePool} from "../../services";
+import { ethers } from 'ethers';
+import listSCJson from "../../data/oasis-smart-contract.json";
+import {SC as SCClass} from "../../interface/index";
 
 const List = () => {
-    const [listSC, setListSC] = useState([]);
+    const [listSC, setListSC] = useState<SCClass[]>([]);
+    const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
+    const [endPool, setEndPool] = useState<any[]>([]);
+    const [APRValue, setAPRValue] = useState<any[]>([]);
+    const [totalStake, setTotalStake] = useState<any[]>([]);
+    const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
+    const [poolStatus, setPoolStatus] = useState("unactive");
 
     useEffect(() => {
+
         readSC().then((res) => {
-            console.log("res", res);
+            setListSC(res);
+            filterPool(res);
         });
-    })
+    }, [poolStatus])
+
+    const filterPool = async (listSC: SCClass[]) => {
+
+        /*reset value*/
+        setEndPool([]);
+        setAPRValue([]);
+        setTotalStake([]);
+        setPercentagePoolValue([]);
+
+        switch(poolStatus){
+            case "active":
+                activeSC(listSC).then(async (resp: SCClass[]) => {
+                    console.log("active resp", resp)
+                    getPoolDetail(resp)
+                });
+                break;
+            case "unactive":
+                unactiveSC(listSC).then(async (resp: SCClass[]) => {
+                    console.log("unactive resp", resp)
+                    getPoolDetail(resp)
+                });
+                break;
+            case "myFarm":
+                myFarm(listSC).then((resp) => {
+                    console.log("my resp", resp)
+                    getPoolDetail(resp)
+                });
+                break;
+        }
+    }
+
+    const getPoolDetail = async (resp: SCClass[]) => {
+
+        setFilteredSC(resp)
+
+        for(const sc of resp){
+            await poolEndTime(sc).then((resp) => {
+                console.log("time -> ", resp)
+                setEndPool(endPool => [...endPool, resp])
+            })
+
+            await APR(sc).then((resp) => {
+                console.log("APR -> ", resp)
+                setAPRValue(APRValue => [...APRValue, resp])
+            });
+
+            await totalStakePool(sc).then((resp) => {
+                console.log("total stake pool -> ", resp)
+                setTotalStake(totalStake => [...totalStake, resp])
+            });
+
+            await percentagePool(sc).then((resp) => {
+                console.log("percentage pool -> ", resp)
+                setPercentagePoolValue(percentagePoolValue => [...percentagePoolValue, resp])
+            })
+        }
+    }
 
     return (
         <>
@@ -19,9 +87,15 @@ const List = () => {
                         <div className="overflow-hidden border rounded-lg">
                             <table className="min-w-full divide-y divide-gray-200 bg-[#212121]">
                                 <tbody className="divide-y divide-gray-200">
-                                    <tr>
+                                {filteredSC.map((sc, index) => 
+                                    <tr key={index}>
                                         <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
-                                            OASIS
+                                            <div className="flex">
+                                                OASIS {listSCJson[sc.index].days} Days
+                                            </div>
+                                            <div className="flex">
+                                                V {listSCJson[sc.index].ver}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-[#ffffff] whitespace-nowrap">
                                             <div className="flex">
@@ -31,7 +105,7 @@ const List = () => {
                                                 </svg>
                                             </div>
                                             <div className="flex">
-                                            47 D 5 H 14 M
+                                                {endPool[index]}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-[#ffffff] whitespace-nowrap">
@@ -42,7 +116,7 @@ const List = () => {
                                                 </svg>
                                             </div>
                                             <div className="flex">
-                                                46.99%
+                                                {APRValue[index]}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
@@ -53,15 +127,16 @@ const List = () => {
                                                 </svg>
                                             </div>
                                             <div className="flex">
-                                                $3,679,899
+                                                ${totalStake[index]}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
                                             <div className="flex">
-                                                <p className="">80%</p>
+                                                <p className="">{percentagePoolValue[index]}%</p>
                                             </div>
                                         </td>
                                     </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

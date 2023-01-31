@@ -1,5 +1,6 @@
 [
     {
+      "index": 0,
       "type": "single",
       "days": 90,
       "ver": 1,
@@ -11,6 +12,7 @@
       "totalBlockTime": ""
     },
     {
+        "index": 1,
         "type": "single",
         "days": 180,
         "ver": 1,
@@ -22,6 +24,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 2,
         "type": "single",
         "days": 360,
         "ver": 1,
@@ -33,6 +36,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 3,
         "type": "single",
         "days": 90,
         "ver": 2,
@@ -44,6 +48,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 4,
         "type": "single",
         "days": 180,
         "ver": 2,
@@ -55,6 +60,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 5,
         "type": "single",
         "days": 360,
         "ver": 2,
@@ -66,6 +72,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 6,
         "type": "single",
         "days": 90,
         "ver": 3,
@@ -77,6 +84,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 7,
         "type": "single",
         "days": 180,
         "ver": 3,
@@ -88,6 +96,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 8,
         "type": "single",
         "days": 360,
         "ver": 3,
@@ -99,17 +108,19 @@
         "totalBlockTime": ""
     },
     {
-      "type": "lp",
-      "days": 90,
-      "ver": 1,
-      "masterchef":"0xE212AdF5ca38355954CDA67E51487714Ac617707",
-      "reward": "0x4E2b37796e4D87A84e14DfA36b9587BC37935529",
-      "staked":"0xa487E06cB74790a09948a69C81A44a12f8FFA6C3",
-      "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
-      "APR":"",
-      "totalBlockTime": ""
+        "index": 9,
+        "type": "lp",
+        "days": 90,
+        "ver": 1,
+        "masterchef":"0xE212AdF5ca38355954CDA67E51487714Ac617707",
+        "reward": "0x4E2b37796e4D87A84e14DfA36b9587BC37935529",
+        "staked":"0xa487E06cB74790a09948a69C81A44a12f8FFA6C3",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
     },
     {
+        "index": 10,
         "type": "lp",
         "days": 180,
         "ver": 1,
@@ -121,6 +132,7 @@
         "totalBlockTime": ""
     },
     {
+        "index": 11,
         "type": "lp",
         "days": 360,
         "ver": 1,

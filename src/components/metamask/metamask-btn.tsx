@@ -15,7 +15,6 @@ const MetaBtn = () => {
     try {
       const {ethereum} = window;
       ethereum.on('accountsChanged', (accounts: any) => {
-        console.log("Account changed to:", accounts[0]);
         setAccountAddress(accounts[0]);
       });
 
@@ -62,7 +61,9 @@ const MetaBtn = () => {
       const accounts = await ethereum.request({
         method: 'eth_requestAccounts',
       });
+
       setAccountAddress(accounts[0]);
+      
       setIsConnected(true);
     } catch (error) {
       setIsConnected(false);

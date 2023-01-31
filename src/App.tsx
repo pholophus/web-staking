@@ -2,9 +2,6 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import './index.css';
-// ROUTER
-import { BrowserRouter } from "react-router-dom";
-import { RouterConfig } from "../src/navigation/RouterConfig";
 // Redux
 import { Provider } from "react-redux";
 // import {store} from "../src/redux/store";

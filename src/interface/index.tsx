@@ -1,4 +1,5 @@
 export class SC {
+    index: number = 0
     type?: string
     days?: number
     ver?: number
