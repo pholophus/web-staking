@@ -40,3 +40,9 @@
 body {
   background-color: black;
 }
+
+.neumorphism {
+  border-radius: 24px;
+  background: #212121;
+  box-shadow: 5px 5px 0px #141414, -5px -5px 0px #2e2e2e;
+}
