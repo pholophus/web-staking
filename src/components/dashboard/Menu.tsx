@@ -20,50 +20,54 @@ export const Menu = ({
     setPoolType(event.target.value);
   };
 
+  const poolButtons = [
+    {
+      value: "single",
+      className: poolType === "single" ? activeButtonFarm : inactiveButtonFarm,
+      onClick: handleClickPoolType,
+      label: "SINGLE",
+    },
+    {
+      value: "lp",
+      className: poolType === "lp" ? activeButtonFarm : inactiveButtonFarm,
+      onClick: handleClickPoolType,
+      label: "LP",
+    },
+  ];
+
+  const statusButtons = [
+    {
+      value: "active",
+      className:
+        poolStatus === "active" ? activeButtonClass : inactiveButtonClass,
+      onClick: handleClickStatus,
+      label: "ACTIVE",
+    },
+    {
+      value: "inactive",
+      className:
+        poolStatus === "inactive" ? activeButtonClass : inactiveButtonClass,
+      onClick: handleClickStatus,
+      label: "INACTIVE",
+    },
+  ];
+
   return (
     <div className="border rounded-lg mt-20 mb-4 py-5 bg-[#212121] text-white">
       <div className="flex justify-between px-[5%]">
         <div>
-          <button
-            value="single"
-            className={
-              poolType === "single" ? activeButtonFarm : inactiveButtonFarm
-            }
-            onClick={handleClickPoolType}
-          >
-            SINGLE
-          </button>
-          <button
-            value="lp"
-            className={
-              poolType === "lp" ? activeButtonFarm : inactiveButtonFarm
-            }
-            onClick={handleClickPoolType}
-          >
-            LP
-          </button>
+          {poolButtons.map(({ value, className, onClick, label }) => (
+            <button value={value} className={className} onClick={onClick}>
+              {label}
+            </button>
+          ))}
         </div>
         <div>
-          <button
-            value="active"
-            className={
-              poolStatus === "active" ? activeButtonClass : inactiveButtonClass
-            }
-            onClick={handleClickStatus}
-          >
-            ACTIVE
-          </button>
-          <button
-            value="inactive"
-            className={
-              poolStatus === "inactive"
-                ? activeButtonClass
-                : inactiveButtonClass
-            }
-            onClick={handleClickStatus}
-          >
-            INACTIVE
-          </button>
+          {statusButtons.map(({ value, className, onClick, label }) => (
+            <button value={value} className={className} onClick={onClick}>
+              {label}
+            </button>
+          ))}
         </div>
         <div className="py-2">
           <input type="checkbox" name="staked" value="staked" />
