@@ -17,7 +17,7 @@ import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
 
-const List = ({ poolStatus, poolType }: any) => {
+const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
@@ -257,11 +257,15 @@ const List = ({ poolStatus, poolType }: any) => {
               </div>
             </button>
             <Accordion
-              pendingVested={pendingVested}
-              pendingOasis={pendingOasis}
-              visible={visible}
-              index={index}
-              selectedIndex={selectedIndex}
+              {...{
+                pendingVested,
+                pendingOasis,
+                visible,
+                index,
+                selectedIndex,
+                showModal,
+                setShowModal,
+              }}
             />
           </>
         ))}

@@ -1,9 +1,13 @@
+import { useState } from "react";
+import Modal from "./Modal";
+
 const Accordion = ({
   visible,
   index,
   selectedIndex,
   pendingOasis,
   pendingVested,
+  setShowModal,
 }: any) => {
   const link = (
     <svg
@@ -63,8 +67,11 @@ const Accordion = ({
           </a>
         </div>
       </div>
-      <button className="my-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-64 rounded-xl text-black">
-        CONNECT
+      <button
+        className="my-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-64 rounded-xl text-black"
+        onClick={() => setShowModal(true)}
+      >
+        ENABLE
       </button>
     </div>
   );
