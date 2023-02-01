@@ -14,9 +14,9 @@ import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
-import Menu from "./Menu";
 
-const List = ({ poolStatus, poolType, setPoolType }: any) => {
+const List = ({ poolStatus, poolType }: any) => {
+
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
@@ -25,7 +25,6 @@ const List = ({ poolStatus, poolType, setPoolType }: any) => {
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
-  console.log(poolType);
 
   const show = (
     <svg
@@ -95,8 +94,8 @@ const List = ({ poolStatus, poolType, setPoolType }: any) => {
       case "myFarm":
         myFarm(listSC).then((resp) => {
           // console.log("my resp", resp);
-          // const filteredResp = resp.filter((item) => item.type === poolType);
-          getPoolDetail(resp);
+          const filteredResp = resp.filter((item: { type: any; }) => item.type === poolType);
+          getPoolDetail(filteredResp);
         });
         break;
     }
