@@ -9,7 +9,6 @@ const Container = () => {
   const [accountAddress, setAccountAddress] = useState("");
   const [poolStatus, setPoolStatus] = useState("inactive");
   const [poolType, setPoolType] = useState("single");
-  // const [isFarm, setIsFarm] = useState("stake");
 
 
   useEffect(() => {

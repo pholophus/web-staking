@@ -9,6 +9,8 @@ import {
   APR,
   totalStakePool,
   percentagePool,
+  pendingAmount,
+  vestedBalance,
 } from "../../services";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
@@ -16,10 +18,11 @@ import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
 
 const List = ({ poolStatus, poolType }: any) => {
-
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
+  const [pendingOasis, setPendingOasis] = useState<any[]>([]);
+  const [pendingVested, setPendingVested] = useState<any[]>([]);
   const [APRValue, setAPRValue] = useState<any[]>([]);
   const [totalStake, setTotalStake] = useState<any[]>([]);
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
@@ -75,26 +78,26 @@ const List = ({ poolStatus, poolType }: any) => {
     setAPRValue([]);
     setTotalStake([]);
     setPercentagePoolValue([]);
+    setSelectedIndex([]);
 
     switch (poolStatus) {
       case "active":
         activeSC(listSC).then(async (resp: SCClass[]) => {
-          // console.log("active resp", resp);
           const filteredResp = resp.filter((item) => item.type === poolType);
           getPoolDetail(filteredResp);
         });
         break;
       case "inactive":
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
-          // console.log("inactive resp", resp);
           const filteredResp = resp.filter((item) => item.type === poolType);
           getPoolDetail(filteredResp);
         });
         break;
       case "myFarm":
         myFarm(listSC).then((resp) => {
-          // console.log("my resp", resp);
-          const filteredResp = resp.filter((item: { type: any; }) => item.type === poolType);
+          const filteredResp = resp.filter(
+            (item: { type: any }) => item.type === poolType
+          );
           getPoolDetail(filteredResp);
         });
         break;
@@ -126,6 +129,14 @@ const List = ({ poolStatus, poolType }: any) => {
           ...percentagePoolValue,
           resp,
         ]);
+      });
+      await pendingAmount(sc).then((resp) => {
+        // console.log("percentage pool -> ", resp);
+        setPendingOasis((pendingOasis) => [...pendingOasis, resp]);
+      });
+      await vestedBalance(sc).then((resp) => {
+        // console.log("percentage pool -> ", resp);
+        setPendingVested((pendingVested) => [...pendingVested, resp]);
       });
     }
   };
@@ -246,6 +257,8 @@ const List = ({ poolStatus, poolType }: any) => {
               </div>
             </button>
             <Accordion
+              pendingVested={pendingVested}
+              pendingOasis={pendingOasis}
               visible={visible}
               index={index}
               selectedIndex={selectedIndex}
