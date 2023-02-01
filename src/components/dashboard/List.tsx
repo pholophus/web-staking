@@ -16,7 +16,7 @@ import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
 import Menu from "./Menu";
 
-const List = ({poolStatus}:any) => {
+const List = ({ poolStatus, poolType, setPoolType }: any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
@@ -25,6 +25,7 @@ const List = ({poolStatus}:any) => {
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
+  console.log(poolType);
 
   const show = (
     <svg
@@ -67,9 +68,7 @@ const List = ({poolStatus}:any) => {
       setListSC(res);
       filterPool(res);
     });
-  }, [poolStatus]);
-
-  
+  }, [poolStatus, poolType]);
 
   const filterPool = async (listSC: SCClass[]) => {
     /*reset value*/
@@ -81,19 +80,22 @@ const List = ({poolStatus}:any) => {
     switch (poolStatus) {
       case "active":
         activeSC(listSC).then(async (resp: SCClass[]) => {
-          console.log("active resp", resp);
-          getPoolDetail(resp);
+          // console.log("active resp", resp);
+          const filteredResp = resp.filter((item) => item.type === poolType);
+          getPoolDetail(filteredResp);
         });
         break;
       case "inactive":
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
-          console.log("inactive resp", resp);
-          getPoolDetail(resp);
+          // console.log("inactive resp", resp);
+          const filteredResp = resp.filter((item) => item.type === poolType);
+          getPoolDetail(filteredResp);
         });
         break;
       case "myFarm":
         myFarm(listSC).then((resp) => {
-          console.log("my resp", resp);
+          // console.log("my resp", resp);
+          // const filteredResp = resp.filter((item) => item.type === poolType);
           getPoolDetail(resp);
         });
         break;

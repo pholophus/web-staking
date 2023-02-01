@@ -28,7 +28,7 @@ const getAccount = async () => {
 
     } catch (error) {
 
-        console.log(error);
+        //console.log(error);
     }
 }
 
@@ -89,8 +89,8 @@ export const activeSC = async (listSC: SCClass[]) => {
     
         }catch(e){
     
-            console.log('checkActiveContract')
-            console.log(e)
+            //console.log('checkActiveContract')
+            //console.log(e)
     
         }
     }
@@ -114,8 +114,8 @@ export const unactiveSC = async (listSC: SCClass[]) => {
     
         }catch(e){
     
-            console.log('checkActiveContract')
-            console.log(e)
+            //console.log('checkActiveContract')
+            //console.log(e)
     
         }
     }
@@ -252,8 +252,8 @@ export const myFarm = async (listSC: SCClass[]) => {
     
         }catch(e){
     
-            console.log('my farm')
-            console.log(e)
+            //console.log('my farm')
+            //console.log(e)
     
         }
 
@@ -297,14 +297,14 @@ const unstake = async (sc: SCClass, amount: any) => {
     try {
         const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
-        console.log("poolInfo time", poolInfo.unlockDate)
-        console.log("current time ", Math.ceil((Date.now()/ 1000)))
+        //console.log("poolInfo time", poolInfo.unlockDate)
+        //console.log("current time ", Math.ceil((Date.now()/ 1000)))
 
         var timeLeft = parseInt(poolInfo.unlockDate) - Math.ceil((Date.now()/ 1000))
 
         timeLeft = timeLeft > 0 ? timeLeft : 0
 
-        console.log("time left", timeLeft)
+        //console.log("time left", timeLeft)
 
         return timeConversion(timeLeft);
 

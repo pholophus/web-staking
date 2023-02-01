@@ -8,6 +8,7 @@ const Container = () => {
   const { ethereum } = window;
   const [accountAddress, setAccountAddress] = useState("");
   const [poolStatus, setPoolStatus] = useState("inactive");
+  const [poolType, setPoolType] = useState("single");
 
   useEffect(() => {
     checkIfAccountChanged();
@@ -24,11 +25,14 @@ const Container = () => {
     }
   };
 
+  const menuProps = { setPoolStatus, setPoolType, poolStatus, poolType };
+  const listProps = { setPoolType, poolStatus, poolType };
+
   return (
     <>
       <div className="w-full md:w-[1100px] md:mx-auto">
-        <Menu setPoolStatus={setPoolStatus} />
-        <List poolStatus={poolStatus} />
+        <Menu {...menuProps} />
+        <List {...listProps} />
       </div>
     </>
   );
