@@ -7,6 +7,7 @@ const Container = () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const { ethereum } = window;
   const [accountAddress, setAccountAddress] = useState("");
+  const [poolStatus, setPoolStatus] = useState("inactive");
 
   useEffect(() => {
     checkIfAccountChanged();
@@ -26,8 +27,8 @@ const Container = () => {
   return (
     <>
       <div className="w-full md:w-[1100px] md:mx-auto">
-        <Menu />
-        <List />
+        <Menu setPoolStatus={setPoolStatus} />
+        <List poolStatus={poolStatus} />
       </div>
     </>
   );

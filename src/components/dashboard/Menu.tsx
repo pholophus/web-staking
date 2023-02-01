@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const Menu = () => {
+export const Menu = ({ setPoolStatus }: any) => {
   const activeButtonClass = "bg-yellow-600 w-[100px] py-2 rounded-lg";
   const inactiveButtonClass = "w-[100px] py-2";
 
@@ -8,7 +8,12 @@ export const Menu = () => {
   const inactiveButtonFarm = "w-[130px] py-2 mr-2";
 
   const [selectedFarm, setSelectedFarm] = useState("staking");
-  const [isActive, setIsActive] = useState(true);
+  const [isActive, setIsActive] = useState("inactive");
+
+  const handleClick = (event: any) => {
+    setIsActive(event.target.value);
+    setPoolStatus(event.target.value);
+  };
 
   return (
     <div className="border rounded-lg mt-20 mb-4 py-5 bg-[#212121] text-white">
@@ -16,13 +21,19 @@ export const Menu = () => {
         <div>
           <button
             value="staking"
-            className={selectedFarm === "staking" ? activeButtonFarm  : inactiveButtonFarm}
+            className={
+              selectedFarm === "staking" ? activeButtonFarm : inactiveButtonFarm
+            }
             onClick={() => setSelectedFarm("staking")}
           >
             STAKING
           </button>
           <button
-            className={selectedFarm === "liquidity-pool" ? activeButtonFarm : inactiveButtonFarm}
+            className={
+              selectedFarm === "liquidity-pool"
+                ? activeButtonFarm
+                : inactiveButtonFarm
+            }
             onClick={() => setSelectedFarm("liquidity-pool")}
           >
             LIQUIDITY POOL
@@ -30,14 +41,20 @@ export const Menu = () => {
         </div>
         <div>
           <button
-            className={isActive ? activeButtonClass : inactiveButtonClass}
-            onClick={() => setIsActive(!isActive)}
+            value="active"
+            className={
+              isActive === "active" ? activeButtonClass : inactiveButtonClass
+            }
+            onClick={handleClick}
           >
             ACTIVE
           </button>
           <button
-            className={!isActive ? activeButtonClass : inactiveButtonClass}
-            onClick={() => setIsActive(!isActive)}
+            value="inactive"
+            className={
+              isActive === "inactive" ? activeButtonClass : inactiveButtonClass
+            }
+            onClick={handleClick}
           >
             INACTIVE
           </button>

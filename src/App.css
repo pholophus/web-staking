@@ -42,7 +42,7 @@ body {
 }
 
 .neumorphism {
-  border-radius: 24px;
-  background: #212121;
-  box-shadow: 5px 5px 0px #141414, -5px -5px 0px #2e2e2e;
+  border-radius: 17px;
+  background: #383737;
+  box-shadow: 5px 5px 7px #161616, -5px -5px 7px #5a5858;
 }

@@ -14,19 +14,17 @@ import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
+import Menu from "./Menu";
 
-const List = () => {
+const List = ({poolStatus}:any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
   const [APRValue, setAPRValue] = useState<any[]>([]);
   const [totalStake, setTotalStake] = useState<any[]>([]);
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
-  const [poolStatus, setPoolStatus] = useState("unactive");
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
-
-  console.log("selectedIndex =", selectedIndex);
 
   const show = (
     <svg
@@ -71,6 +69,8 @@ const List = () => {
     });
   }, [poolStatus]);
 
+  
+
   const filterPool = async (listSC: SCClass[]) => {
     /*reset value*/
     setEndPool([]);
@@ -85,9 +85,9 @@ const List = () => {
           getPoolDetail(resp);
         });
         break;
-      case "unactive":
+      case "inactive":
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
-          console.log("unactive resp", resp);
+          console.log("inactive resp", resp);
           getPoolDetail(resp);
         });
         break;
@@ -105,22 +105,22 @@ const List = () => {
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
-        console.log("time -> ", resp);
+        // console.log("time -> ", resp);
         setEndPool((endPool) => [...endPool, resp]);
       });
 
       await APR(sc).then((resp) => {
-        console.log("APR -> ", resp);
+        // console.log("APR -> ", resp);
         setAPRValue((APRValue) => [...APRValue, resp]);
       });
 
       await totalStakePool(sc).then((resp) => {
-        console.log("total stake pool -> ", resp);
+        // console.log("total stake pool -> ", resp);
         setTotalStake((totalStake) => [...totalStake, resp]);
       });
 
       await percentagePool(sc).then((resp) => {
-        console.log("percentage pool -> ", resp);
+        // console.log("percentage pool -> ", resp);
         setPercentagePoolValue((percentagePoolValue) => [
           ...percentagePoolValue,
           resp,
