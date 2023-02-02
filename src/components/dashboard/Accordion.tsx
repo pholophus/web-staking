@@ -26,8 +26,6 @@ const Accordion = ({
     setEnableStake({ button: "hidden", stake: "block" });
   };
 
-  console.log(pendingVested)
-
   return (
     <div
       className={`${
