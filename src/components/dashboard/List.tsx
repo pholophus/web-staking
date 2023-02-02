@@ -30,8 +30,6 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
 
-
-
   useEffect(() => {
     readSC().then((res) => {
       setListSC(res);
@@ -73,7 +71,6 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
 
   const getPoolDetail = async (resp: SCClass[]) => {
     setFilteredSC(resp);
-    console.log(resp);
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
@@ -227,7 +224,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                 selectedIndex,
                 showModal,
                 setShowModal,
-                sc
+                sc,
               }}
             />
           </>

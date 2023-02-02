@@ -17,4 +17,5 @@ export {
   pendingAmount,
   vestedBalance,
   claimReward,
+  collectReward
 } from "./stakingServices";

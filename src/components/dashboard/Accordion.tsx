@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { link } from "../../svg";
-import { claimReward } from "../../services";
+import { claimReward, collectReward } from "../../services";
 import StakeInput from "./StakeInput";
 
 const Accordion = ({
@@ -10,7 +10,6 @@ const Accordion = ({
   selectedIndex,
   pendingOasis,
   pendingVested,
-  setShowModal,
   sc,
 }: any) => {
   const [enableStake, setEnableStake] = useState({
@@ -20,6 +19,10 @@ const Accordion = ({
 
   const claimPendingReward = () => {
     claimReward(sc);
+  };
+
+  const collectPendingReward = () => {
+    collectReward(sc);
   };
 
   const showStake = () => {
@@ -58,7 +61,10 @@ const Accordion = ({
               <p className="text-left">{pendingVested[index]} $OASIS</p>
             </div>
             <div className="px-4">
-              <button className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black">
+              <button
+                onClick={collectPendingReward}
+                className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
+              >
                 COLLECT
               </button>
             </div>

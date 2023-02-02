@@ -305,14 +305,16 @@ export const myFarm = async (listSC: SCClass[]) => {
 /**
  * collect reward process
  */
-const collectReward = async (sc: SCClass) => {
+export const collectReward = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
     await sc.reward.methods
       .vestCompletedSchedule("0xb19289b436b2f7a92891ac391d8f52580d3087e4")
       .send({ from: getAcc });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 /**
