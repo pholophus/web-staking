@@ -73,7 +73,6 @@ export const readSC = async () => {
 
     listSC.push(sc);
   }
-
   return listSC;
 };
 
@@ -90,7 +89,7 @@ export const activeSC = async (listSC: SCClass[]) => {
       if (Date.now() / 1000 < poolInfo.unlockDate) activeSC.push(sc);
     } catch (e) {
       //console.log('checkActiveContract')
-      //console.log(e)
+      console.log(e);
     }
   }
 
@@ -110,7 +109,7 @@ export const unactiveSC = async (listSC: SCClass[]) => {
       if (Date.now() / 1000 > poolInfo.unlockDate) unactiveSC.push(sc);
     } catch (e) {
       //console.log('checkActiveContract')
-      //console.log(e)
+      console.log(e);
     }
   }
 
@@ -239,10 +238,13 @@ const stake = async (sc: SCClass, amount: any) => {
 /**
  * approve process
  */
- const approve = async (sc: SCClass, amount: any) => {
+const approve = async (sc: SCClass, amount: any) => {
   try {
     await sc.rewardToken.methods
-      .approve(listSCJson[sc.index].masterchef, Web3.utils.toWei(amount, "ether"))
+      .approve(
+        listSCJson[sc.index].masterchef,
+        Web3.utils.toWei(amount, "ether")
+      )
       .send({ from: getAccount() });
   } catch (error) {}
 };
@@ -250,17 +252,15 @@ const stake = async (sc: SCClass, amount: any) => {
 /**
  * checkApproval process
  */
- const checkApproval = async (sc: SCClass) => {
-  
+const checkApproval = async (sc: SCClass) => {
   const getAcc = await getAccount();
 
   try {
-    const balanceUser = await sc.rewardToken.methods
-      .balanceOf(getAcc)
-      .call();
-    
-    return parseFloat(Web3.utils.fromWei(balanceUser, 'ether')) > 0 ?  true : false
+    const balanceUser = await sc.rewardToken.methods.balanceOf(getAcc).call();
 
+    return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
+      ? true
+      : false;
   } catch (error) {}
 };
 
@@ -390,14 +390,20 @@ const vestedList = async (sc: SCClass) => {
 
     var vestRewardList: Vest[] = [];
 
-    for(const vest of vestList){
-      const vestReward: Vest =  new Vest();
+    for (const vest of vestList) {
+      const vestReward: Vest = new Vest();
 
-      const timeLeft = await timeConversion(Math.ceil(Date.now() / 1000) - vest.endBlock);
+      const timeLeft = await timeConversion(
+        Math.ceil(Date.now() / 1000) - vest.endBlock
+      );
 
-      vestReward.date = Math.ceil(Date.now() / 1000) > vest.endBlock ? (timeLeft as any) : timeConversion(0)
+      vestReward.date =
+        Math.ceil(Date.now() / 1000) > vest.endBlock
+          ? (timeLeft as any)
+          : timeConversion(0);
       vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity));
-      vestReward.collected = vest.quantity == vest.vestedQuantity ? true : false
+      vestReward.collected =
+        vest.quantity == vest.vestedQuantity ? true : false;
 
       vestRewardList.push(vestReward);
     }
