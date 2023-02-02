@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Web3 from "web3";
 import listSCJson from "../data/oasis-smart-contract.json";
-import { SC as SCClass } from "../interface/index";
+import { SC as SCClass, Vest } from "../interface/index";
 import lp from "../data/abi/lp.json";
 import masterchef from "../data/abi/masterchef.json";
 import oasis from "../data/abi/oasis.json";
@@ -237,6 +237,34 @@ const stake = async (sc: SCClass, amount: any) => {
 };
 
 /**
+ * approve process
+ */
+ const approve = async (sc: SCClass, amount: any) => {
+  try {
+    await sc.rewardToken.methods
+      .approve(listSCJson[sc.index].masterchef, Web3.utils.toWei(amount, "ether"))
+      .send({ from: getAccount() });
+  } catch (error) {}
+};
+
+/**
+ * checkApproval process
+ */
+ const checkApproval = async (sc: SCClass) => {
+  
+  const getAcc = await getAccount();
+
+  try {
+    const balanceUser = await sc.rewardToken.methods
+      .balanceOf(getAcc)
+      .call();
+    
+    return parseFloat(Web3.utils.fromWei(balanceUser, 'ether')) > 0 ?  true : false
+
+  } catch (error) {}
+};
+
+/**
  * filter farm user involved
  */
 export const myFarm = async (listSC: SCClass[]) => {
@@ -294,14 +322,9 @@ export const poolEndTime = async (sc: SCClass) => {
   try {
     const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
-    //console.log("poolInfo time", poolInfo.unlockDate)
-    //console.log("current time ", Math.ceil((Date.now()/ 1000)))
-
     var timeLeft = parseInt(poolInfo.unlockDate) - Math.ceil(Date.now() / 1000);
 
     timeLeft = timeLeft > 0 ? timeLeft : 0;
-
-    //console.log("time left", timeLeft)
 
     return timeConversion(timeLeft);
   } catch (error) {}
@@ -359,9 +382,25 @@ const vestedList = async (sc: SCClass) => {
         ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
         : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
 
+    const getAcc = await getAccount();
+
     const vestList = await sc.reward.methods
-      .getVestingSchedules(getAccount(), stakeAddress)
+      .getVestingSchedules(getAcc, stakeAddress)
       .call();
+
+    var vestRewardList: Vest[] = [];
+
+    for(const vest of vestList){
+      const vestReward: Vest =  new Vest();
+
+      const timeLeft = await timeConversion(Math.ceil(Date.now() / 1000) - vest.endBlock);
+
+      vestReward.date = Math.ceil(Date.now() / 1000) > vest.endBlock ? (timeLeft as any) : timeConversion(0)
+      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity));
+      vestReward.collected = vest.quantity == vest.vestedQuantity ? true : false
+
+      vestRewardList.push(vestReward);
+    }
 
     /**
          * 
@@ -370,7 +409,7 @@ const vestedList = async (sc: SCClass) => {
         quantity;
         vestedQuantity;
          */
-    return vestList;
+    return vestRewardList;
   } catch (error) {}
 };
 
