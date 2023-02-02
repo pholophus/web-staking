@@ -88,11 +88,11 @@ const Modal = ({ setShowModal }: any) => {
                   </div>
                   <div className="flex justify-between px-8 my-4 border border-gray-600 rounded-xl">
                     <div className="my-6">
-                      <p className="leading-5">Stake:</p>
+                      <p className="leading-5 font-medium">Stake:</p>
                       <p className="leading-5 text-gray-500">0</p>
                     </div>
                     <div className="mt-6">
-                      <p className="leading-5">
+                      <p className="leading-5 font-medium">
                         Balance: <span>0</span>{" "}
                       </p>
                       <button className="leading-5 text-sm text-gray-500">
