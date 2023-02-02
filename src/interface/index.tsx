@@ -10,3 +10,9 @@ export class SC {
     APR?: any
     totalBlockTime?: any
 }
+
+export class Vest {
+    date?: string
+    amount?: number
+    collected?: boolean
+}
