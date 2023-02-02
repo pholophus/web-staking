@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { link } from "../../svg";
-import { claimReward, collectReward } from "../../services";
+import { claimReward, collectReward, approve } from "../../services";
 import StakeInput from "./StakeInput";
 
 const Accordion = ({
@@ -11,22 +11,23 @@ const Accordion = ({
   pendingOasis,
   pendingVested,
   sc,
+  stakedAmount,
+  approvalCheck,
 }: any) => {
-  const [enableStake, setEnableStake] = useState({
-    button: "block",
-    stake: "hidden",
-  });
-
   const claimPendingReward = () => {
     claimReward(sc);
   };
+
+  console.log(approvalCheck[index])
 
   const collectPendingReward = () => {
     collectReward(sc);
   };
 
-  const showStake = () => {
-    setEnableStake({ button: "hidden", stake: "block" });
+  const showStake = async () => {
+    if (!approvalCheck[index]) {
+      await approve(sc);
+    }
   };
 
   return (
@@ -72,7 +73,9 @@ const Accordion = ({
         </div>
 
         <div className=" flex items-center">
-          <div className={`mx-auto ${enableStake.button}`}>
+          <div
+            className={`mx-auto ${approvalCheck[index]  ? "hidden" : "block"}`}
+          >
             <p className="text-gray-400 text-start">ENABLE FARM</p>
             <button
               className="mb-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-[13em] rounded-xl text-black"
@@ -82,8 +85,9 @@ const Accordion = ({
             </button>
           </div>
 
-          <div className={enableStake.stake}>
-            <StakeInput />
+          {/* <div className={enableStake.stake}> */}
+          <div className={approvalCheck[index]  ? "block" : "hidden"}>
+            <StakeInput {...{ sc, stakedAmount, index }} />
           </div>
         </div>
       </div>

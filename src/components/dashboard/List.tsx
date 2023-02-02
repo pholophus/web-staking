@@ -11,6 +11,9 @@ import {
   percentagePool,
   pendingAmount,
   vestedBalance,
+  amountStaked,
+  checkApproval,
+  approve,
 } from "../../services";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
@@ -29,6 +32,9 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
+  const [stakedAmount, setStakedAmount] = useState<any[]>([]);
+  const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
+  const [approving, setApproving] = useState<any[]>([]);
 
   useEffect(() => {
     readSC().then((res) => {
@@ -96,6 +102,12 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
       });
       await vestedBalance(sc).then((resp) => {
         setPendingVested((pendingVested) => [...pendingVested, resp]);
+      });
+      await amountStaked(sc).then((resp) => {
+        setStakedAmount((stakedAmount) => [...stakedAmount, resp]);
+      });
+      await checkApproval(sc).then((resp) => {
+        setApprovalCheck((approvalCheck) => [...approvalCheck, resp]);
       });
     }
   };
@@ -225,6 +237,8 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                 showModal,
                 setShowModal,
                 sc,
+                stakedAmount,
+                approvalCheck,
               }}
             />
           </>

@@ -218,11 +218,11 @@ export const pendingAmount = async (sc: SCClass) => {
 /**
  * user staked amount
  */
-const amountStaked = async (sc: SCClass) => {
+export const amountStaked = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
-    const userInfo = await sc.masterchef.methods.userInfo(0).call();
+    const userInfo = await sc.masterchef.methods.userInfo(0, getAcc).call();
 
     return parseFloat(Web3.utils.fromWei(userInfo.amount, "ether")).toFixed(2);
   } catch (error) {}
@@ -231,27 +231,29 @@ const amountStaked = async (sc: SCClass) => {
 /**
  * stake process
  */
-const stake = async (sc: SCClass, amount: any) => {
+export const stake = async (sc: SCClass, amount: any) => {
   try {
     const getAcc = await getAccount();
 
     await sc.masterchef.methods
       .deposit(0, Web3.utils.toWei(amount, "ether"), 0)
       .send({ from: getAcc });
-  } catch (error) {}
+  } catch (error) {
+    // console.error(error)
+  }
 };
 
 /**
  * approve process
  */
-const approve = async (sc: SCClass, amount: any) => {
+export const approve = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
     await sc.rewardToken.methods
       .approve(
         listSCJson[sc.index].masterchef,
-        Web3.utils.toWei(amount, "ether")
+        Web3.utils.toWei("999999", "ether")
       )
       .send({ from: getAcc });
   } catch (error) {}
@@ -260,7 +262,7 @@ const approve = async (sc: SCClass, amount: any) => {
 /**
  * checkApproval process
  */
-const checkApproval = async (sc: SCClass) => {
+export const checkApproval = async (sc: SCClass) => {
   const getAcc = await getAccount();
 
   try {
@@ -269,7 +271,9 @@ const checkApproval = async (sc: SCClass) => {
     return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
       ? true
       : false;
-  } catch (error) {}
+  } catch (error) {
+    console.error(error)
+  }
 };
 
 /**
@@ -310,7 +314,7 @@ export const collectReward = async (sc: SCClass) => {
     const getAcc = await getAccount();
 
     await sc.reward.methods
-      .vestCompletedSchedule("0xb19289b436b2f7a92891ac391d8f52580d3087e4")
+      .vestCompletedSchedules("0xb19289b436b2f7a92891ac391d8f52580d3087e4")
       .send({ from: getAcc });
   } catch (error) {
     console.log(error)
@@ -320,14 +324,16 @@ export const collectReward = async (sc: SCClass) => {
 /**
  * unstake process
  */
-const unstake = async (sc: SCClass, amount: any) => {
+export const unstake = async (sc: SCClass, amount: any) => {
   try {
     const getAcc = await getAccount();
 
     await sc.masterchef.methods
       .withdraw(0, Web3.utils.toWei(amount, "ether"), 0)
       .send({ from: getAcc });
-  } catch (error) {}
+  } catch (error) {
+    // console.error(error)
+  }
 };
 
 /**
@@ -364,7 +370,7 @@ export const percentagePool = async (sc: SCClass) => {
       parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited)) /
       parseFloat(Web3.utils.fromWei(poolInfo.poolLimit));
 
-    return percentagePool.toFixed(2);
+    return (percentagePool * 100).toFixed(2);
   } catch (error) {}
 };
 
