@@ -15,5 +15,6 @@ export {
   totalStakePool,
   percentagePool,
   pendingAmount,
-  vestedBalance
+  vestedBalance,
+  claimReward,
 } from "./stakingServices";

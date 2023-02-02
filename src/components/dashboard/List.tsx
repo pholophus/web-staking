@@ -77,33 +77,27 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
-        // console.log("time -> ", resp);
         setEndPool((endPool) => [...endPool, resp]);
       });
 
       await APR(sc).then((resp) => {
-        // console.log("APR -> ", resp);
         setAPRValue((APRValue) => [...APRValue, resp]);
       });
 
       await totalStakePool(sc).then((resp) => {
-        // console.log("total stake pool -> ", resp);
         setTotalStake((totalStake) => [...totalStake, resp]);
       });
 
       await percentagePool(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPercentagePoolValue((percentagePoolValue) => [
           ...percentagePoolValue,
           resp,
         ]);
       });
       await pendingAmount(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPendingOasis((pendingOasis) => [...pendingOasis, resp]);
       });
       await vestedBalance(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPendingVested((pendingVested) => [...pendingVested, resp]);
       });
     }
@@ -233,6 +227,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                 selectedIndex,
                 showModal,
                 setShowModal,
+                sc
               }}
             />
           </>
