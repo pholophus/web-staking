@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import { link } from "../../svg";
 import { claimReward, collectReward, approve } from "../../services";
@@ -27,6 +27,10 @@ const Accordion = ({
       await approve(sc);
     }
   };
+
+  useEffect(() => {
+    console.log(approvalCheck[index]);
+  }, [approvalCheck[index]]);
 
   return (
     <div
@@ -72,7 +76,7 @@ const Accordion = ({
 
         <div className=" flex items-center">
           <div
-            className={`mx-auto ${approvalCheck[index]  ? "hidden" : "block"}`}
+            className={`mx-auto ${approvalCheck[index] ? "hidden" : "block"}`}
           >
             <p className="text-gray-400 text-start">ENABLE FARM</p>
             <button
@@ -84,7 +88,7 @@ const Accordion = ({
           </div>
 
           {/* <div className={enableStake.stake}> */}
-          <div className={approvalCheck[index]  ? "block" : "hidden"}>
+          <div className={approvalCheck[index] ? "block" : "hidden"}>
             <StakeInput {...{ sc, stakedAmount, index }} />
           </div>
         </div>
