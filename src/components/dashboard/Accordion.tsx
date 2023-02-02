@@ -18,8 +18,6 @@ const Accordion = ({
     claimReward(sc);
   };
 
-  console.log(approvalCheck[index])
-
   const collectPendingReward = () => {
     collectReward(sc);
   };
