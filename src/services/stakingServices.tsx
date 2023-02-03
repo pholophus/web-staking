@@ -23,8 +23,8 @@ const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
-    return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
-    // return accounts[0];
+    // return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
+    return accounts[0];
   } catch (error) {
     console.log(error);
   }
