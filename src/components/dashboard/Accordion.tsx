@@ -23,8 +23,8 @@ const Accordion = ({
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
   const [isDisabledOasis, setIsDisabledOasis] = useState(false);
-  const [isDisabledVest, setIsDisabledVest] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isCollected, setIsCollected] = useState<boolean>(false);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -48,9 +48,6 @@ const Accordion = ({
     if (pendingOasis[index] !== ("0.00" || "0")) {
       setIsDisabledOasis(false);
     }
-    if (pendingVested[index] !== "0") {
-      setIsDisabledVest(false);
-    }
   };
 
   const converter = async () => {
@@ -68,7 +65,6 @@ const Accordion = ({
     pendingOasis[index],
     pendingVested[index],
     isDisabledOasis,
-    isDisabledVest,
   ]);
 
   return (
@@ -120,10 +116,10 @@ const Accordion = ({
                 VEST LIST
               </button>
               <button
-                disabled={isDisabledVest}
                 onClick={collectPendingReward}
+                disabled={isCollected}
                 className={`${
-                  !isDisabledVest
+                  !isCollected
                     ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
                     : "bg-gray-500"
                 } font-bold py-2 px-4 mt-4 rounded text-black`}
@@ -159,6 +155,7 @@ const Accordion = ({
                   index,
                   listVested,
                   collectPendingReward,
+                  setIsCollected,
                 }}
               />
             )}

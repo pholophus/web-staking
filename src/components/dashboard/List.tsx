@@ -36,6 +36,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [stakedAmount, setStakedAmount] = useState<any[]>([]);
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
+  
 
   useEffect(() => {
     readSC().then((res) => {

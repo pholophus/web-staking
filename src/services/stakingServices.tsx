@@ -426,12 +426,12 @@ export const vestedList = async (sc: SCClass) => {
         (vestTimestamp as any) - Math.ceil(Date.now() / 1000)
       );
 
-      console.log(`now ---> ${Math.ceil(Date.now() / 1000)}`);
-      console.log(`block timestamp ---> ${parseFloat(vestTimestamp as any)}`);
-      console.log(
-        "true or false ---> ",
-        parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
-      );
+      // console.log(`now ---> ${Math.ceil(Date.now() / 1000)}`);
+      // console.log(`block timestamp ---> ${parseFloat(vestTimestamp as any)}`);
+      // console.log(
+      //   "true or false ---> ",
+      //   parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
+      // );
 
       vestReward.date =
         parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
