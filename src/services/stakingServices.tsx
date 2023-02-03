@@ -416,15 +416,22 @@ export const vestedList = async (sc: SCClass) => {
     for (const vest of vestList) {
       const vestReward: Vest = new Vest();
 
+      const vestTimestamp = (await web3.eth.getBlock(vest.endBlock)).timestamp
+
       const timeLeft = await timeConversion(
-        Math.ceil(Date.now() / 1000) - vest.endBlock
+        (vestTimestamp as any) - Math.ceil(Date.now() / 1000)
       );
 
+      console.log(`now ---> ${ Math.ceil(Date.now() / 1000)}`)
+      console.log(`block timestamp ---> ${ parseFloat(vestTimestamp as any)}`)
+      console.log("true or false ---> ", parseFloat(vestTimestamp as any) >  Math.ceil(Date.now() / 1000))
+
       vestReward.date =
-        Math.ceil(Date.now() / 1000) > vest.endBlock
+      parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
           ? (timeLeft as any)
-          : timeConversion(0);
-      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity));
+          : await timeConversion(0);
+
+      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2);
       vestReward.collected =
         vest.quantity == vest.vestedQuantity ? true : false;
 
@@ -448,7 +455,7 @@ export const vestedList = async (sc: SCClass) => {
 export const convertUSD = async (amount: any) => {
   try {
     if (amount <= 0) return "0.00";
-    
+
     const pancakeSC = await new web3.eth.Contract(
       pancakeSwap as any,
       "0x10ED43C718714eb63d5aA57B78B54704E256024E"
