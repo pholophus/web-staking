@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { closeX } from "../../svg";
+import { Vest } from "../../interface";
 
-const Modal = ({ setShowModal }: any) => {
-  const [stake, setStake] = useState({
-    option: "block",
-    detail: "hidden",
-  });
+const Modal = ({
+  setShowModal,
+  index,
+  listVested,
+  collectPendingReward,
+}: any) => {
+  // console.log(listVested[index][0].collected);
 
   return (
     <div className="text-white">
@@ -19,9 +22,28 @@ const Modal = ({ setShowModal }: any) => {
             <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="">
                 <div className="text-center ml-4">
-                  <h3 className="text-lg leading-6 font-medium my-4">
-                    Your $Oasis Staked:
+                  <h3 className="text-lg leading-6 font-medium my-5">
+                    VESTED LIST:
                   </h3>
+                  <div>
+                    <div className="flex justify-between font-medium">
+                      <p className=" border-b">DATE</p>
+                      <p className=" border-b">AMOUNT</p>
+                      <p className=" border-b">STATUS</p>
+                    </div>
+                    {listVested[index].map((item: Vest) => (
+                      <div className="flex justify-between">
+                        <p>{item.date}</p>
+                        <p>{item.amount}</p>
+                        <button
+                          disabled={!item.collected}
+                          onClick={collectPendingReward}
+                        >
+                          {item.collected ? "COLLECTED" : "COLLECT"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

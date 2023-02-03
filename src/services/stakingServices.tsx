@@ -23,10 +23,10 @@ const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
-    return accounts[0];
-    // return '0x132dB02195a98339960A3F93a3f3BDf39B6dEcf71'
+    return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
+    // return accounts[0];
   } catch (error) {
-    //console.log(error);
+    console.log(error);
   }
 };
 
@@ -213,7 +213,9 @@ export const pendingAmount = async (sc: SCClass) => {
       .pendingOasis(0, getAcc)
       .call();
     return parseFloat(Web3.utils.fromWei(pendingAmout, "ether")).toFixed(2);
-  } catch (error) {}
+  } catch (e: any) {
+    console.error(e.message);
+  }
 };
 
 /**
@@ -257,7 +259,9 @@ export const approve = async (sc: SCClass) => {
         Web3.utils.toWei("999999", "ether")
       )
       .send({ from: getAcc });
-  } catch (error) {}
+  } catch (e: any) {
+    console.error(e.message);
+  }
 };
 
 /**
@@ -272,8 +276,8 @@ export const checkApproval = async (sc: SCClass) => {
     return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
       ? true
       : false;
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error(error.message);
   }
 };
 
@@ -317,8 +321,8 @@ export const collectReward = async (sc: SCClass) => {
     await sc.reward.methods
       .vestCompletedSchedules("0xb19289b436b2f7a92891ac391d8f52580d3087e4")
       .send({ from: getAcc });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.error(error.message);
   }
 };
 
@@ -391,7 +395,7 @@ export const vestedBalance = async (sc: SCClass) => {
       .accountVestedBalance(getAcc, stakeAddress)
       .call();
 
-    return vestedBalance;
+    return parseFloat(Web3.utils.fromWei(vestedBalance, "ether")).toFixed(2);
   } catch (error) {}
 };
 
@@ -416,22 +420,27 @@ export const vestedList = async (sc: SCClass) => {
     for (const vest of vestList) {
       const vestReward: Vest = new Vest();
 
-      const vestTimestamp = (await web3.eth.getBlock(vest.endBlock)).timestamp
+      const vestTimestamp = (await web3.eth.getBlock(vest.endBlock)).timestamp;
 
       const timeLeft = await timeConversion(
         (vestTimestamp as any) - Math.ceil(Date.now() / 1000)
       );
 
-      console.log(`now ---> ${ Math.ceil(Date.now() / 1000)}`)
-      console.log(`block timestamp ---> ${ parseFloat(vestTimestamp as any)}`)
-      console.log("true or false ---> ", parseFloat(vestTimestamp as any) >  Math.ceil(Date.now() / 1000))
+      console.log(`now ---> ${Math.ceil(Date.now() / 1000)}`);
+      console.log(`block timestamp ---> ${parseFloat(vestTimestamp as any)}`);
+      console.log(
+        "true or false ---> ",
+        parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
+      );
 
       vestReward.date =
-      parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
+        parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
           ? (timeLeft as any)
           : await timeConversion(0);
 
-      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2);
+      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(
+        2
+      );
       vestReward.collected =
         vest.quantity == vest.vestedQuantity ? true : false;
 

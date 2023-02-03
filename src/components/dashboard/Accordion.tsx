@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import Modal from "./Modal";
-import { link } from "../../svg";
 import {
   claimReward,
   collectReward,
   approve,
   convertUSD,
 } from "../../services";
+import Modal from "./Modal";
 import StakeInput from "./StakeInput";
 
 const Accordion = ({
@@ -18,13 +17,14 @@ const Accordion = ({
   sc,
   stakedAmount,
   approvalCheck,
-  setShowModal,
+  // setShowModal,
   listVested,
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
   const [isDisabledOasis, setIsDisabledOasis] = useState(false);
   const [isDisabledVest, setIsDisabledVest] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -45,24 +45,23 @@ const Accordion = ({
   };
 
   const buttonCheck = () => {
-    // if (pendingOasis[index] !== ("0.00" || "0")) {
-    //   setIsDisabledOasis(false);
-    // }
-    // if (pendingVested[index] !== "0") {
-    //   setIsDisabledVest(false);
-    // }
+    if (pendingOasis[index] !== ("0.00" || "0")) {
+      setIsDisabledOasis(false);
+    }
+    if (pendingVested[index] !== "0") {
+      setIsDisabledVest(false);
+    }
   };
 
-  // console.log(listVested);
+  const converter = async () => {
+    const convertedOasis = await convertUSD(pendingOasis[index]);
+    const convertedVested = await convertUSD(pendingVested[index]);
+    setOasisUSD(convertedOasis);
+    setVestedUSD(convertedVested);
+  };
 
   useEffect(() => {
     buttonCheck();
-    const converter = async () => {
-      const convertedOasis = await convertUSD(pendingOasis[index]);
-      const convertedVested = await convertUSD(pendingVested[index]);
-      setOasisUSD(convertedOasis);
-      setVestedUSD(convertedVested);
-    };
     converter();
   }, [
     approvalCheck[index],
@@ -86,8 +85,10 @@ const Accordion = ({
           <div className="flex neumorphism rounded-lg py-10 mb-10 w-[22em]">
             <div className="px-8">
               <p className="text-left">PENDING REWARDS:</p>
-              <p className="text-left">{`${pendingOasis[index]} $OASIS`}</p>
-              <p className="text-left">{`${oasisUSD} $USD`}</p>
+              <p className="text-left">{`${
+                pendingOasis[index] ?? "0.00"
+              } $OASIS`}</p>
+              <p className="text-left">{`${oasisUSD ?? "0.00"} $USD`}</p>
             </div>
             <div className="px-4 my-auto">
               <button
@@ -107,8 +108,8 @@ const Accordion = ({
           <div className="flex neumorphism rounded-lg">
             <div className="px-8 py-10">
               <p className="text-left">VESTED REWARDS:</p>
-              <p className="text-left">{pendingVested[index]} $OASIS</p>
-              <p className="text-left">{vestedUSD} $USD</p>
+              <p className="text-left">{pendingVested[index] ?? "0"} $OASIS</p>
+              <p className="text-left">{vestedUSD ?? "0"} $USD</p>
             </div>
 
             <div className="px-4 flex flex-col my-auto">
@@ -148,6 +149,19 @@ const Accordion = ({
 
           <div className={approvalCheck[index] ? "block" : "hidden"}>
             <StakeInput {...{ sc, stakedAmount, index }} />
+          </div>
+          <div className={approvalCheck[index] ? "block" : "hidden"}>
+            {showModal && (
+              <Modal
+                {...{
+                  showModal,
+                  setShowModal,
+                  index,
+                  listVested,
+                  collectPendingReward,
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

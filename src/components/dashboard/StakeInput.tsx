@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
-import { closeX } from "../../svg";
 import { unstake, stake } from "../../services";
-import { type } from "@testing-library/user-event/dist/type";
 
 const StakeInput = ({ sc, stakedAmount, index }: any) => {
-  const [balance, setBalance] = useState("0");
   const [inputValue, setInputValue] = useState<any>(0);
   const [errorMsg, setErrorMsg] = useState(false);
 
@@ -14,17 +11,17 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
   };
 
   const onClickMax = () => {
-    setInputValue(balance);
+    setInputValue(stakedAmount[index]);
   };
 
   const onClickStaking = async (e: any) => {
     switch (e.target.value) {
       case "stake":
-        if (!inputValue || inputValue == "0") setErrorMsg(true);
+        if (!inputValue || inputValue == "0.00") setErrorMsg(true);
         if (inputValue != "0") await stake(sc, inputValue);
         break;
       case "unstake":
-        if (!inputValue || inputValue == "0") setErrorMsg(true);
+        if (!inputValue || inputValue == "0.00") setErrorMsg(true);
         if (inputValue != "0") await unstake(sc, inputValue);
         break;
 
@@ -33,35 +30,10 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
     }
   };
 
-  const onClickPercentage = (e: any) => {
-    setInputValue(e.target.value * Number(balance));
-  };
-
-  const percentageBtn = [
-    {
-      value: 0.25,
-      label: "25%",
-    },
-    {
-      value: 0.5,
-      label: "50%",
-    },
-    {
-      value: 0.75,
-      label: "75%",
-    },
-    {
-      value: 1,
-      label: "100%",
-    },
-  ];
 
   return (
     <div className="neumorphism rounded-lg  transform transition-all max-w-lg w-full text-white mx-auto mb-10">
       <div className="p-6 pb-4">
-        <p className="mb-2">
-          Your Balance: <span> {stakedAmount[index]} $OASIS</span>{" "}
-        </p>
         <div className="flex justify-between">
           <h3 className="text-lg leading-6 font-medium border-b border-white">
             STAKE OASIS
@@ -84,7 +56,7 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
             </div>
             <div className="w-60">
               <p className="font-medium text-right">
-                Balance: <span>{balance}</span>{" "}
+                Balance: <span>{stakedAmount[index]}</span>{" "}
               </p>
               <div className="text-right">
                 <button onClick={onClickMax} className="text-sm">

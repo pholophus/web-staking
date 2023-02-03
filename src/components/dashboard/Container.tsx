@@ -10,7 +10,6 @@ const Container = () => {
   const [accountAddress, setAccountAddress] = useState("");
   const [poolStatus, setPoolStatus] = useState("inactive");
   const [poolType, setPoolType] = useState("single");
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     checkIfAccountChanged();
@@ -28,17 +27,13 @@ const Container = () => {
   };
 
   const menuProps = { setPoolStatus, setPoolType, poolStatus, poolType };
-  const listProps = { poolStatus, poolType, showModal, setShowModal };
+  const listProps = { poolStatus, poolType };
 
   return (
     <>
       <div className={`w-full md:w-[1100px] md:mx-auto`}>
-        <div className={`${showModal ? "" : ""}`}>
-          
-          <Menu {...menuProps} />
-          <List {...listProps} />
-        </div>
-        {showModal && <Modal {...{ showModal, setShowModal }} />}
+        <Menu {...menuProps} />
+        <List {...listProps} />
       </div>
     </>
   );
