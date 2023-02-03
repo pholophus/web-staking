@@ -461,7 +461,9 @@ const convertUSD = async (amount: any) => {
     // const bnbUSD = Web3.utils.fromWei(bnbConversion[1], 'ether');
 
     return oasisUSD;
-  } catch (error) {}
+  } catch (error) {
+    
+  }
 };
 
 const timeConversion = async (seconds: any) => {
