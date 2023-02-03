@@ -61,7 +61,7 @@ export const Menu = ({
 
   return (
     <div className="border rounded-lg mt-20 mb-4 py-5 bg-[#212121] text-white">
-      <div className="flex justify-between px-[5%]">
+      <div className="flex justify-between px-[5%] font-medium open-sans">
         <div>
           {poolButtons.map(({ value, className, onClick, label }) => (
             <button value={value} className={className} onClick={onClick} key={value}>

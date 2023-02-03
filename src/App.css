@@ -1,3 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap");
+
+@font-face {
+  font-family: "satoshi";
+  src: url("../src/font/Satoshi-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "tisa";
+  src: url("../src/font/Tisa.ttf") format("opentype");
+}
+
+.open-sans {
+  font-family: "Open Sans", sans-serif;
+}
+
+.tisa {
+  font-family: "tisa";
+}
+
+body {
+  font-family: "tisa";
+  font-weight: 600;
+}
+
 .App {
   text-align: center;
 }
