@@ -23,7 +23,8 @@ const Accordion = ({
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDisabledOasis, setIsDisabledOasis] = useState(false);
+  const [isDisabledVest, setIsDisabledVest] = useState(false);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -43,9 +44,19 @@ const Accordion = ({
     setShowModal(true);
   };
 
+  const buttonCheck = () => {
+    // if (pendingOasis[index] !== ("0.00" || "0")) {
+    //   setIsDisabledOasis(false);
+    // }
+    // if (pendingVested[index] !== "0") {
+    //   setIsDisabledVest(false);
+    // }
+  };
+
   // console.log(listVested);
 
   useEffect(() => {
+    buttonCheck();
     const converter = async () => {
       const convertedOasis = await convertUSD(pendingOasis[index]);
       const convertedVested = await convertUSD(pendingVested[index]);
@@ -57,7 +68,8 @@ const Accordion = ({
     approvalCheck[index],
     pendingOasis[index],
     pendingVested[index],
-    isDisabled,
+    isDisabledOasis,
+    isDisabledVest,
   ]);
 
   return (
@@ -79,10 +91,10 @@ const Accordion = ({
             </div>
             <div className="px-4 my-auto">
               <button
-                disabled={isDisabled}
+                disabled={isDisabledOasis}
                 onClick={claimPendingReward}
                 className={` ${
-                  !isDisabled
+                  !isDisabledOasis
                     ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
                     : "bg-gray-500"
                 }  font-bold py-2 px-4 rounded text-black`}
@@ -101,17 +113,16 @@ const Accordion = ({
 
             <div className="px-4 flex flex-col my-auto">
               <button
-                disabled={isDisabled}
                 onClick={openModal}
                 className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
               >
                 VEST LIST
               </button>
               <button
-                disabled={isDisabled}
+                disabled={isDisabledVest}
                 onClick={collectPendingReward}
                 className={`${
-                  !isDisabled
+                  !isDisabledVest
                     ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
                     : "bg-gray-500"
                 } font-bold py-2 px-4 mt-4 rounded text-black`}
