@@ -46,3 +46,8 @@ body {
   background: #383737;
   box-shadow: 5px 5px 7px #161616, -5px -5px 7px #5a5858;
 }
+.neumorphism-modal {
+  border-radius: 0px;
+  background: #2a3d55;
+  box-shadow: 5px 5px 10px #1e2b3c, -5px -5px 10px #364f6e;
+}

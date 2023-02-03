@@ -103,7 +103,7 @@ const Accordion = ({
 
           <div className="flex neumorphism rounded-lg">
             <div className="px-8 py-10">
-              <p className="text-left">VESTED REWARDS:</p>
+              <p className="text-left">VEST REWARDS:</p>
               <p className="text-left">{pendingVested[index] ?? "0"} $OASIS</p>
               <p className="text-left">{vestedUSD ?? "0"} $USD</p>
             </div>

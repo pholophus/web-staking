@@ -16,22 +16,22 @@ const Modal = ({
           <div className="absolute inset-0 bg-gray-800 opacity-75"></div>
         </div>
 
-        <div className="bg-gray-600 rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+        <div className="bg-[#2a3d55] rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
           <div>
             <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="">
                 <div className="text-center ml-4">
                   <h3 className="text-lg leading-6 font-medium my-5">
-                    VESTED LIST:
+                    VEST LIST:
                   </h3>
                   <div>
-                    <div className="flex justify-between font-medium">
+                    <div className=" flex justify-between font-medium">
                       <p className=" border-b">DATE</p>
                       <p className=" border-b">AMOUNT</p>
                       <p className=" border-b">STATUS</p>
                     </div>
                     {listVested[index].map((item: Vest) => (
-                      <div className="flex justify-between my-5">
+                      <div className="flex neumorphism-modal justify-between my-5 p-2">
                         <p>{item.date ?? "N/A"}</p>
                         <p>{item.amount ?? "N/A"}</p>
                         <button
