@@ -13,6 +13,6 @@ export class SC {
 
 export class Vest {
     date?: string
-    amount?: number
+    amount?: string
     collected?: boolean
 }
