@@ -23,7 +23,8 @@ const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
-    return accounts[0];
+    // return accounts[0];
+    return '0x132dB02195a983399603F93a3f3BDf39B6dEcf71'
   } catch (error) {
     //console.log(error);
   }
@@ -272,7 +273,7 @@ export const checkApproval = async (sc: SCClass) => {
       ? true
       : false;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };
 
@@ -317,7 +318,7 @@ export const collectReward = async (sc: SCClass) => {
       .vestCompletedSchedules("0xb19289b436b2f7a92891ac391d8f52580d3087e4")
       .send({ from: getAcc });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 };
 
@@ -397,7 +398,7 @@ export const vestedBalance = async (sc: SCClass) => {
 /**
  * list of vested balance
  */
-const vestedList = async (sc: SCClass) => {
+export const vestedList = async (sc: SCClass) => {
   try {
     const stakeAddress =
       sc.type == "single"
@@ -429,7 +430,6 @@ const vestedList = async (sc: SCClass) => {
 
       vestRewardList.push(vestReward);
     }
-
     /**
          * 
         startBlock;
@@ -437,6 +437,7 @@ const vestedList = async (sc: SCClass) => {
         quantity;
         vestedQuantity;
          */
+    console.log(vestRewardList);
     return vestRewardList;
   } catch (error) {}
 };
@@ -444,16 +445,18 @@ const vestedList = async (sc: SCClass) => {
 /**
  * convert usd amount
  */
-const convertUSD = async (amount: any) => {
+export const convertUSD = async (amount: any) => {
   try {
+    if (amount <= 0) return "0.00";
     const pancakeSC = await new web3.eth.Contract(
       pancakeSwap as any,
       "0x10ED43C718714eb63d5aA57B78B54704E256024E"
     );
 
     //amount needs to be in wei
-    const oasisConversion = pancakeSC.methods
-      .getAmountsOut(amount, [
+    const WeiAmount = Web3.utils.toWei(amount, "ether");
+    const oasisConversion = await pancakeSC.methods
+      .getAmountsOut(WeiAmount, [
         "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
         "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
         "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
@@ -463,9 +466,10 @@ const convertUSD = async (amount: any) => {
 
     const oasisUSD = Web3.utils.fromWei(oasisConversion[2], "ether");
     // const bnbUSD = Web3.utils.fromWei(bnbConversion[1], 'ether');
-
-    return oasisUSD;
-  } catch (error) {}
+    return parseFloat(oasisUSD).toFixed(2);
+  } catch (error: any) {
+    // console.error(error.message);
+  }
 };
 
 const timeConversion = async (seconds: any) => {

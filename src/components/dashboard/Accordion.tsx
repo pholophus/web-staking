@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import { link } from "../../svg";
-import { claimReward, collectReward, approve } from "../../services";
+import {
+  claimReward,
+  collectReward,
+  approve,
+  convertUSD,
+} from "../../services";
 import StakeInput from "./StakeInput";
 
 const Accordion = ({
@@ -13,7 +18,13 @@ const Accordion = ({
   sc,
   stakedAmount,
   approvalCheck,
+  setShowModal,
+  listVested,
 }: any) => {
+  const [oasisUSD, setOasisUSD] = useState<any>("");
+  const [vestedUSD, setVestedUSD] = useState<any>("");
+  const [isDisabled, setIsDisabled] = useState(false);
+
   const claimPendingReward = () => {
     claimReward(sc);
   };
@@ -28,9 +39,26 @@ const Accordion = ({
     }
   };
 
+  const openModal = async () => {
+    setShowModal(true);
+  };
+
+  // console.log(listVested);
+
   useEffect(() => {
-    console.log(approvalCheck[index]);
-  }, [approvalCheck[index]]);
+    const converter = async () => {
+      const convertedOasis = await convertUSD(pendingOasis[index]);
+      const convertedVested = await convertUSD(pendingVested[index]);
+      setOasisUSD(convertedOasis);
+      setVestedUSD(convertedVested);
+    };
+    converter();
+  }, [
+    approvalCheck[index],
+    pendingOasis[index],
+    pendingVested[index],
+    isDisabled,
+  ]);
 
   return (
     <div
@@ -46,27 +74,47 @@ const Accordion = ({
           <div className="flex neumorphism rounded-lg py-10 mb-10 w-[22em]">
             <div className="px-8">
               <p className="text-left">PENDING REWARDS:</p>
-              <p className="text-left">{pendingOasis[index]} $OASIS</p>
+              <p className="text-left">{`${pendingOasis[index]} $OASIS`}</p>
+              <p className="text-left">{`${oasisUSD} $USD`}</p>
             </div>
-            <div className="px-4">
+            <div className="px-4 my-auto">
               <button
+                disabled={isDisabled}
                 onClick={claimPendingReward}
-                className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
+                className={` ${
+                  !isDisabled
+                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                    : "bg-gray-500"
+                }  font-bold py-2 px-4 rounded text-black`}
               >
                 CLAIM
               </button>
             </div>
           </div>
 
-          <div className="flex neumorphism rounded-lg py-10">
-            <div className="px-8">
+          <div className="flex neumorphism rounded-lg">
+            <div className="px-8 py-10">
               <p className="text-left">VESTED REWARDS:</p>
               <p className="text-left">{pendingVested[index]} $OASIS</p>
+              <p className="text-left">{vestedUSD} $USD</p>
             </div>
-            <div className="px-4">
+
+            <div className="px-4 flex flex-col my-auto">
               <button
-                onClick={collectPendingReward}
+                disabled={isDisabled}
+                onClick={openModal}
                 className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
+              >
+                VEST LIST
+              </button>
+              <button
+                disabled={isDisabled}
+                onClick={collectPendingReward}
+                className={`${
+                  !isDisabled
+                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                    : "bg-gray-500"
+                } font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
               </button>
@@ -87,7 +135,6 @@ const Accordion = ({
             </button>
           </div>
 
-          {/* <div className={enableStake.stake}> */}
           <div className={approvalCheck[index] ? "block" : "hidden"}>
             <StakeInput {...{ sc, stakedAmount, index }} />
           </div>

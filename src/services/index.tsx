@@ -22,5 +22,7 @@ export {
   stake,
   amountStaked,
   checkApproval,
-  approve
+  approve,
+  vestedList,
+  convertUSD,
 } from "./stakingServices";
