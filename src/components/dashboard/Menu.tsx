@@ -64,14 +64,14 @@ export const Menu = ({
       <div className="flex justify-between px-[5%]">
         <div>
           {poolButtons.map(({ value, className, onClick, label }) => (
-            <button value={value} className={className} onClick={onClick}>
+            <button value={value} className={className} onClick={onClick} key={value}>
               {label}
             </button>
           ))}
         </div>
         <div>
           {statusButtons.map(({ value, className, onClick, label }) => (
-            <button value={value} className={className} onClick={onClick}>
+            <button value={value} className={className} onClick={onClick} key={value}>
               {label}
             </button>
           ))}

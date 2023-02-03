@@ -15,5 +15,14 @@ export {
   totalStakePool,
   percentagePool,
   pendingAmount,
-  vestedBalance
+  vestedBalance,
+  claimReward,
+  collectReward,
+  unstake,
+  stake,
+  amountStaked,
+  checkApproval,
+  approve,
+  vestedList,
+  convertUSD,
 } from "./stakingServices";

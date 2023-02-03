@@ -11,11 +11,16 @@ import {
   percentagePool,
   pendingAmount,
   vestedBalance,
+  amountStaked,
+  checkApproval,
+  vestedList,
+  convertUSD,
 } from "../../services";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
+import { show, hide } from "../../svg";
 
 const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
@@ -28,42 +33,9 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
-
-  const show = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className={`w-6 h-6 transform rotate-${
-        visible ? "180" : "0"
-      } transition-all duration-200`}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0l-3.75-3.75M17.25 21L21 17.25"
-      />
-    </svg>
-  );
-
-  const hide = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="w-6 h-6"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12"
-      />
-    </svg>
-  );
+  const [stakedAmount, setStakedAmount] = useState<any[]>([]);
+  const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
+  const [listVested, setListVested] = useState<any[]>([]);
 
   useEffect(() => {
     readSC().then((res) => {
@@ -109,34 +81,37 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
-        // console.log("time -> ", resp);
         setEndPool((endPool) => [...endPool, resp]);
       });
 
       await APR(sc).then((resp) => {
-        // console.log("APR -> ", resp);
         setAPRValue((APRValue) => [...APRValue, resp]);
       });
 
       await totalStakePool(sc).then((resp) => {
-        // console.log("total stake pool -> ", resp);
         setTotalStake((totalStake) => [...totalStake, resp]);
       });
 
       await percentagePool(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPercentagePoolValue((percentagePoolValue) => [
           ...percentagePoolValue,
           resp,
         ]);
       });
       await pendingAmount(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPendingOasis((pendingOasis) => [...pendingOasis, resp]);
       });
       await vestedBalance(sc).then((resp) => {
-        // console.log("percentage pool -> ", resp);
         setPendingVested((pendingVested) => [...pendingVested, resp]);
+      });
+      await amountStaked(sc).then((resp) => {
+        setStakedAmount((stakedAmount) => [...stakedAmount, resp]);
+      });
+      await checkApproval(sc).then((resp) => {
+        setApprovalCheck((approvalCheck) => [...approvalCheck, resp]);
+      });
+      await vestedList(sc).then((resp) => {
+        setListVested((listVested) => [...listVested, resp]);
       });
     }
   };
@@ -265,6 +240,10 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                 selectedIndex,
                 showModal,
                 setShowModal,
+                sc,
+                stakedAmount,
+                approvalCheck,
+                listVested,
               }}
             />
           </>

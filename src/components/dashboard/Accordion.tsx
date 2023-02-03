@@ -1,5 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
+import { link } from "../../svg";
+import {
+  claimReward,
+  collectReward,
+  approve,
+  convertUSD,
+} from "../../services";
+import StakeInput from "./StakeInput";
 
 const Accordion = ({
   visible,
@@ -7,23 +15,51 @@ const Accordion = ({
   selectedIndex,
   pendingOasis,
   pendingVested,
+  sc,
+  stakedAmount,
+  approvalCheck,
   setShowModal,
+  listVested,
 }: any) => {
-  const link = (
-    <svg
-      viewBox="0 0 24 24"
-      color="primary"
-      width="20px"
-      xmlns="http://www.w3.org/2000/svg"
-      className="sc-4ba21b47-0 ceTLum"
-    >
-      <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        d="M12 22C17.5228 22 22 17.5228 22 12C22 11.7792 21.9928 11.5602 21.9788 11.343C18.6515 16.824 10.797 19.3967 6.32085 20.232C7.93393 21.3469 9.8907 22 12 22ZM3.6987 17.5775C2.62604 15.9842 2 14.0652 2 12C2 6.47715 6.47715 2 12 2C16.6548 2 20.5667 5.18031 21.6815 9.48656C20.7816 11.0755 19.4244 12.3811 17.8282 13.4444V7.27607C17.8282 6.86948 17.4986 6.53988 17.092 6.53988H15.3742C14.9676 6.53988 14.638 6.86948 14.638 7.27607V15.0795C14.638 15.1034 14.6392 15.1269 14.6413 15.1501C14.2758 15.3076 13.906 15.4562 13.5337 15.5963V9.36196C13.5337 8.95537 13.2041 8.62577 12.7975 8.62577H11.0798C10.6732 8.62577 10.3436 8.95537 10.3436 9.36196V16.592C9.97218 16.6864 9.60348 16.7732 9.23926 16.8528V11.4479C9.23926 11.0413 8.90966 10.7117 8.50307 10.7117H6.78528C6.37869 10.7117 6.04908 11.0413 6.04908 11.4479V17.3941C5.17906 17.4987 4.38348 17.5575 3.6987 17.5775Z"
-      ></path>
-    </svg>
-  );
+  const [oasisUSD, setOasisUSD] = useState<any>("");
+  const [vestedUSD, setVestedUSD] = useState<any>("");
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const claimPendingReward = () => {
+    claimReward(sc);
+  };
+
+  const collectPendingReward = () => {
+    collectReward(sc);
+  };
+
+  const showStake = async () => {
+    if (!approvalCheck[index]) {
+      await approve(sc);
+    }
+  };
+
+  const openModal = async () => {
+    setShowModal(true);
+  };
+
+  // console.log(listVested);
+
+  useEffect(() => {
+    const converter = async () => {
+      const convertedOasis = await convertUSD(pendingOasis[index]);
+      const convertedVested = await convertUSD(pendingVested[index]);
+      setOasisUSD(convertedOasis);
+      setVestedUSD(convertedVested);
+    };
+    converter();
+  }, [
+    approvalCheck[index],
+    pendingOasis[index],
+    pendingVested[index],
+    isDisabled,
+  ]);
+
   return (
     <div
       className={`${
@@ -33,46 +69,77 @@ const Accordion = ({
       } py-1 bg-[#383737] `}
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      <div className="text-white my-7 flex justify-between px-10">
-        <div className="flex neumorphism rounded-lg py-10">
-          <div className="pr-10 pl-2">
-            <p className="text-left">PENDING REWARDS:</p>
-            <p className="text-left">{pendingOasis[index]} $OASIS</p>
+      <div className="flex justify-between text-white my-7 mx-20">
+        <div className="">
+          <div className="flex neumorphism rounded-lg py-10 mb-10 w-[22em]">
+            <div className="px-8">
+              <p className="text-left">PENDING REWARDS:</p>
+              <p className="text-left">{`${pendingOasis[index]} $OASIS`}</p>
+              <p className="text-left">{`${oasisUSD} $USD`}</p>
+            </div>
+            <div className="px-4 my-auto">
+              <button
+                disabled={isDisabled}
+                onClick={claimPendingReward}
+                className={` ${
+                  !isDisabled
+                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                    : "bg-gray-500"
+                }  font-bold py-2 px-4 rounded text-black`}
+              >
+                CLAIM
+              </button>
+            </div>
           </div>
-          <div className="pl-20 pr-6">
-            <button className="bg-yellow-600 hover:bg-yellow-700 font-bold py-2 px-4 rounded text-black">
-              CLAIM
-            </button>
+
+          <div className="flex neumorphism rounded-lg">
+            <div className="px-8 py-10">
+              <p className="text-left">VESTED REWARDS:</p>
+              <p className="text-left">{pendingVested[index]} $OASIS</p>
+              <p className="text-left">{vestedUSD} $USD</p>
+            </div>
+
+            <div className="px-4 flex flex-col my-auto">
+              <button
+                disabled={isDisabled}
+                onClick={openModal}
+                className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
+              >
+                VEST LIST
+              </button>
+              <button
+                disabled={isDisabled}
+                onClick={collectPendingReward}
+                className={`${
+                  !isDisabled
+                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                    : "bg-gray-500"
+                } font-bold py-2 px-4 mt-4 rounded text-black`}
+              >
+                COLLECT
+              </button>
+            </div>
           </div>
         </div>
-        <div className="flex neumorphism rounded-lg py-10">
-          <div className="pr-10 pl-2">
-            <p className="text-left">VESTED REWARDS:</p>
-            <p className="text-left">{pendingVested[index]} $OASIS</p>
-          </div>
-          <div className="pl-20 pr-6">
-            <button className="bg-yellow-600 hover:bg-yellow-700 font-bold py-2 px-4 rounded text-black">
-              COLLECT
+
+        <div className=" flex items-center">
+          <div
+            className={`mx-auto ${approvalCheck[index] ? "hidden" : "block"}`}
+          >
+            <p className="text-gray-400 text-start">ENABLE FARM</p>
+            <button
+              className="mb-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-[13em] rounded-xl text-black"
+              onClick={showStake}
+            >
+              ENABLE
             </button>
           </div>
-        </div>
-        <div className="my-auto">
-          <a href="/" className="flex">
-            {link}
-            <p>View Token Contract</p>
-          </a>
-          <a href="/" className="flex">
-            {link}
-            <p>View Pool Contract</p>
-          </a>
+
+          <div className={approvalCheck[index] ? "block" : "hidden"}>
+            <StakeInput {...{ sc, stakedAmount, index }} />
+          </div>
         </div>
       </div>
-      <button
-        className="my-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-64 rounded-xl text-black"
-        onClick={() => setShowModal(true)}
-      >
-        ENABLE
-      </button>
     </div>
   );
 };
