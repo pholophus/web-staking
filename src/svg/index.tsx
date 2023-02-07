@@ -60,3 +60,6 @@ export const closeX = (
     />
   </svg>
 );
+
+export const active = "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+export const inactive = "bg-gray-500"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { closeX } from "../../svg";
+import { active, closeX } from "../../svg";
 import { Vest } from "../../interface";
 
 const Modal = ({
@@ -7,15 +7,7 @@ const Modal = ({
   index,
   listVested,
   collectPendingReward,
-  vestListDate,
-  vestListAmount,
-  isCollectedVest,
-  isCollected,
 }: any) => {
-  useEffect(() => {
-    // console.log(index);
-  }, [vestListDate, vestListAmount, isCollectedVest]);
-
   return (
     <div className="text-white">
       <div className="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -37,37 +29,17 @@ const Modal = ({
                       <p className=" border-b">AMOUNT</p>
                       <p className=" border-b">STATUS</p>
                     </div>
-                    {listVested ? (
-                      listVested[index].map((item: Vest, i: number) => (
-                        <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
-                          <p>{vestListDate[i]}</p>
-                          <p>{vestListAmount[i]}</p>
-                          <p>{isCollectedVest[i] ? "COLLECTED" : "COLLECT"}</p>
-                          {/* <button
-                            className={`${
-                              isCollectedVest[i]
-                                ? "bg-gray-500"
-                                : "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                            } text-black rounded-lg font-bold py-1 px-2 text-sm`}
-                            disabled={isCollectedVest[i]}
-                            onClick={collectPendingReward[i]}
-                          >
-                            {isCollectedVest[i] ? "COLLECTED" : "COLLECT"}
-                          </button> */}
-                        </div>
-                      ))
-                    ) : (
-                      <p>Data is not available.</p>
-                    )}
+                    {listVested[index].map((item: Vest, i: number) => (
+                      <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
+                        <p>{item.date}</p>
+                        <p>{item.amount}</p>
+                        <p>{item.collected ? "COLLECTED" : "COLLECT"}</p>
+                      </div>
+                    ))}
                     <div>
                       <button
                         onClick={collectPendingReward}
-                        disabled={isCollected}
-                        className={`${
-                          !isCollected
-                            ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                            : "bg-gray-500"
-                        } font-bold py-2 px-4 mt-4 rounded text-black`}
+                        className={`${active} font-bold py-2 px-4 mt-4 rounded text-black`}
                       >
                         COLLECT ALL
                       </button>

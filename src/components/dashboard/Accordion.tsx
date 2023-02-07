@@ -7,6 +7,7 @@ import {
   approve,
   convertUSD,
 } from "../../services";
+import { active, inactive } from "../../svg";
 import Modal from "./Modal";
 import StakeInput from "./StakeInput";
 
@@ -25,16 +26,13 @@ const Accordion = ({
   const [vestedUSD, setVestedUSD] = useState<any>("");
   const [isDisabledOasis, setIsDisabledOasis] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isCollected, setIsCollected] = useState(false);
-  const [isThereVest, setIsThereVest] = useState(false);
-  const [isCollectedVest, setIsCollectedVest] = useState<boolean>(false);
-  const [vestListDate, setVestListDate] = useState<string>("");
-  const [vestListAmount, setVestListAmount] = useState<string>("");
+  const temp = true;
 
   const claimPendingReward = () => {
     claimReward(sc);
   };
 
+  /* pending from vest reward */
   const collectPendingReward = () => {
     collectReward(sc);
   };
@@ -59,17 +57,6 @@ const Accordion = ({
     }
   };
 
-  const checkVestCollectBtn = () => {
-    if (pendingVested[index] !== ("0.00" || "0") || !isCollectedVest) {
-      setIsCollected(true);
-    }
-  };
-
-  const checkListVest = () => {
-    if (listVested[index]?.length == 0) {
-      setIsThereVest(true);
-    }
-  };
 
   const converter = async () => {
     const convertedOasis = await convertUSD(pendingOasis[index]);
@@ -80,14 +67,7 @@ const Accordion = ({
 
   useEffect(() => {
     checkClaimOasisBtn();
-    checkVestCollectBtn();
     converter();
-    checkListVest();
-
-    const itemList = listVested[index] || [];
-    setIsCollectedVest(itemList.map((item: Vest) => item.collected) || "N/A");
-    setVestListDate(itemList.map((item: Vest) => item.date) || "N/A");
-    setVestListAmount(itemList.map((item: Vest) => item.amount) || "N/A");
   }, [
     approvalCheck[index],
     pendingOasis[index],
@@ -120,9 +100,7 @@ const Accordion = ({
                 disabled={isDisabledOasis}
                 onClick={claimPendingReward}
                 className={` ${
-                  !isDisabledOasis
-                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                    : "bg-gray-500"
+                  !isDisabledOasis ? active : inactive
                 }  font-bold py-2 px-4 rounded text-black`}
               >
                 CLAIM
@@ -139,27 +117,17 @@ const Accordion = ({
 
             <div className="px-4 flex flex-col my-auto">
               <button
-                disabled={isThereVest}
                 onClick={openModal}
-                className={`${
-                  !isThereVest
-                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                    : "bg-gray-500"
-                } font-bold py-2 px-4 rounded text-black`}
+                className={`${active} font-bold py-2 px-4 rounded text-black`}
               >
                 VEST LIST
               </button>
-              {/* <button
+              <button
                 onClick={collectPendingReward}
-                disabled={isCollected}
-                className={`${
-                  !isCollected
-                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                    : "bg-gray-500"
-                } font-bold py-2 px-4 mt-4 rounded text-black`}
+                className={`${active} font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
-              </button> */}
+              </button>
             </div>
           </div>
         </div>
@@ -170,7 +138,7 @@ const Accordion = ({
           >
             <p className="text-gray-400 text-start">ENABLE FARM</p>
             <button
-              className="mb-5 bg-yellow-600 hover:bg-yellow-700 font-bold py-4 px-[13em] rounded-xl text-black"
+              className={`mb-5 ${active} font-bold py-4 px-[13em] rounded-xl text-black`}
               onClick={showStake}
             >
               ENABLE
@@ -189,11 +157,6 @@ const Accordion = ({
                   index,
                   listVested,
                   collectPendingReward,
-                  setIsCollected,
-                  vestListDate,
-                  vestListAmount,
-                  isCollectedVest,
-                  isCollected
                 }}
               />
             )}
