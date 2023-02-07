@@ -149,7 +149,7 @@ const Accordion = ({
               >
                 VEST LIST
               </button>
-              <button
+              {/* <button
                 onClick={collectPendingReward}
                 disabled={isCollected}
                 className={`${
@@ -159,7 +159,7 @@ const Accordion = ({
                 } font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -193,6 +193,7 @@ const Accordion = ({
                   vestListDate,
                   vestListAmount,
                   isCollectedVest,
+                  isCollected
                 }}
               />
             )}

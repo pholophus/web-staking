@@ -10,8 +10,8 @@ const Modal = ({
   vestListDate,
   vestListAmount,
   isCollectedVest,
+  isCollected,
 }: any) => {
-  
   useEffect(() => {
     // console.log(index);
   }, [vestListDate, vestListAmount, isCollectedVest]);
@@ -42,7 +42,8 @@ const Modal = ({
                         <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
                           <p>{vestListDate[i]}</p>
                           <p>{vestListAmount[i]}</p>
-                          <button
+                          <p>{isCollectedVest[i] ? "COLLECTED" : "COLLECT"}</p>
+                          {/* <button
                             className={`${
                               isCollectedVest[i]
                                 ? "bg-gray-500"
@@ -52,12 +53,25 @@ const Modal = ({
                             onClick={collectPendingReward[i]}
                           >
                             {isCollectedVest[i] ? "COLLECTED" : "COLLECT"}
-                          </button>
+                          </button> */}
                         </div>
                       ))
                     ) : (
                       <p>Data is not available.</p>
                     )}
+                    <div>
+                      <button
+                        onClick={collectPendingReward}
+                        disabled={isCollected}
+                        className={`${
+                          !isCollected
+                            ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                            : "bg-gray-500"
+                        } font-bold py-2 px-4 mt-4 rounded text-black`}
+                      >
+                        COLLECT ALL
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
