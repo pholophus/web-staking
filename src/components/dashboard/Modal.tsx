@@ -11,6 +11,10 @@ const Modal = ({
   vestListAmount,
   isCollectedVest,
 }: any) => {
+  
+  useEffect(() => {
+    // console.log(index);
+  }, [vestListDate, vestListAmount, isCollectedVest]);
 
   return (
     <div className="text-white">
