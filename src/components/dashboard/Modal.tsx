@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { active, closeX } from "../../svg";
+import { active, closeX } from "../../variable";
 import { Vest } from "../../interface";
 
 const Modal = ({

@@ -7,7 +7,7 @@ import {
   approve,
   convertUSD,
 } from "../../services";
-import { active, inactive } from "../../svg";
+import { active, greenBtn, inactive } from "../../variable";
 import Modal from "./Modal";
 import StakeInput from "./StakeInput";
 
@@ -24,9 +24,9 @@ const Accordion = ({
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
-  const [isDisabledOasis, setIsDisabledOasis] = useState(false);
+  const [isClaimActive, setIsClaimActive] = useState(false);
+  const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const temp = true;
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -51,12 +51,22 @@ const Accordion = ({
     }
   };
 
-  const checkClaimOasisBtn = () => {
-    if (pendingOasis[index] === ("0.00" || "0")) {
-      setIsDisabledOasis(true);
+  const checkClickable = (type: string) => {
+    switch (type) {
+      case "claim":
+        setIsClaimActive(
+          pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
+        );
+        break;
+      case "collect":
+        setIsCollectActive(
+          pendingVested[index] === "0.00" || pendingVested[index] === "0"
+        );
+        break;
+      default:
+        break;
     }
   };
-
 
   const converter = async () => {
     const convertedOasis = await convertUSD(pendingOasis[index]);
@@ -66,14 +76,15 @@ const Accordion = ({
   };
 
   useEffect(() => {
-    checkClaimOasisBtn();
+    checkClickable("claim");
+    checkClickable("collect");
     converter();
   }, [
     approvalCheck[index],
     pendingOasis[index],
     pendingVested[index],
     listVested[index],
-    isDisabledOasis,
+    isClaimActive,
   ]);
 
   return (
@@ -97,10 +108,10 @@ const Accordion = ({
             </div>
             <div className="px-4 my-auto">
               <button
-                disabled={isDisabledOasis}
+                disabled={isClaimActive}
                 onClick={claimPendingReward}
                 className={` ${
-                  !isDisabledOasis ? active : inactive
+                  isClaimActive ? inactive : active
                 }  font-bold py-2 px-4 rounded text-black`}
               >
                 CLAIM
@@ -118,13 +129,16 @@ const Accordion = ({
             <div className="px-4 flex flex-col my-auto">
               <button
                 onClick={openModal}
-                className={`${active} font-bold py-2 px-4 rounded text-black`}
+                className={`${greenBtn} font-bold py-2 px-4 rounded text-black`}
               >
                 VEST LIST
               </button>
               <button
+                disabled={isCollectActive}
                 onClick={collectPendingReward}
-                className={`${active} font-bold py-2 px-4 mt-4 rounded text-black`}
+                className={`${
+                  isCollectActive ? inactive : active
+                } font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
               </button>

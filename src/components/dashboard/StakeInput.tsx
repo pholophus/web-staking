@@ -32,9 +32,9 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
         if (!inputValue || inputValue == "0.00") {
           setShowErrorMsg(true);
           setErrorMsg("Please insert amount");
-          // } else if (Number(inputValue) > Number(stakedAmount[index])) {
-          //   setShowErrorMsg(true);
-          //   setErrorMsg("Insufficient balance");
+        } else if (Number(inputValue) > Number(stakedAmount[index])) {
+          setShowErrorMsg(true);
+          setErrorMsg("Insufficient balance");
         } else {
           await unstake(sc, inputValue);
         }

@@ -20,7 +20,7 @@ import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
-import { show, hide } from "../../svg";
+import { show, hide } from "../../variable";
 
 const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
@@ -36,7 +36,6 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [stakedAmount, setStakedAmount] = useState<any[]>([]);
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
-  
 
   useEffect(() => {
     readSC().then((res) => {
