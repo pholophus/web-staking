@@ -27,7 +27,11 @@ const Accordion = ({
   const [showModal, setShowModal] = useState(false);
   const [isCollected, setIsCollected] = useState(false);
   const [isThereVest, setIsThereVest] = useState(false);
-  const [isCollectedVest, setIsCollectedVest] = useState<any>(false);
+  const [isCollectedVest, setIsCollectedVest] = useState<boolean>(false);
+  const [vestListDate, setVestListDate] = useState<string>("");
+  const [vestListAmount, setVestListAmount] = useState<string>("");
+
+  console.log(isCollectedVest)
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -82,13 +86,10 @@ const Accordion = ({
     converter();
     checkListVest();
 
-    setIsCollectedVest(
-      listVested[index]
-        ? listVested[index].map((item: Vest) =>
-            setIsCollectedVest(item.collected)
-          )
-        : "no data"
-    );
+    const itemList = listVested[index] || [];
+    setIsCollectedVest(itemList.map((item: Vest) => item.collected) || "N/A");
+    setVestListDate(itemList.map((item: Vest) => item.date) || "N/A");
+    setVestListAmount(itemList.map((item: Vest) => item.amount) || "N/A");
   }, [
     approvalCheck[index],
     pendingOasis[index],
@@ -191,6 +192,9 @@ const Accordion = ({
                   listVested,
                   collectPendingReward,
                   setIsCollected,
+                  vestListDate,
+                  vestListAmount,
+                  isCollectedVest,
                 }}
               />
             )}

@@ -7,9 +7,10 @@ const Modal = ({
   index,
   listVested,
   collectPendingReward,
-  setIsCollected,
+  vestListDate,
+  vestListAmount,
+  isCollectedVest,
 }: any) => {
-
 
   return (
     <div className="text-white">
@@ -33,20 +34,20 @@ const Modal = ({
                       <p className=" border-b">STATUS</p>
                     </div>
                     {listVested ? (
-                      listVested[index].map((item: Vest) => (
+                      listVested[index].map((item: Vest, i: number) => (
                         <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
-                          <p>{item.date ?? "N/A"}</p>
-                          <p>{item.amount ?? "N/A"}</p>
+                          <p>{vestListDate[i]}</p>
+                          <p>{vestListAmount[i]}</p>
                           <button
                             className={`${
-                              item.collected
+                              isCollectedVest[i]
                                 ? "bg-gray-500"
                                 : "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                            } text-black rounded-lg font-bold py-1 px-2`}
-                            disabled={item.collected}
-                            onClick={collectPendingReward}
+                            } text-black rounded-lg font-bold py-1 px-2 text-sm`}
+                            disabled={isCollectedVest[i]}
+                            onClick={collectPendingReward[i]}
                           >
-                            {item.collected ? "COLLECTED" : "COLLECT"}
+                            {isCollectedVest[i] ? "COLLECTED" : "COLLECT"}
                           </button>
                         </div>
                       ))
