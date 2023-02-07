@@ -17,7 +17,7 @@ const web3 = new Web3(window.ethereum);
 /**
  * get account
  */
-const getAccount = async () => {
+export const getAccount = async () => {
   try {
     const accounts = await ethereum.request({
       method: "eth_requestAccounts",

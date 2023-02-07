@@ -28,11 +28,12 @@ const Accordion = ({
   const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  // console.log(approvalCheck[index])
+
   const claimPendingReward = () => {
     claimReward(sc);
   };
 
-  /* pending from vest reward */
   const collectPendingReward = () => {
     collectReward(sc);
   };
@@ -76,6 +77,7 @@ const Accordion = ({
   };
 
   useEffect(() => {
+    
     checkClickable("claim");
     checkClickable("collect");
     converter();

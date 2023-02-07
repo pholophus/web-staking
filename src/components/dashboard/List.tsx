@@ -38,11 +38,27 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   const [listVested, setListVested] = useState<any[]>([]);
 
   useEffect(() => {
+    initData();
+    checkIfAccountChanged();
+  }, [poolStatus, poolType]);
+
+  const initData = () => {
     readSC().then((res) => {
       setListSC(res);
       filterPool(res);
     });
-  }, [poolStatus, poolType]);
+  };
+
+  const checkIfAccountChanged = async () => {
+    try {
+      const { ethereum } = window;
+      await ethereum.on("accountsChanged", async () => {
+        initData();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const filterPool = async (listSC: SCClass[]) => {
     /*reset value*/
@@ -51,6 +67,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
     setTotalStake([]);
     setPercentagePoolValue([]);
     setSelectedIndex([]);
+    setApprovalCheck([]);
 
     switch (poolStatus) {
       case "active":
