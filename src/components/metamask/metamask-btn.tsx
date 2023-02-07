@@ -76,7 +76,7 @@ const MetaBtn = () => {
           <div>
             {isConnected && (
               <div className="card">
-                <div className="card-row">
+                <div className="card-row text-white">
                   <p>
                     {accountAddress.slice(0, 4)}...
                     {accountAddress.slice(38, 42)}

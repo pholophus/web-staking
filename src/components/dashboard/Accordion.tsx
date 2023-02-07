@@ -31,8 +31,6 @@ const Accordion = ({
   const [vestListDate, setVestListDate] = useState<string>("");
   const [vestListAmount, setVestListAmount] = useState<string>("");
 
-  console.log(isCollectedVest)
-
   const claimPendingReward = () => {
     claimReward(sc);
   };

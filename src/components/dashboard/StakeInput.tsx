@@ -3,11 +3,12 @@ import { unstake, stake } from "../../services";
 
 const StakeInput = ({ sc, stakedAmount, index }: any) => {
   const [inputValue, setInputValue] = useState<any>(0);
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [showErrorMsg, setShowErrorMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
-    setErrorMsg(false);
+    setShowErrorMsg(false);
   };
 
   const onClickMax = () => {
@@ -17,19 +18,32 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
   const onClickStaking = async (e: any) => {
     switch (e.target.value) {
       case "stake":
-        if (!inputValue || inputValue == "0.00") setErrorMsg(true);
-        if (inputValue != "0") await stake(sc, inputValue);
+        if (!inputValue || inputValue == "0.00") {
+          setShowErrorMsg(true);
+          setErrorMsg("Please insert amount");
+        } else if (Number(inputValue) > Number(stakedAmount[index])) {
+          setShowErrorMsg(true);
+          setErrorMsg("Insufficient balance");
+        } else {
+          await stake(sc, inputValue);
+        }
         break;
       case "unstake":
-        if (!inputValue || inputValue == "0.00") setErrorMsg(true);
-        if (inputValue != "0") await unstake(sc, inputValue);
+        if (!inputValue || inputValue == "0.00") {
+          setShowErrorMsg(true);
+          setErrorMsg("Please insert amount");
+          // } else if (Number(inputValue) > Number(stakedAmount[index])) {
+          //   setShowErrorMsg(true);
+          //   setErrorMsg("Insufficient balance");
+        } else {
+          await unstake(sc, inputValue);
+        }
         break;
 
       default:
         break;
     }
   };
-
 
   return (
     <div className="neumorphism rounded-lg  transform transition-all max-w-lg w-full text-white mx-auto mb-10">
@@ -50,8 +64,8 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
                 value={inputValue}
                 onChange={handleInputChange}
               />
-              {errorMsg && (
-                <p className="text-[12px] text-red-600">Please insert amount</p>
+              {showErrorMsg && (
+                <p className="text-[12px] text-red-600">{errorMsg}</p>
               )}
             </div>
             <div className="w-60">
@@ -65,18 +79,7 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between px-14 mb-4">
-            {/* {percentageBtn.map((i) => (
-              <button
-                onClick={onClickPercentage}
-                key={i.value}
-                value={i.value}
-                className="bg-yellow-500 text-black rounded-lg px-3 py-1"
-              >
-                {i.label}
-              </button>
-            ))} */}
-          </div>
+          <div className="flex justify-between px-14 mb-4"></div>
         </div>
 
         <div className="mt-8 px-20 flex justify-between">
