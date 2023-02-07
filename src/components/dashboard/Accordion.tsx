@@ -1,4 +1,6 @@
+import { invariant } from "@remix-run/router";
 import { useEffect, useState } from "react";
+import { Vest } from "../../interface";
 import {
   claimReward,
   collectReward,
@@ -17,14 +19,15 @@ const Accordion = ({
   sc,
   stakedAmount,
   approvalCheck,
-  // setShowModal,
   listVested,
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
   const [isDisabledOasis, setIsDisabledOasis] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [isCollected, setIsCollected] = useState<boolean>(false);
+  const [isCollected, setIsCollected] = useState(false);
+  const [isThereVest, setIsThereVest] = useState(false);
+  const [isCollectedVest, setIsCollectedVest] = useState<any>(false);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -41,12 +44,28 @@ const Accordion = ({
   };
 
   const openModal = async () => {
-    setShowModal(true);
+    if (listVested[index]) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
+    }
   };
 
-  const buttonCheck = () => {
-    if (pendingOasis[index] !== ("0.00" || "0")) {
-      setIsDisabledOasis(false);
+  const checkClaimOasisBtn = () => {
+    if (pendingOasis[index] === ("0.00" || "0")) {
+      setIsDisabledOasis(true);
+    }
+  };
+
+  const checkVestCollectBtn = () => {
+    if (pendingVested[index] !== ("0.00" || "0") || !isCollectedVest) {
+      setIsCollected(true);
+    }
+  };
+
+  const checkListVest = () => {
+    if (listVested[index]?.length == 0) {
+      setIsThereVest(true);
     }
   };
 
@@ -58,12 +77,23 @@ const Accordion = ({
   };
 
   useEffect(() => {
-    buttonCheck();
+    checkClaimOasisBtn();
+    checkVestCollectBtn();
     converter();
+    checkListVest();
+
+    setIsCollectedVest(
+      listVested[index]
+        ? listVested[index].map((item: Vest) =>
+            setIsCollectedVest(item.collected)
+          )
+        : "no data"
+    );
   }, [
     approvalCheck[index],
     pendingOasis[index],
     pendingVested[index],
+    listVested[index],
     isDisabledOasis,
   ]);
 
@@ -110,8 +140,13 @@ const Accordion = ({
 
             <div className="px-4 flex flex-col my-auto">
               <button
+                disabled={isThereVest}
                 onClick={openModal}
-                className="bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500 font-bold py-2 px-4 rounded text-black"
+                className={`${
+                  !isThereVest
+                    ? "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                    : "bg-gray-500"
+                } font-bold py-2 px-4 rounded text-black`}
               >
                 VEST LIST
               </button>

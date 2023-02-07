@@ -9,6 +9,8 @@ const Modal = ({
   collectPendingReward,
   setIsCollected,
 }: any) => {
+
+
   return (
     <div className="text-white">
       <div className="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
@@ -30,23 +32,27 @@ const Modal = ({
                       <p className=" border-b">AMOUNT</p>
                       <p className=" border-b">STATUS</p>
                     </div>
-                    {listVested[index].map((item: Vest) => (
-                      <div className="flex neumorphism-modal justify-between my-5 p-2">
-                        <p>{item.date ?? "N/A"}</p>
-                        <p>{item.amount ?? "N/A"}</p>
-                        <button
-                          className={`${
-                            item.collected
-                              ? "bg-gray-500"
-                              : "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
-                          } text-black rounded font-medium py-1 px-2`}
-                          disabled={item.collected}
-                          onClick={collectPendingReward}
-                        >
-                          {item.collected ? "COLLECTED" : "COLLECT"}
-                        </button>
-                      </div>
-                    ))}
+                    {listVested ? (
+                      listVested[index].map((item: Vest) => (
+                        <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
+                          <p>{item.date ?? "N/A"}</p>
+                          <p>{item.amount ?? "N/A"}</p>
+                          <button
+                            className={`${
+                              item.collected
+                                ? "bg-gray-500"
+                                : "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500"
+                            } text-black rounded-lg font-bold py-1 px-2`}
+                            disabled={item.collected}
+                            onClick={collectPendingReward}
+                          >
+                            {item.collected ? "COLLECTED" : "COLLECT"}
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p>Data is not available.</p>
+                    )}
                   </div>
                 </div>
               </div>
