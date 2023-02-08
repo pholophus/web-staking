@@ -65,7 +65,7 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
                 onChange={handleInputChange}
               />
               {showErrorMsg && (
-                <p className="text-[12px] text-red-600">{errorMsg}</p>
+                <p className="text-[12px] text-red-600 font-medium">{errorMsg}</p>
               )}
             </div>
             <div className="w-60">
@@ -86,14 +86,14 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
           <button
             value="stake"
             onClick={onClickStaking}
-            className="bg-green-600 w-[120px] py-2 rounded-lg font-medium"
+            className="bg-green-600 w-[120px] py-2 rounded-lg"
           >
             STAKE
           </button>
           <button
             value="unstake"
             onClick={onClickStaking}
-            className="bg-red-600 w-[120px] py-2 rounded-lg font-medium"
+            className="bg-red-600 w-[120px] py-2 rounded-lg"
           >
             UNSTAKE
           </button>
