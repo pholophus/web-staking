@@ -69,6 +69,7 @@ const Accordion = ({
     }
   };
 
+
   const converter = async () => {
     const convertedOasis = await convertUSD(pendingOasis[index]);
     const convertedVested = await convertUSD(pendingVested[index]);
