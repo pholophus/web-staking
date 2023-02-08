@@ -10,9 +10,8 @@ const Container = () => {
   const [poolStatus, setPoolStatus] = useState("inactive");
   const [poolType, setPoolType] = useState("single");
 
-  const [menuProps, setMenuProps] = useState<any>({ setPoolStatus, setPoolType, poolStatus, poolType })
-  const [listProps, setListProps] = useState<any>({ poolStatus, poolType })
-
+  const menuProps = { setPoolStatus, setPoolType, poolStatus, poolType };
+  const listProps = { poolStatus, poolType };
 
   return (
     <>

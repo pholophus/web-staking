@@ -71,12 +71,14 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
 
     switch (poolStatus) {
       case "active":
+        console.log("..active");
         activeSC(listSC).then(async (resp: SCClass[]) => {
           const filteredResp = resp.filter((item) => item.type === poolType);
           getPoolDetail(filteredResp);
         });
         break;
       case "inactive":
+        console.log("..inactive");
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
           const filteredResp = resp.filter((item) => item.type === poolType);
           getPoolDetail(filteredResp);
@@ -115,6 +117,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
           resp,
         ]);
       });
+
       await pendingAmount(sc).then((resp) => {
         setPendingOasis((pendingOasis) => [...pendingOasis, resp]);
       });
