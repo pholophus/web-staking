@@ -7,7 +7,7 @@ import {
   approve,
   convertUSD,
 } from "../../services";
-import { active, greenBtn, inactive } from "../../variable";
+import { active, greenBtn, inactive, listIcon } from "../../variable";
 import Modal from "./Modal";
 import StakeInput from "./StakeInput";
 
@@ -28,6 +28,7 @@ const Accordion = ({
   const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [vestIndex, setVestIndex] = useState(0);
+  const array = [0, 1, 2, 3, 4, 5];
 
   // console.log(listVested[index]);
 
@@ -36,7 +37,14 @@ const Accordion = ({
   };
 
   const collectPendingReward = () => {
-    collectReward(sc);
+    if (vestIndex === listVested[index].length - 1) {
+      setVestIndex(0);
+      collectReward(sc);
+      console.log("if..");
+    } else {
+      console.log("else...");
+      setVestIndex(vestIndex + 1);
+    }
   };
 
   const showStake = async () => {
@@ -53,23 +61,23 @@ const Accordion = ({
     }
   };
 
-  const checkClickable = (type: string) => {
-    const vestDateExist =
+  const vestCollectStatus = () => {
+    return (
       listVested[index] &&
       listVested[index].length > 0 &&
-      listVested[index][vestIndex].date === "0D:0H:0M";
+      listVested[index][vestIndex].collected === false
+    );
+  };
+
+  const checkClickable = (type: string) => {
     switch (type) {
       case "claim":
         setIsClaimActive(
-          vestDateExist &&
-            (pendingOasis[index] !== "0.00" || pendingOasis[index] !== "0")
+          pendingOasis[index] !== "0.00" || pendingOasis[index] !== "0"
         );
         break;
       case "collect":
-        setIsCollectActive(
-          vestDateExist &&
-            (pendingVested[index] !== "0.00" || pendingVested[index] !== "0")
-        );
+        setIsCollectActive(!vestCollectStatus());
         break;
       default:
         break;
@@ -135,24 +143,24 @@ const Accordion = ({
             </div>
 
             <div className="px-4 flex flex-col my-auto">
-              <button
-                onClick={openModal}
-                className={`${greenBtn} font-bold py-2 px-4 rounded text-black`}
-              >
+              <p className="text-green-500">
                 {listVested[index] && listVested[index].length > 0
                   ? listVested[index][vestIndex].date
-                  : "N/A"}
-              </button>
+                  : ""}
+              </p>
               <button
                 disabled={isCollectActive}
                 onClick={collectPendingReward}
                 className={`${
-                  !isCollectActive ? active : inactive
+                  isCollectActive ? inactive : active
                 } font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
               </button>
             </div>
+            <button onClick={openModal} className="flex justify-start">
+              {listIcon}
+            </button>
           </div>
         </div>
 
