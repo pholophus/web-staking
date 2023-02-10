@@ -86,10 +86,33 @@ const Accordion = ({
     setVestedUSD(convertedVested);
   };
 
+  const findIndexByNotCollectedYet = () => {
+    const arrays: Vest = listVested[index];
+
+    let num = -1;
+    if (!arrays) return;
+    for (const [i, j] of Object.entries(arrays)) {
+      if (j.collected === false) {
+        num = Number(i);
+      }
+    }
+    if (!num) return num;
+
+    //* if return true: not collect yet
+    // let hasCollect = listVested[index] && listVested[index].length > 0 && listVested[index][vestIndex].collected === false
+    // return hasCollect;
+  };
+
+  console.log(vestIndex);
+
   useEffect(() => {
     checkClickable("claim");
     checkClickable("collect");
     converter();
+    const index = findIndexByNotCollectedYet();
+    if (index !== undefined) {
+      setVestIndex(index);
+    }
   }, [
     approvalCheck[index],
     pendingOasis[index],

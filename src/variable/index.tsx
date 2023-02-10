@@ -78,6 +78,6 @@ export const listIcon = (
   </svg>
 );
 
-export const active = "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-500";
-export const inactive = "bg-gray-500";
+export const active = "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-400";
+export const inactive = "bg-yellow-800";
 export const greenBtn = "bg-green-600 hover:bg-green-700 active:bg-green-500";
