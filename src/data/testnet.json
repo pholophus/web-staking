@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "type": "single",
+    "days": 180,
+    "ver": 1,
+    "masterchef": "0xbbdd2faaf735cb85bae6b4074768376770b1cd71",
+    "reward": "0x220cd9e5010e54becaff08965e58875736a0d4eb",
+    "staked": "0xbbdd2faaf735cb85bae6b4074768376770b1cd71",
+    "rewardToken": "0xbbdd2faaf735cb85bae6b4074768376770b1cd71",
+    "APR": "",
+    "totalBlockTime": ""
+  }
+]

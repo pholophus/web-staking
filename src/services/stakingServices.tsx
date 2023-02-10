@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Web3 from "web3";
-import listSCJson from "../data/oasis-smart-contract.json";
+import SCJson from "../data/oasis-smart-contract.json";
 import { SC as SCClass, Vest } from "../interface/index";
 import lp from "../data/abi/lp.json";
 import masterchef from "../data/abi/masterchef.json";
 import oasis from "../data/abi/oasis.json";
 import rewardLocker from "../data/abi/rewardLocker.json";
 import pancakeSwap from "../data/abi/pancakeswapABI.json";
+import testnet from "../data/testnet.json";
+
 
 // const [getAccount(), setgetAccount()] = useState("");
 const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -23,7 +25,7 @@ export const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
-    // return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
+    return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
     return accounts[0];
   } catch (error) {
     console.log(error);
@@ -35,6 +37,9 @@ export const getAccount = async () => {
  * */
 export const readSC = async () => {
   const listSC: any = [];
+
+  const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? SCJson : testnet;
+  console.log(typeof(process.env.REACT_APP_DEBUG_MODE));
 
   for (const SCJson of listSCJson) {
     let sc: SCClass = new SCClass();
@@ -254,10 +259,7 @@ export const approve = async (sc: SCClass) => {
     const getAcc = await getAccount();
 
     await sc.rewardToken.methods
-      .approve(
-        listSCJson[sc.index].masterchef,
-        Web3.utils.toWei("999999", "ether")
-      )
+      .approve(SCJson[sc.index].masterchef, Web3.utils.toWei("999999", "ether"))
       .send({ from: getAcc });
   } catch (e: any) {
     console.error(e.message);

@@ -27,8 +27,9 @@ const Accordion = ({
   const [isClaimActive, setIsClaimActive] = useState(false);
   const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [vestIndex, setVestIndex] = useState(0);
 
-  // console.log(approvalCheck[index])
+  // console.log(listVested[index]);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -53,22 +54,27 @@ const Accordion = ({
   };
 
   const checkClickable = (type: string) => {
+    const vestDateExist =
+      listVested[index] &&
+      listVested[index].length > 0 &&
+      listVested[index][vestIndex].date === "0D:0H:0M";
     switch (type) {
       case "claim":
         setIsClaimActive(
-          pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
+          vestDateExist &&
+            (pendingOasis[index] !== "0.00" || pendingOasis[index] !== "0")
         );
         break;
       case "collect":
         setIsCollectActive(
-          pendingVested[index] === "0.00" || pendingVested[index] === "0"
+          vestDateExist &&
+            (pendingVested[index] !== "0.00" || pendingVested[index] !== "0")
         );
         break;
       default:
         break;
     }
   };
-
 
   const converter = async () => {
     const convertedOasis = await convertUSD(pendingOasis[index]);
@@ -78,7 +84,6 @@ const Accordion = ({
   };
 
   useEffect(() => {
-    
     checkClickable("claim");
     checkClickable("collect");
     converter();
@@ -134,13 +139,15 @@ const Accordion = ({
                 onClick={openModal}
                 className={`${greenBtn} font-bold py-2 px-4 rounded text-black`}
               >
-                VEST LIST
+                {listVested[index] && listVested[index].length > 0
+                  ? listVested[index][vestIndex].date
+                  : "N/A"}
               </button>
               <button
                 disabled={isCollectActive}
                 onClick={collectPendingReward}
                 className={`${
-                  isCollectActive ? inactive : active
+                  !isCollectActive ? active : inactive
                 } font-bold py-2 px-4 mt-4 rounded text-black`}
               >
                 COLLECT
@@ -161,22 +168,23 @@ const Accordion = ({
               ENABLE
             </button>
           </div>
-
-          <div className={approvalCheck[index] ? "block" : "hidden"}>
-            <StakeInput {...{ sc, stakedAmount, index }} />
-          </div>
-          <div className={approvalCheck[index] ? "block" : "hidden"}>
-            {showModal && (
-              <Modal
-                {...{
-                  showModal,
-                  setShowModal,
-                  index,
-                  listVested,
-                  collectPendingReward,
-                }}
-              />
-            )}
+          <div>
+            <div className={approvalCheck[index] ? "block" : "hidden"}>
+              <StakeInput {...{ sc, stakedAmount, index }} />
+            </div>
+            <div className={approvalCheck[index] ? "block" : "hidden"}>
+              {showModal && (
+                <Modal
+                  {...{
+                    showModal,
+                    setShowModal,
+                    index,
+                    listVested,
+                    collectPendingReward,
+                  }}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
