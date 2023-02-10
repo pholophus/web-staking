@@ -28,9 +28,6 @@ const Accordion = ({
   const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [vestIndex, setVestIndex] = useState(0);
-  const array = [0, 1, 2, 3, 4, 5];
-
-  // console.log(listVested[index]);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -40,9 +37,7 @@ const Accordion = ({
     if (vestIndex === listVested[index].length - 1) {
       setVestIndex(0);
       collectReward(sc);
-      console.log("if..");
     } else {
-      console.log("else...");
       setVestIndex(vestIndex + 1);
     }
   };
@@ -189,6 +184,7 @@ const Accordion = ({
                     index,
                     listVested,
                     collectPendingReward,
+                    isCollectActive,
                   }}
                 />
               )}

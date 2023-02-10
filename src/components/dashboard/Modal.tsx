@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { active, closeX } from "../../variable";
+import { active, closeX, inactive } from "../../variable";
 import { Vest } from "../../interface";
 
 const Modal = ({
@@ -7,6 +7,7 @@ const Modal = ({
   index,
   listVested,
   collectPendingReward,
+  isCollectActive,
 }: any) => {
   return (
     <div className="text-white">
@@ -24,13 +25,13 @@ const Modal = ({
                     VEST LIST:
                   </h3>
                   <div>
-                    <div className=" flex justify-between font-medium">
+                    <div className=" flex justify-between font-medium px-7">
                       <p className=" border-b">DATE</p>
                       <p className=" border-b">AMOUNT</p>
                       <p className=" border-b">STATUS</p>
                     </div>
                     {listVested[index].map((item: Vest, i: number) => (
-                      <div className="flex neumorphism-modal justify-between my-5 py-5 px-2">
+                      <div className="flex neumorphism-modal justify-between my-5 py-5 px-7">
                         <p>{item.date}</p>
                         <p>{item.amount}</p>
                         <p>{item.collected ? "COLLECTED" : "COLLECT"}</p>
@@ -38,8 +39,9 @@ const Modal = ({
                     ))}
                     <div>
                       <button
+                        disabled={isCollectActive}
                         onClick={collectPendingReward}
-                        className={`${active} font-bold py-2 px-4 mt-4 rounded text-black`}
+                        className={`${isCollectActive ? inactive : active} font-bold py-2 px-4 mt-4 rounded text-black`}
                       >
                         COLLECT ALL
                       </button>
