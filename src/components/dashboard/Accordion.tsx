@@ -34,12 +34,7 @@ const Accordion = ({
   };
 
   const collectPendingReward = () => {
-    if (vestIndex === listVested[index].length - 1) {
-      setVestIndex(0);
-      collectReward(sc);
-    } else {
-      setVestIndex(vestIndex + 1);
-    }
+    collectReward(sc);
   };
 
   const showStake = async () => {
@@ -96,14 +91,12 @@ const Accordion = ({
         num = Number(i);
       }
     }
-    if (!num) return num;
+    return num ?? "";
 
     //* if return true: not collect yet
     // let hasCollect = listVested[index] && listVested[index].length > 0 && listVested[index][vestIndex].collected === false
     // return hasCollect;
   };
-
-  console.log(vestIndex);
 
   useEffect(() => {
     checkClickable("claim");
@@ -163,7 +156,7 @@ const Accordion = ({
             <div className="px-4 flex flex-col my-auto">
               <p className="text-green-500">
                 {listVested[index] && listVested[index].length > 0
-                  ? listVested[index][vestIndex].date
+                  ? listVested[index][vestIndex]?.date
                   : ""}
               </p>
               <button
