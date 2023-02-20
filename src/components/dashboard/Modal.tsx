@@ -13,52 +13,57 @@ const Modal = ({
     <div className="text-white">
       <div className="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center">
         <div className="fixed inset-0 transition-opacity">
-          <div className="absolute inset-0 bg-gray-800 opacity-75"></div>
+          <div className="absolute inset-0 bg-[#0b0b0b] opacity-75"></div>
         </div>
 
-        <div className="bg-[#2a3d55] rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+        <div className="bg-[#242424] rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
           <div>
             <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div className="">
+              <div>
+                <div className="flex justify-between pb-2">
+                  <button
+                    className="ml-auto"
+                    onClick={() => setShowModal(false)}
+                  >
+                    {closeX}
+                  </button>
+                </div>
                 <div className="text-center ml-4">
-                  <h3 className="text-lg leading-6 font-medium my-5">
-                    VEST LIST:
+                  <h3 className="text-[40px] leading-6 mb-5 baloo-bold">
+                    Vest List
                   </h3>
                   <div>
-                    <div className=" flex justify-between font-medium px-7">
-                      <p className=" border-b">DATE</p>
-                      <p className=" border-b">AMOUNT</p>
-                      <p className=" border-b">STATUS</p>
+                    <div className=" flex justify-between px-12">
+                      <p className="baloo-bold text-[#FEAE34] text-lg">Date</p>
+                      <p className="baloo-bold text-[#FEAE34] text-lg">
+                        Amount
+                      </p>
+                      <p className="baloo-bold text-[#FEAE34] text-lg">
+                        Status
+                      </p>
                     </div>
                     {listVested[index].map((item: Vest, i: number) => (
-                      <div className="flex neumorphism-modal justify-between my-5 py-5 px-7">
+                      <div className="flex justify-between my-3 px-12 py-[0.5rem] bg-[#2E2E2E]">
                         <p>{item.date}</p>
                         <p>{item.amount}</p>
-                        <p>{item.collected ? "COLLECTED" : "COLLECT"}</p>
+                        <p>{item.collected ? "collected" : "uncollected"}</p>
                       </div>
                     ))}
-                    <div>
+                    <div className="mb-4">
                       <button
                         disabled={isCollectActive}
                         onClick={collectPendingReward}
-                        className={`${isCollectActive ? inactive : active} font-bold py-2 px-4 mt-4 rounded text-black`}
+                        className={`${
+                          isCollectActive ? inactive : active
+                        } py-2 px-4 mt-4 rounded-lg w-[10rem]`}
                       >
-                        COLLECT ALL
+                        Collect All
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="px-6 pb-4 text-right">
-            <button
-              className="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out"
-              onClick={() => setShowModal(false)}
-            >
-              Close
-            </button>
           </div>
         </div>
       </div>

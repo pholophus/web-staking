@@ -120,37 +120,57 @@ const Accordion = ({
         visible && selectedIndex.includes(index)
           ? "block top-0 transition duration-500 ease-in-out transform"
           : "hidden"
-      } py-1 bg-[#383737] `}
+      } py-1 bg-[#171616] text-white rounded-b-xl border-t border-[#3A3A3A]`}
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      <div className="flex justify-between text-white my-7 mx-20">
-        <div className="">
-          <div className="flex neumorphism rounded-lg py-10 mb-10 w-[22em]">
-            <div className="px-8">
-              <p className="text-left">PENDING REWARDS:</p>
-              <p className="text-left">{`${
-                pendingOasis[index] ?? "0.00"
-              } $OASIS`}</p>
-              <p className="text-left">{`${oasisUSD ?? "0.00"} $USD`}</p>
+      <div className="flex justify-between text-white my-7 mx-5">
+
+
+        <div className="pr-2 ml-2 my-auto text-left text-[13px]">
+          <p className="mb-4">Deposit Lock Duration : 360 Days</p>
+          <p className="mb-4">Rewards Vesting Duration : 360 Days After Claim</p>
+          <p className="mb-4">Pool Max Cap : 135000 $OASIS</p>
+        </div>
+        
+
+
+
+
+
+
+          <div className="mr-10 border-[#3D3D3D] border-2 w-[220px] rounded-lg py-6 my-auto h-[13rem]">
+            <div className="">
+              <p className="text-[20px] text-[#8E8E8E]">Pending Rewards</p>
+              <p className="text-[24px]">{`${pendingOasis[index] ?? "0.00"} $OASIS`}</p>
+              <p className="mb-5">{`(${oasisUSD ?? "0.00"} $USD)`}</p>
             </div>
-            <div className="px-4 my-auto">
+            <div className="">
               <button
                 disabled={isClaimActive}
                 onClick={claimPendingReward}
                 className={` ${
                   isClaimActive ? inactive : active
-                }  font-bold py-2 px-4 rounded text-black`}
+                }  font-bold py-2 px-12 rounded `}
               >
                 CLAIM
               </button>
             </div>
           </div>
 
-          <div className="flex neumorphism rounded-lg">
-            <div className="px-8 py-10">
-              <p className="text-left">VEST REWARDS:</p>
-              <p className="text-left">{pendingVested[index] ?? "0"} $OASIS</p>
-              <p className="text-left">{vestedUSD ?? "0"} $USD</p>
+
+
+
+
+
+
+
+
+
+          <div className="mr-12 border-[#3D3D3D] border-2 w-[250px] rounded-lg py-6 my-auto h-[13rem]">
+            <div className="">
+              <p className="text-[20px] text-[#8E8E8E]">Vest Rewards</p>
+              <p className="text-[24px]">{pendingVested[index] ?? "0"} $OASIS</p>
+              <p className="mb-5">{`(${vestedUSD ?? "0"} $USD)`}</p>
             </div>
 
             <div className="px-4 flex flex-col my-auto">
@@ -159,29 +179,38 @@ const Accordion = ({
                   ? listVested[index][vestIndex]?.date
                   : ""}
               </p>
-              <button
-                disabled={isCollectActive}
-                onClick={collectPendingReward}
-                className={`${
-                  isCollectActive ? inactive : active
-                } font-bold py-2 px-4 mt-4 rounded text-black`}
-              >
-                COLLECT
-              </button>
+              <div className="flex justify-center">
+                <button
+                  onClick={openModal}
+                  className={` font-bold py-2 px-4 rounded border border-[#3D3D3D]`}
+                  >
+                  ##TIME
+                </button>
+                <button
+                  disabled={isCollectActive}
+                  onClick={collectPendingReward}
+                  className={`${
+                    isCollectActive ? inactive : active
+                  } font-bold py-2 px-4 rounded `}
+                  >
+                  COLLECT
+                </button>
+              </div>
             </div>
-            <button onClick={openModal} className="flex justify-start">
-              {listIcon}
-            </button>
           </div>
-        </div>
 
-        <div className=" flex items-center">
+
+
+
+
+
+          <div className=" flex items-center">
           <div
             className={`mx-auto ${approvalCheck[index] ? "hidden" : "block"}`}
           >
             <p className="text-gray-400 text-start">ENABLE FARM</p>
             <button
-              className={`mb-5 ${active} font-bold py-4 px-[13em] rounded-xl text-black`}
+              className={`mb-5 ${active} font-bold py-4 px-[13em] rounded-xl `}
               onClick={showStake}
             >
               ENABLE
@@ -206,7 +235,14 @@ const Accordion = ({
               )}
             </div>
           </div>
-        </div>
+          </div>
+
+
+
+
+
+
+
       </div>
     </div>
   );

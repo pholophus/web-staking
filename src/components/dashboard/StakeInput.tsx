@@ -46,7 +46,7 @@ const StakeInput = ({ sc, stakedAmount, index }: any) => {
   };
 
   return (
-    <div className="neumorphism rounded-lg  transform transition-all max-w-lg w-full text-white mx-auto mb-10">
+    <div className="border-2 border-[#3D3D3D]  rounded-lg  transform transition-all max-w-lg w-[240px] text-white mx-auto mb-10">
       <div className="p-6 pb-4">
         <div className="flex justify-between">
           <h3 className="text-lg leading-6 font-medium border-b border-white">

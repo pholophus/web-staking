@@ -1,3 +1,7 @@
+import v1 from "../images/v1.png";
+import v2 from "../images/v2.png";
+import v3 from "../images/v3.png";
+
 export const link = (
   <svg
     viewBox="0 0 24 24"
@@ -17,12 +21,12 @@ export const show = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className={`w-6 h-6`}
+    className="w-6 h-6"
   >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0l-3.75-3.75M17.25 21L21 17.25"
+      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
     />
   </svg>
 );
@@ -39,7 +43,7 @@ export const hide = (
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12"
+      d="M4.5 15.75l7.5-7.5 7.5 7.5"
     />
   </svg>
 );
@@ -56,7 +60,7 @@ export const closeX = (
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      d="M6 18L18 6M6 6l12 12"
     />
   </svg>
 );
@@ -78,6 +82,9 @@ export const listIcon = (
   </svg>
 );
 
-export const active = "bg-yellow-500 hover:bg-yellow-600 active:bg-yellow-400";
-export const inactive = "bg-yellow-800";
+export const active =
+  "text-white bg-[#16A34A] hover:bg-[#139242] active:bg-[#2dac5c]";
+export const inactive = "text-white bg-[#8E8E8E]";
 export const greenBtn = "bg-green-600 hover:bg-green-700 active:bg-green-500";
+
+export const version = [v1, v2, v3];

@@ -10,8 +10,22 @@
   src: url("../src/font/Tisa.ttf") format("opentype");
 }
 
-.open-sans {
-  font-family: "Open Sans", sans-serif;
+@font-face {
+  font-family: "baloo";
+  src: url("../src/font/Baloo.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "baloo-bold";
+  src: url("../src/font/Baloo-bold.ttf") format("opentype");
+}
+
+.baloo {
+  font-family: "baloo";
+}
+
+.baloo-bold {
+  font-family: "baloo-bold";
 }
 
 .tisa {
@@ -19,12 +33,13 @@
 }
 
 body {
-  font-family: "tisa";
+  font-family: "baloo";
   font-weight: 600;
 }
 
 .App {
   text-align: center;
+  font-family: "baloo";
 }
 
 .App-logo {
@@ -76,3 +91,4 @@ body {
   background: #2a3d55;
   box-shadow: 5px 5px 10px #1e2b3c, -5px -5px 10px #364f6e;
 }
+

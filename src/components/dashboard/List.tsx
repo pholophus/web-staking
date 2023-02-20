@@ -20,9 +20,16 @@ import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import Accordion from "./Accordion";
-import { show, hide } from "../../variable";
+import { show, hide, version } from "../../variable";
 
-const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
+const List = ({
+  poolStatus,
+  poolType,
+  showModal,
+  setShowModal,
+  farm,
+  setFarm,
+}: any) => {
   const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
@@ -40,7 +47,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
   useEffect(() => {
     initData();
     checkIfAccountChanged();
-  }, [poolStatus, poolType]);
+  }, [poolStatus, poolType, farm]);
 
   const initData = () => {
     readSC().then((res) => {
@@ -69,28 +76,38 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
     setSelectedIndex([]);
     setApprovalCheck([]);
 
+    //#region
+    var filteredFarm: any;
+
+    if (farm) {
+      myFarm(listSC).then((resp) => {
+        filteredFarm = resp.filter(
+          (item: { type: any }) => item.type === poolType
+        );
+        // getPoolDetail(filteredFarm);
+      });
+    }
     switch (poolStatus) {
       case "active":
         activeSC(listSC).then(async (resp: SCClass[]) => {
-          const filteredResp = resp.filter((item) => item.type === poolType);
+          const farmCheck = farm ? filteredFarm : resp;
+          const filteredResp = farmCheck.filter(
+            (item: any) => item.type === poolType
+          );
           getPoolDetail(filteredResp);
         });
         break;
       case "inactive":
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
-          const filteredResp = resp.filter((item) => item.type === poolType);
-          getPoolDetail(filteredResp);
-        });
-        break;
-      case "myFarm":
-        myFarm(listSC).then((resp) => {
-          const filteredResp = resp.filter(
-            (item: { type: any }) => item.type === poolType
+          const farmCheck = farm ? filteredFarm : resp;
+          const filteredResp = farmCheck.filter(
+            (item: any) => item.type === poolType
           );
           getPoolDetail(filteredResp);
         });
         break;
     }
+    //#endregion
   };
 
   const getPoolDetail = async (resp: SCClass[]) => {
@@ -136,7 +153,7 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col baloo">
         {filteredSC.map((sc, index) => (
           <>
             <button
@@ -154,30 +171,55 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                 }
               }}
             >
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto text-white">
                 <div className="w-full inline-block align-middle">
-                  <div className={`border-b border-gray-700 overflow-hidden `}>
-                    <table className="min-w-full divide-y divide-gray-50 bg-[#212121]">
+                  <div
+                    className={`${
+                      visible && selectedIndex.includes(index)
+                        ? "mt-[0.5rem]"
+                        : "my-[0.5rem]"
+                    } overflow-hidden `}
+                  >
+                    <table
+                      className={`min-w-full divide-y divide-gray-50 bg-[#171616] h-[100px] ${
+                        visible && selectedIndex.includes(index)
+                          ? "rounded-t-xl"
+                          : "rounded-xl"
+                      }`}
+                    >
                       <tbody className="divide-y divide-gray-50">
                         <tr key={index}>
-                          <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
-                            <div className="flex">
-                              OASIS {listSCJson[sc.index].days} Days
+                          <td>
+                            <img
+                              src={version[listSCJson[sc.index].ver - 1]}
+                              className="ml-8"
+                              alt=""
+                            />
+                          </td>
+                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
+                            <div className="flex ">
+                              {`${
+                                poolType == "single"
+                                  ? "Oasis Coins"
+                                  : "Oasis - BNB"
+                              }`}
                             </div>
-                            <div className="flex">
-                              V {listSCJson[sc.index].ver}
+                            <div className="flex ">
+                              {`${listSCJson[sc.index].days} Days ${
+                                poolType == "single" ? "Single staking" : "LP"
+                              }`}
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-[#ffffff] whitespace-nowrap">
+                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
-                              <p className="">End</p>
+                              <p className="text-[#8E8E8E]">Ends</p>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.5"
                                 stroke="currentColor"
-                                className="w-5 h-5"
+                                className="w-5 h-5 text-[#8E8E8E]"
                               >
                                 <path
                                   strokeLinecap="round"
@@ -188,16 +230,16 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                             </div>
                             <div className="flex">{endPool[index]}</div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-[#ffffff] whitespace-nowrap">
+                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
-                              <p className="">APR</p>
+                              <p className="text-[#8E8E8E]">APR</p>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.5"
                                 stroke="currentColor"
-                                className="w-5 h-5"
+                                className="w-5 h-5 text-[#8E8E8E]"
                               >
                                 <path
                                   strokeLinecap="round"
@@ -208,16 +250,18 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                             </div>
                             <div className="flex">{APRValue[index]}</div>
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
+                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
-                              <p className="">Total Staked</p>
+                              <p className="text-[#8E8E8E]">
+                                Total Volume Staked
+                              </p>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth="1.5"
                                 stroke="currentColor"
-                                className="w-5 h-5"
+                                className="w-5 h-5 text-[#8E8E8E]"
                               >
                                 <path
                                   strokeLinecap="round"
@@ -228,13 +272,40 @@ const List = ({ poolStatus, poolType, showModal, setShowModal }: any) => {
                             </div>
                             <div className="flex">${totalStake[index]}</div>
                           </td>
-                          <td className="px-6 py-4 text-sm font-medium text-[#ffffff] whitespace-nowrap">
-                            <div className="flex">
+                          <td className="pr-[5rem] py-4 text-sm  text-[#ffffff] whitespace-nowrap">
+                            <div className="flex justify-between">
+                              <div className="flex">
+                                <p className="text-[#8E8E8E]">Total Staked</p>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-5 h-5 text-[#8E8E8E]"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+                                  />
+                                </svg>
+                              </div>
                               <p className="">{percentagePoolValue[index]}%</p>
+                            </div>
+                            <div className="flex justify-between mb-1"></div>
+                            <div className="w-full bg-[#393939] rounded-full h-2.5 dark:bg-[#393939]">
+                              <div
+                                className="bg-[#16A34A] h-2.5 rounded-full"
+                                style={{
+                                  width: `${percentagePoolValue[index]}%`,
+                                }}
+                              ></div>
                             </div>
                           </td>
                           <td>
-                            <div className="relative">
+                            <div className="relative flex">
+                              <p className="">Details</p>
                               <p className="text-white text-4xl px-6 w-2">
                                 {visible && selectedIndex.includes(index)
                                   ? hide
