@@ -184,7 +184,11 @@ const Accordion = ({
                   onClick={openModal}
                   className={` font-bold py-2 px-4 rounded border border-[#3D3D3D]`}
                   >
-                  ##TIME
+                  <p className="text-green-500">
+                    {listVested[index] && listVested[index].length > 0
+                      ? listVested[index][vestIndex]?.date
+                      : "0D:0H:0M"}
+                  </p>
                 </button>
                 <button
                   disabled={isCollectActive}
