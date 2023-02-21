@@ -71,7 +71,6 @@ const StakeInput = ({
   const onClickStaking = async (e: any) => {
     switch (e.target.value) {
       case "Stake":
-        console.log("click stake");
         if (!inputValue || inputValue == "0.00") {
           setShowErrorMsg(true);
           setErrorMsg("Please insert amount");
@@ -83,7 +82,6 @@ const StakeInput = ({
         }
         break;
       case "Unstake":
-        console.log("click unstake");
         if (!inputValue || inputValue == "0.00") {
           setShowErrorMsg(true);
           setErrorMsg("Please insert amount");
@@ -135,7 +133,7 @@ const StakeInput = ({
               Your $Oasis Staked
             </p>
             <button
-              className={`${active} font-bold py-2 px-28 rounded-xl `}
+              className={`${active} font-bold py-2 px-28 rounded-md `}
               onClick={showStake}
             >
               Enable
@@ -156,14 +154,14 @@ const StakeInput = ({
               <button
                 value="stake"
                 onClick={stakeInput}
-                className={`${stakeBg} w-[120px] py-2 rounded-lg`}
+                className={`${stakeBg} w-[120px] py-2 rounded-md`}
               >
                 Stake
               </button>
               <button
                 value="unstake"
                 onClick={stakeInput}
-                className={`${unstakeBg} w-[120px] py-2 rounded-lg`}
+                className={`${unstakeBg} w-[120px] py-2 rounded-md`}
               >
                 Unstake
               </button>
@@ -199,7 +197,7 @@ const StakeInput = ({
                     onClick={onClickPercentage}
                     key={i.value}
                     value={i.value}
-                    className={`${selectStake?.color} text-[14px] rounded-md px-3 py-[1px]`}
+                    className={`${selectStake?.color} text-[14px] rounded-md w-[3rem] py-[1px]`}
                   >
                     {i.label}
                   </button>
@@ -209,13 +207,13 @@ const StakeInput = ({
                 <button
                   value={selectStake?.stake}
                   onClick={onClickStaking}
-                  className={`${selectStake?.color} rounded-lg py-2 w-[7rem]`}
+                  className={`${selectStake?.color} rounded-md py-2 w-[7rem]`}
                 >
                   {selectStake?.stake}
                 </button>
                 <button
-                  onClick={() => setShowInput(!showInput)}
-                  className={`${inactive} rounded-lg py-2 w-[7rem]`}
+                  onClick={() => {setShowInput(!showInput);setShowErrorMsg(false)}}
+                  className={`${inactive} rounded-md py-2 w-[7rem]`}
                 >
                   Cancel
                 </button>

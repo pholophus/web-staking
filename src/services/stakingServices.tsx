@@ -503,3 +503,10 @@ const timeConversion = async (seconds: any) => {
 
   return `${days}D:${remainingHours}H:${remainingMinutes}M`;
 };
+
+export const poolLimit = async (sc: SCClass) => {
+  const maxCap = await sc.masterchef.methods.poolInfo(0).call();
+  const poolLimit = Web3.utils.fromWei(maxCap.poolLimit, "ether");
+  // console.log(poolLimit);
+  return poolLimit;
+}

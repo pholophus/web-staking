@@ -22,6 +22,8 @@ const Accordion = ({
   stakedAmount,
   approvalCheck,
   listVested,
+  listSCJson,
+  maxCap
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
@@ -37,6 +39,7 @@ const Accordion = ({
 
   const collectPendingReward = () => {
     collectReward(sc);
+    // setVestIndex(vestIndex + 1)
   };
 
   const showStake = async () => {
@@ -63,20 +66,21 @@ const Accordion = ({
     }
   };
 
-  // const checkClickable = (type: string) => {
-  //   switch (type) {
-  //     case "claim":
-  //       setIsClaimActive(
-  //         pendingOasis[index] !== "0.00" || pendingOasis[index] !== "0"
-  //       );
-  //       break;
-  //     case "collect":
-  //       setIsCollectActive(!vestCollectStatus());
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+  const checkClickable = (type: string) => {
+    switch (type) {
+      case "claim":
+        if (pendingOasis[index])
+          setIsClaimActive(
+            pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
+          );
+        break;
+      case "collect":
+        setIsCollectActive(!vestCollectStatus());
+        break;
+      default:
+        break;
+    }
+  };
 
   const converter = async () => {
     const convertedOasis = await convertUSD(pendingOasis[index]);
@@ -105,12 +109,13 @@ const Accordion = ({
   };
 
   useEffect(() => {
-    // checkClickable("claim");
-    // checkClickable("collect");
+    checkClickable("claim");
+    checkClickable("collect");
     converter();
+    findIndexByNotCollectedYet();
     const index = findIndexByNotCollectedYet();
     if (index !== undefined) {
-      setVestIndex(index);
+      setVestIndex(0);
     }
   }, [
     approvalCheck[index],
@@ -119,8 +124,6 @@ const Accordion = ({
     listVested[index],
     isClaimActive,
   ]);
-
-  // console.log(visible)
 
   return (
     <div
@@ -132,10 +135,9 @@ const Accordion = ({
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
       <div className="flex text-white mx-4 my-10">
-
         <div className="mr-3 pr-2 my-auto text-left text-[13px]">
-          <p className="mb-4">Deposit Lock Duration : 360 Days</p>
-          <p className="mb-4">Pool Max Cap : 135000 $OASIS</p>
+          <p className="mb-4">{`Deposit Lock Duration : ${listSCJson[sc.index].days} Days`}</p>
+          <p className="mb-4">{`Pool Max Cap : ${maxCap} $OASIS`}</p>
         </div>
 
         <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg py-6 my-auto h-[15rem]">
@@ -197,7 +199,15 @@ const Accordion = ({
         <div className="w-[280px] flex items-center">
           <div>
             <StakeInput
-              {...{ sc, stakedAmount, index, approvalCheck, showStake, visible, selectedIndex }}
+              {...{
+                sc,
+                stakedAmount,
+                index,
+                approvalCheck,
+                showStake,
+                visible,
+                selectedIndex,
+              }}
             />
           </div>
         </div>
@@ -213,7 +223,7 @@ const Accordion = ({
                 collectPendingReward,
                 isCollectActive,
                 stakeUSD,
-                selectedIndex
+                selectedIndex,
               }}
             />
           )}

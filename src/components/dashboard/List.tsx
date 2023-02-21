@@ -15,6 +15,7 @@ import {
   checkApproval,
   vestedList,
   convertUSD,
+  poolLimit
 } from "../../services/stakingServices";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
@@ -44,6 +45,7 @@ const List = ({
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
   const [showAccordion, setShowAccordion] = useState(false)
+  const [maxCap, setMaxCap] = useState<any>()
 
   useEffect(() => {
     initData();
@@ -149,6 +151,9 @@ const List = ({
       await vestedList(sc).then((resp) => {
         setListVested((listVested) => [...listVested, resp]);
       });
+      await poolLimit(sc).then((resp) => {
+        setMaxCap(resp)
+      })
     }
   };
 
@@ -275,10 +280,12 @@ const List = ({
                 selectedIndex,
                 showModal,
                 setShowModal,
+                listSCJson,
                 sc,
                 stakedAmount,
                 approvalCheck,
                 listVested,
+                maxCap
               }}
             />
           </>
