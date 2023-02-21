@@ -15,7 +15,7 @@ import {
   checkApproval,
   vestedList,
   convertUSD,
-} from "../../services";
+} from "../../services/stakingServices";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
@@ -43,6 +43,7 @@ const List = ({
   const [stakedAmount, setStakedAmount] = useState<any[]>([]);
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
+  const [showAccordion, setShowAccordion] = useState(false)
 
   useEffect(() => {
     initData();
@@ -153,7 +154,7 @@ const List = ({
 
   return (
     <>
-      <div className="flex flex-col baloo">
+      <div className="flex flex-col baloo mb-20">
         {filteredSC.map((sc, index) => (
           <>
             <button
@@ -169,6 +170,7 @@ const List = ({
                     index,
                   ]);
                 }
+                setShowAccordion(true)
               }}
             >
               <div className="overflow-x-auto text-white">
@@ -213,40 +215,12 @@ const List = ({
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
                               <p className="text-[#8E8E8E]">Ends</p>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-5 h-5 text-[#8E8E8E]"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-                                />
-                              </svg>
                             </div>
                             <div className="flex">{endPool[index]}</div>
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
                               <p className="text-[#8E8E8E]">APR</p>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-5 h-5 text-[#8E8E8E]"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-                                />
-                              </svg>
                             </div>
                             <div className="flex">{APRValue[index]}</div>
                           </td>
@@ -255,20 +229,6 @@ const List = ({
                               <p className="text-[#8E8E8E]">
                                 Total Volume Staked
                               </p>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-5 h-5 text-[#8E8E8E]"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-                                />
-                              </svg>
                             </div>
                             <div className="flex">${totalStake[index]}</div>
                           </td>
@@ -276,20 +236,6 @@ const List = ({
                             <div className="flex justify-between">
                               <div className="flex">
                                 <p className="text-[#8E8E8E]">Total Staked</p>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="w-5 h-5 text-[#8E8E8E]"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-                                  />
-                                </svg>
                               </div>
                               <p className="">{percentagePoolValue[index]}%</p>
                             </div>
