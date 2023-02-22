@@ -23,7 +23,7 @@ const Accordion = ({
   approvalCheck,
   listVested,
   listSCJson,
-  maxCap
+  maxCap,
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
@@ -92,26 +92,19 @@ const Accordion = ({
   };
 
   const findIndexByNotCollectedYet = () => {
-    const arrays: Vest = listVested[index];
-
-    let num = -1;
-    if (!arrays) return;
-    for (const [i, j] of Object.entries(arrays)) {
-      if (j.collected === false) {
-        num = Number(i);
-      }
-    }
-    return num ?? "";
-
-    //* if return true: not collect yet
-    // let hasCollect = listVested[index] && listVested[index].length > 0 && listVested[index][vestIndex].collected === false
-    // return hasCollect;
+    return (
+      listVested[index] &&
+      listVested[index]?.findIndex((item: any) =>
+        listVested[index] && listVested[index] ? !item.collected : ""
+      )
+    );
   };
 
   useEffect(() => {
     checkClickable("claim");
     checkClickable("collect");
     converter();
+
     findIndexByNotCollectedYet();
     const index = findIndexByNotCollectedYet();
     if (index !== undefined) {
@@ -136,8 +129,12 @@ const Accordion = ({
     >
       <div className="flex text-white mx-4 my-10">
         <div className="mr-3 pr-2 my-auto text-left text-[13px]">
-          <p className="mb-4">{`Deposit Lock Duration : ${listSCJson[sc.index].days} Days`}</p>
-          <p className="mb-4">{`Pool Max Cap : ${maxCap} $OASIS`}</p>
+          <p className="mb-4">{`Deposit Lock Duration : ${
+            listSCJson[sc.index].days
+          } Days`}</p>
+          <p className="mb-4">{`Pool Max Cap : ${
+            maxCap[index] ?? "0"
+          } $OASIS`}</p>
         </div>
 
         <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg py-6 my-auto h-[15rem]">

@@ -45,7 +45,7 @@ const List = ({
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
   const [showAccordion, setShowAccordion] = useState(false)
-  const [maxCap, setMaxCap] = useState<any>()
+  const [maxCap, setMaxCap] = useState<any[]>([]);
 
   useEffect(() => {
     initData();
@@ -152,7 +152,7 @@ const List = ({
         setListVested((listVested) => [...listVested, resp]);
       });
       await poolLimit(sc).then((resp) => {
-        setMaxCap(resp)
+        setMaxCap((maxCap) => [...maxCap, resp]);
       })
     }
   };
