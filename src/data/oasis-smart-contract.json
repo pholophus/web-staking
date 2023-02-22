@@ -1,15 +1,15 @@
 [
     {
-      "index": 0,
-      "type": "single",
-      "days": 90,
-      "ver": 1,
-      "masterchef":"0x3261FB00d9c83673E1D5D8B86c28dad8E6226B07",
-      "reward": "0x7020b0Cf0Da0933E7cF3101B050f0dC5dcE0dDA3",
-      "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
-      "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
-      "APR":"",
-      "totalBlockTime": ""
+        "index": 0,
+        "type": "single",
+        "days": 90,
+        "ver": 1,
+        "masterchef":"0x3261FB00d9c83673E1D5D8B86c28dad8E6226B07",
+        "reward": "0x7020b0Cf0Da0933E7cF3101B050f0dC5dcE0dDA3",
+        "staked":"0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "rewardToken": "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
+        "APR":"",
+        "totalBlockTime": ""
     },
     {
         "index": 1,

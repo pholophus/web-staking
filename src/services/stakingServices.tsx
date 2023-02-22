@@ -38,7 +38,7 @@ export const getAccount = async () => {
 export const readSC = async () => {
   const listSC: any = [];
 
-  const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? SCJson : testnet;
+  const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
 
   for (const SCJson of listSCJson) {
     let sc: SCClass = new SCClass();
@@ -274,9 +274,11 @@ export const checkApproval = async (sc: SCClass) => {
   try {
     const balanceUser = await sc.rewardToken.methods.balanceOf(getAcc).call();
 
+    console.log(parseFloat(Web3.utils.fromWei(balanceUser, "ether")))
     return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
       ? true
       : false;
+
   } catch (error: any) {
     console.error(error.message);
   }
