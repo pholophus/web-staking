@@ -10,7 +10,6 @@ import rewardLocker from "../data/abi/rewardLocker.json";
 import pancakeSwap from "../data/abi/pancakeswapABI.json";
 import testnet from "../data/testnet.json";
 
-
 // const [getAccount(), setgetAccount()] = useState("");
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const { ethereum } = window;
@@ -25,7 +24,7 @@ export const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
-    // return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
+    return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
     return accounts[0];
   } catch (error) {
     console.log(error);
@@ -38,7 +37,8 @@ export const getAccount = async () => {
 export const readSC = async () => {
   const listSC: any = [];
 
-  const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
+  // const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
+  const listSCJson = SCJson
 
   for (const SCJson of listSCJson) {
     let sc: SCClass = new SCClass();
@@ -114,7 +114,7 @@ export const unactiveSC = async (listSC: SCClass[]) => {
       if (Date.now() / 1000 > poolInfo.unlockDate) unactiveSC.push(sc);
     } catch (e) {
       //console.log('checkActiveContract')
-      console.log(e);
+      // console.log(e);
     }
   }
 
@@ -274,11 +274,10 @@ export const checkApproval = async (sc: SCClass) => {
   try {
     const balanceUser = await sc.rewardToken.methods.balanceOf(getAcc).call();
 
-    console.log(parseFloat(Web3.utils.fromWei(balanceUser, "ether")))
+    // console.log(parseFloat(Web3.utils.fromWei(balanceUser, "ether")))
     return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
       ? true
       : false;
-
   } catch (error: any) {
     console.error(error.message);
   }
@@ -511,4 +510,4 @@ export const poolLimit = async (sc: SCClass) => {
   const poolLimit = Web3.utils.fromWei(maxCap.poolLimit, "ether");
   // console.log(poolLimit);
   return poolLimit;
-}
+};

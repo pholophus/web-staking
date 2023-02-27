@@ -5,24 +5,5 @@
  * I think it makes is easy to maintain when you have a long long list as your app gradually scales.
  */
 
-export {
-  readSC,
-  activeSC,
-  unactiveSC,
-  myFarm,
-  poolEndTime,
-  APR,
-  totalStakePool,
-  percentagePool,
-  pendingAmount,
-  vestedBalance,
-  claimReward,
-  collectReward,
-  unstake,
-  stake,
-  amountStaked,
-  checkApproval,
-  approve,
-  vestedList,
-  convertUSD,
-} from "./stakingServices";
+
+export * from "./stakingServices"

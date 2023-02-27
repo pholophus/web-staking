@@ -10,7 +10,14 @@ const Container = () => {
   const [poolType, setPoolType] = useState("single");
   const [farm, setFarm] = useState(false);
 
-  const menuProps = { setPoolStatus, setPoolType, poolStatus, poolType,farm, setFarm };
+  const menuProps = {
+    setPoolStatus,
+    setPoolType,
+    poolStatus,
+    poolType,
+    farm,
+    setFarm,
+  };
   const listProps = { poolStatus, poolType, farm, setFarm };
 
   return (
