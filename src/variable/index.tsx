@@ -1,3 +1,7 @@
+import v1 from "../images/v1.png";
+import v2 from "../images/v2.png";
+import v3 from "../images/v3.png";
+
 export const link = (
   <svg
     viewBox="0 0 24 24"
@@ -17,12 +21,12 @@ export const show = (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className={`w-6 h-6`}
+    className="w-6 h-6"
   >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0l-3.75-3.75M17.25 21L21 17.25"
+      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
     />
   </svg>
 );
@@ -39,7 +43,7 @@ export const hide = (
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M3 4.5h14.25M3 9h9.75M3 13.5h5.25m5.25-.75L17.25 9m0 0L21 12.75M17.25 9v12"
+      d="M4.5 15.75l7.5-7.5 7.5 7.5"
     />
   </svg>
 );
@@ -56,7 +60,51 @@ export const closeX = (
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      d="M6 18L18 6M6 6l12 12"
     />
   </svg>
 );
+
+export const listIcon = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+    />
+  </svg>
+);
+
+export const questionMark = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="1.5"
+    stroke="currentColor"
+    className="w-5 h-5 text-[#8E8E8E]"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+    />
+  </svg>
+);
+
+export const active =
+  "text-white bg-[#16A34A] hover:bg-[#139242] active:bg-[#2dac5c]";
+export const inactive = "text-white bg-[#8E8E8E]";
+export const greenBtn = "bg-green-600 hover:bg-green-700 active:bg-green-500";
+
+export const version = [v1, v2, v3];
+
+export const stakeBg = "bg-[#16A34A]";
+export const unstakeBg = "bg-[#d3464f]";

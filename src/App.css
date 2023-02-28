@@ -1,5 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap");
+
+@font-face {
+  font-family: "satoshi";
+  src: url("../src/font/Satoshi-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "tisa";
+  src: url("../src/font/Tisa.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "baloo";
+  src: url("../src/font/Baloo.ttf") format("opentype");
+}
+
+@font-face {
+  font-family: "baloo-bold";
+  src: url("../src/font/Baloo-bold.ttf") format("opentype");
+}
+
+.baloo {
+  font-family: "baloo";
+}
+
+.baloo-bold {
+  font-family: "baloo-bold";
+}
+
+.tisa {
+  font-family: "tisa";
+}
+
+body {
+  font-family: "baloo";
+  font-weight: 600;
+}
+
 .App {
   text-align: center;
+  font-family: "baloo";
 }
 
 .App-logo {
@@ -46,3 +86,9 @@ body {
   background: #383737;
   box-shadow: 5px 5px 7px #161616, -5px -5px 7px #5a5858;
 }
+.neumorphism-modal {
+  border-radius: 0px;
+  background: #2a3d55;
+  box-shadow: 5px 5px 10px #1e2b3c, -5px -5px 10px #364f6e;
+}
+

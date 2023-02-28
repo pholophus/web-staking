@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
 
 const MetaBtn = () => {
   const [haveMetamask, sethaveMetamask] = useState(true);
-  const [accountAddress, setAccountAddress] = useState('');
-  const [accountBalance, setAccountBalance] = useState('');
-  const [currentAccount, setCurrentAccount] = useState("");  
+  const [accountAddress, setAccountAddress] = useState("");
+  const [accountBalance, setAccountBalance] = useState("");
+  const [currentAccount, setCurrentAccount] = useState("");
   const [isConnected, setIsConnected] = useState(false);
 
   const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -13,15 +13,19 @@ const MetaBtn = () => {
 
   const checkIfAccountChanged = async () => {
     try {
-      const {ethereum} = window;
-      ethereum.on('accountsChanged', (accounts: any) => {
-        setAccountAddress(accounts[0]);
-      });
+      const { ethereum } = window;
+      ethereum.on("accountsChanged", (accounts: any) => {
 
+        const firstFour = accounts[0].slice(0, 4);
+        const  lastFour = accounts[0].slice(-4);
+        const result = firstFour + "..." + lastFour;
+        
+        setAccountAddress(result);
+      });
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const checkMetamaskAvailability = async () => {
     if (!ethereum) {
@@ -31,21 +35,23 @@ const MetaBtn = () => {
   };
 
   const checkConnectivity = async () => {
+    const accounts = await ethereum.request({ method: "eth_accounts" });
 
-    const accounts = await ethereum.request({method: 'eth_accounts'}); 
-
-    if(accounts.length > 0){
+    if (accounts.length > 0) {
       const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
+        method: "eth_requestAccounts",
       });
-      
-      setAccountAddress(accounts[0]);
-      setIsConnected(true)
-    }else{
-      setIsConnected(false)
-    }
 
-  }
+      const firstFour = accounts[0].slice(0, 4);
+      const  lastFour = accounts[0].slice(-4);
+      const result = firstFour + "..." + lastFour;
+
+      setAccountAddress(result);
+      setIsConnected(true);
+    } else {
+      setIsConnected(false);
+    }
+  };
 
   useEffect(() => {
     checkMetamaskAvailability();
@@ -53,17 +59,35 @@ const MetaBtn = () => {
     checkConnectivity();
   }, []);
 
+  const disconnectWallet = async () => {
+    await window.ethereum.request({
+      method: 'wallet_requestPermissions',
+      params: [
+        {
+          eth_accounts: {},
+        },
+        {
+          provider: 'metamask',
+        },
+      ],
+    });
+  }
+
   const connectWallet = async () => {
     try {
       if (!ethereum) {
         sethaveMetamask(false);
       }
       const accounts = await ethereum.request({
-        method: 'eth_requestAccounts',
+        method: "eth_requestAccounts",
       });
 
-      setAccountAddress(accounts[0]);
-      
+      const firstFour = accounts[0].slice(0, 4);
+      const  lastFour = accounts[0].slice(-4);
+      const result = firstFour + "..." + lastFour;
+
+      setAccountAddress(result);
+
       setIsConnected(true);
     } catch (error) {
       setIsConnected(false);
@@ -73,28 +97,29 @@ const MetaBtn = () => {
   return (
     <div className="App">
       {haveMetamask ? (
-          <div>
-            {isConnected && (
-              <div className="card">
-                <div className="card-row">
-                  <p>
-                    {accountAddress.slice(0, 4)}...
-                    {accountAddress.slice(38, 42)}
-                  </p>
-                </div>
-              </div>
-            )}
-            {isConnected == false && (
-              <button className="btn" onClick={connectWallet}>
-                Connect
-              </button>
-            )}
-          </div>
-        ) : (
-          <p>Please Install MataMask</p>
-        )}
+        <div>
+          {isConnected && (
+            <button
+            className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[130px] h-[41px] rounded-xl"
+            onClick={disconnectWallet}
+            >
+              {accountAddress}
+            </button>
+          )}
+          {isConnected == false && (
+            <button
+              className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[250px] h-[41px] rounded-xl"
+              onClick={connectWallet}
+            >
+              Connect Wallet
+            </button>
+          )}
+        </div>
+      ) : (
+        <p>Please Install MataMask</p>
+      )}
     </div>
   );
-}
+};
 
 export default MetaBtn;
