@@ -15,7 +15,11 @@ import {
   checkApproval,
   vestedList,
   convertUSD,
-  poolLimit
+  poolLimit,
+  allowanceAmount,
+  userOasisBalance,
+  stake, 
+  unstake
 } from "../../services/stakingServices";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
@@ -31,7 +35,6 @@ const List = ({
   farm,
   setFarm,
 }: any) => {
-  const [listSC, setListSC] = useState<SCClass[]>([]);
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
   const [pendingOasis, setPendingOasis] = useState<any[]>([]);
@@ -46,15 +49,17 @@ const List = ({
   const [listVested, setListVested] = useState<any[]>([]);
   const [showAccordion, setShowAccordion] = useState(false)
   const [maxCap, setMaxCap] = useState<any[]>([]);
+  const [allowance, setAllowance] = useState<any[]>([]);
+  const [oasisBalance, setOasisBalance] = useState<any>(0);
 
   useEffect(() => {
     initData();
     checkIfAccountChanged();
+    
   }, [poolStatus, poolType, farm]);
 
   const initData = () => {
     readSC().then((res) => {
-      setListSC(res);
       filterPool(res);
     });
   };
@@ -71,13 +76,6 @@ const List = ({
   };
 
   const filterPool = async (listSC: SCClass[]) => {
-    /*reset value*/
-    setEndPool([]);
-    setAPRValue([]);
-    setTotalStake([]);
-    setPercentagePoolValue([]);
-    setSelectedIndex([]);
-    setApprovalCheck([]);
 
     //#region
     var filteredFarm: any;
@@ -87,7 +85,6 @@ const List = ({
         filteredFarm = resp.filter(
           (item: { type: any }) => item.type === poolType
         );
-        // getPoolDetail(filteredFarm);
       });
     }
     switch (poolStatus) {
@@ -114,7 +111,18 @@ const List = ({
   };
 
   const getPoolDetail = async (resp: SCClass[]) => {
+
     setFilteredSC(resp);
+    /*reset value*/
+    setEndPool([]);
+    setAPRValue([]);
+    setTotalStake([]);
+    setPercentagePoolValue([]);
+    setSelectedIndex([]);
+    setApprovalCheck([]);
+    setListVested([]);
+    setMaxCap([]);
+    setAllowance([]);
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
@@ -154,8 +162,31 @@ const List = ({
       await poolLimit(sc).then((resp) => {
         setMaxCap((maxCap) => [...maxCap, resp]);
       })
+      await allowanceAmount(sc).then((resp)=> {
+        setAllowance((allowance) => [...allowance, resp])
+      })
+      await userOasisBalance(sc).then((resp) => {
+        setOasisBalance(resp)
+      })
     }
   };
+
+  const stakeProcess = async(sc: SCClass, inputValue: any, process: string, index: number) => {
+
+    switch (process) {
+      case "Stake":
+        await stake(sc, inputValue);
+        break;
+      case "Unstake":
+        await unstake(sc, inputValue);
+        break;
+    }
+
+    const updatedStakedAmount = [...stakedAmount];
+    const amountStake = await amountStaked(sc);
+    updatedStakedAmount[index] = amountStake;
+    setStakedAmount(updatedStakedAmount);
+  }
 
   return (
     <>
@@ -285,7 +316,10 @@ const List = ({
                 stakedAmount,
                 approvalCheck,
                 listVested,
-                maxCap
+                maxCap,
+                allowance,
+                oasisBalance,
+                stakeProcess
               }}
             />
           </>

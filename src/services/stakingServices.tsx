@@ -139,17 +139,19 @@ export const APR = async (sc: SCClass) => {
   try {
     const pancakeSC = await new web3.eth.Contract(
       pancakeSwap as any,
-      "0x10ED43C718714eb63d5aA57B78B54704E256024E"
+      // "0x10ED43C718714eb63d5aA57B78B54704E256024E"
+      "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"
     );
 
     const oasisPerBlock = await sc.masterchef.methods.oasisPerBlock().call();
 
     const poolInfo = await sc.masterchef.methods.poolInfo(0).call();
 
+    if(parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited)) <=0 ) return 0
+
     const emissionPerBlock = Web3.utils.fromWei(oasisPerBlock, "ether");
 
     const emmissionRate = parseFloat(emissionPerBlock) * 10368000;
-
     /**
      * single APR callculation
      */
@@ -216,6 +218,7 @@ export const pendingAmount = async (sc: SCClass) => {
     const pendingAmout = await sc.masterchef.methods
       .pendingOasis(0, getAcc)
       .call();
+
     return parseFloat(Web3.utils.fromWei(pendingAmout, "ether")).toFixed(2);
   } catch (e: any) {
     console.error(e.message);
@@ -246,7 +249,7 @@ export const stake = async (sc: SCClass, amount: any) => {
       .deposit(0, Web3.utils.toWei(amount, "ether"), 0)
       .send({ from: getAcc });
   } catch (error) {
-    // console.error(error)
+    console.error(error)
   }
 };
 
@@ -257,8 +260,10 @@ export const approve = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
+    const masterchef = sc.masterchef._address
+
     await sc.rewardToken.methods
-      .approve(SCJson[sc.index].masterchef, Web3.utils.toWei("999999", "ether"))
+      .approve(masterchef, Web3.utils.toWei("999999", "ether"))
       .send({ from: getAcc });
   } catch (e: any) {
     console.error(e.message);
@@ -272,12 +277,37 @@ export const checkApproval = async (sc: SCClass) => {
   const getAcc = await getAccount();
 
   try {
-    const balanceUser = await sc.rewardToken.methods.balanceOf(getAcc).call();
 
-    console.log(parseFloat(Web3.utils.fromWei(balanceUser, "ether")))
-    return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
+    const masterchef = sc.masterchef._address
+
+    const allowance = await sc.rewardToken.methods.allowance(getAcc, masterchef).call()
+
+    const allowanceAmount = parseFloat(Web3.utils.fromWei(allowance, "ether"))
+
+    return allowanceAmount > 0
       ? true
       : false;
+
+  } catch (error: any) {
+    console.error(error.message);
+  }
+};
+
+/**
+ * get allowance amount
+ */
+ export const allowanceAmount = async (sc: SCClass) => {
+  const getAcc = await getAccount();
+
+  try {
+
+    const masterchef = sc.masterchef._address
+
+    const allowance = await sc.rewardToken.methods.allowance(getAcc, masterchef).call()
+
+    const allowanceAmount = parseFloat(Web3.utils.fromWei(allowance, "ether"))
+
+    return allowanceAmount
 
   } catch (error: any) {
     console.error(error.message);
@@ -309,7 +339,6 @@ export const myFarm = async (listSC: SCClass[]) => {
       //console.log('my farm')
       //console.log(e)
     }
-
     return mySC;
   }
 };
@@ -459,6 +488,24 @@ export const vestedList = async (sc: SCClass) => {
     // console.log(vestRewardList);
     return vestRewardList;
   } catch (error) {}
+};
+
+/**
+ * user oasis token balance
+ */
+export const userOasisBalance = async (sc: SCClass) => {
+  const getAcc = await getAccount();
+
+  try {
+    const balanceUser = await sc.rewardToken.methods.balanceOf(getAcc).call();
+
+    const balanceAmount = parseFloat(Web3.utils.fromWei(balanceUser, "ether"))
+
+    return balanceAmount.toFixed(2);
+
+  } catch (error) {
+    console.log(error)
+  }
 };
 
 /**

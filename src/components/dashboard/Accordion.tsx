@@ -24,6 +24,9 @@ const Accordion = ({
   listVested,
   listSCJson,
   maxCap,
+  allowance,
+  oasisBalance,
+  stakeProcess
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
@@ -32,6 +35,10 @@ const Accordion = ({
   const [isCollectActive, setIsCollectActive] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [vestIndex, setVestIndex] = useState(0);
+
+  // useEffect(() => {
+
+  // }, [pendingOasis]);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -204,6 +211,9 @@ const Accordion = ({
                 showStake,
                 visible,
                 selectedIndex,
+                allowance,
+                oasisBalance,
+                stakeProcess
               }}
             />
           </div>
