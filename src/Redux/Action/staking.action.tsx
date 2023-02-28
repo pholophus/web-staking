@@ -3,6 +3,7 @@ import {
   amountStaked,
   APR,
   checkApproval,
+  convertUSD,
   pendingAmount,
   percentagePool,
   poolEndTime,
@@ -24,86 +25,18 @@ export const STAKING = {
   TOGGLE_FARM: "TOGGLE_FARM",
   SET_POOL_TYPE: "SET_POOL_TYPE",
   SET_POOL_STATUS: "SET_POOL_STATUS",
+  CONVERT_USD: "CONVERT_USD",
 };
 
-//#region list component
-
-export const FILTERING_SC = (data: any) => {
+//#reusable stakingAction fx
+export const stakingAction = (type: any, data?: any) => {
   return {
-    type: STAKING.FILTERING_SC,
+    type: type,
     payload: data,
   };
 };
 
-export const RESET_VALUE = () => {
-  return {
-    type: STAKING.RESET,
-  };
-};
-
-export const ADD_INDEX = (data: number) => {
-  return {
-    type: STAKING.ADD_INDEX,
-    payload: data,
-  };
-};
-
-export const REMOVE_INDEX = (data: number) => {
-  return {
-    type: STAKING.REMOVE_INDEX,
-    payload: data,
-  };
-};
-
-export const SHOW_ACCORDION = () => {
-  return {
-    type: STAKING.SHOW_ACCORDION,
-  };
-};
-//#endregion
-
-//#region Menu Component
-
-export const SET_POOL_TYPE = (data: string) => {
-  return {
-    type: STAKING.SET_POOL_TYPE,
-    payload: data,
-  };
-};
-
-export const SET_POOL_STATUS = (data: string) => {
-  return {
-    type: STAKING.SET_POOL_STATUS,
-    payload: data,
-  };
-};
-
-export const TOGGLE_FARM = () => {
-  return {
-    type: STAKING.TOGGLE_FARM,
-  };
-};
-//#endregion
-
-//#region pass function into action creator/s
-
-const GET_INIT_DATA = (data: SCClass[]) => {
-  return {
-    type: STAKING.INIT_DATA,
-    payload: data,
-  };
-};
-
-const GET_DETAIL = (data: any) => {
-  return {
-    type: STAKING.GET_DETAIL,
-    payload: data,
-  };
-};
-//#endregion
-
-//#region action creator/s
-
+//#action creators (asynchronous fx)
 export const GET_POOL_DETAIL = (resp: any) => {
   return async (dispatch: any) => {
     try {
@@ -119,7 +52,7 @@ export const GET_POOL_DETAIL = (resp: any) => {
         const listVested = await vestedList(sc);
         const maxCap = await poolLimit(sc);
         dispatch(
-          GET_DETAIL({
+          stakingAction(STAKING.GET_DETAIL, {
             endPool,
             APRValue,
             totalStake,
@@ -143,11 +76,22 @@ export const INIT_DATA = () => {
   return async (dispatch: any) => {
     try {
       const data = await readSC();
-      dispatch(GET_INIT_DATA(data));
+      dispatch(stakingAction(STAKING.INIT_DATA, data));
     } catch (error: any) {
       console.error(error.message);
     }
   };
 };
 
-//#endregion
+export const USD_CONVERTER = (arr: any) => {
+  return async (dispatch: any) => {
+    try {
+      arr.map(async (i: any) => {
+        const oasisUSD = await convertUSD(i);
+        dispatch(STAKING.CONVERT_USD, oasisUSD);
+      });
+    } catch (e: any) {
+      console.error(e.message);
+    }
+  };
+};

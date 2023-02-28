@@ -72,6 +72,13 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
         ...state,
         poolType: action.payload,
       };
+    case STAKING.CONVERT_USD:
+      return {
+        ...state,
+        oasisUSD: action.payload,
+        // vestedUSD: action.payload.vest,
+        // stakeUSD: action.payload.stake,
+      };
 
     default:
       return state;

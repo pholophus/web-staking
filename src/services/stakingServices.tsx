@@ -38,7 +38,7 @@ export const readSC = async () => {
   const listSC: any = [];
 
   // const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
-  const listSCJson = SCJson
+  const listSCJson = SCJson;
 
   for (const SCJson of listSCJson) {
     let sc: SCClass = new SCClass();

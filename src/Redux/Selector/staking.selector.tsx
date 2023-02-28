@@ -17,3 +17,11 @@ export const getShowAccordion = (state: any) => state.staking.showAccordion;
 export const getVisible = (state: any) => state.staking.visible;
 export const getFilteredSC = (state: any) => state.staking.filteredSC;
 
+export const getoasisUSD = (state: any) => state.staking.oasisUSD;
+export const getvestedUSD = (state: any) => state.staking.vestedUSD;
+export const getstakeUSD = (state: any) => state.staking.stakeUSD;
+export const getisClaimActive = (state: any) => state.staking.isClaimActive;
+export const getisCollectActive = (state: any) => state.staking.isCollectActive;
+export const getshowModal = (state: any) => state.staking.showModal;
+export const getvestIndex = (state: any) => state.staking.vestIndex;
+

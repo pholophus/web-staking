@@ -17,4 +17,12 @@ export const initialStakingState = {
   maxCap: [],
   showAccordion: false,
   visible: true,
+
+  oasisUSD: [],
+  vestedUSD: [],
+  stakeUSD: [],
+  isClaimActive: false,
+  isCollectActive: false,
+  showModal: false,
+  vestIndex: 0,
 };

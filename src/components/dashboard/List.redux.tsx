@@ -3,18 +3,9 @@ import MetaBtn from "../metamask/metamask-btn";
 import { ethers } from "ethers";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
-import Accordion from "./Accordion";
+import AccordionRedux from "./Accordion.redux";
 import { show, hide, version } from "../../variable";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
-import {
-  ADD_INDEX,
-  FILTERING_SC,
-  GET_POOL_DETAIL,
-  INIT_DATA,
-  REMOVE_INDEX,
-  RESET_VALUE,
-  SHOW_ACCORDION,
-} from "../../Redux/Action";
 import {
   getApprovalCheck,
   getAPRValue,
@@ -36,6 +27,7 @@ import {
   getVisible,
 } from "../../Redux/Selector";
 import { activeSC, myFarm, readSC, unactiveSC } from "../../services";
+import { GET_POOL_DETAIL, STAKING, stakingAction } from "../../Redux/Action";
 
 export const ListRedux = () => {
   const stake = {
@@ -67,7 +59,7 @@ export const ListRedux = () => {
   }, [stake.poolStatus, stake.poolType, stake.farm]);
 
   const initData = () => {
-    dispatch(INIT_DATA());
+    dispatch(stakingAction(STAKING.INIT_DATA));
     readSC().then((res) => {
       filterPool(res);
     });
@@ -85,7 +77,7 @@ export const ListRedux = () => {
   };
 
   const filterPool = async (listSC: SCClass[]) => {
-    dispatch(RESET_VALUE());
+    dispatch(stakingAction(STAKING.RESET));
 
     var filteredFarm: any;
 
@@ -121,7 +113,7 @@ export const ListRedux = () => {
   };
 
   const getPoolDetail = async (resp: SCClass[]) => {
-    dispatch(FILTERING_SC(resp));
+    dispatch(stakingAction(STAKING.FILTERING_SC, resp));
     for (const sc of resp) {
       dispatch(GET_POOL_DETAIL(sc));
     }
@@ -136,11 +128,11 @@ export const ListRedux = () => {
               className="cursor-default"
               onClick={() => {
                 if (stake.selectedIndex.includes(index)) {
-                  dispatch(REMOVE_INDEX(index));
+                  dispatch(stakingAction(STAKING.REMOVE_INDEX, index));
                 } else {
-                  dispatch(ADD_INDEX(index));
+                  dispatch(stakingAction(STAKING.ADD_INDEX, index));
                 }
-                dispatch(SHOW_ACCORDION());
+                dispatch(stakingAction(STAKING.SHOW_ACCORDION));
               }}
             >
               <div className="overflow-x-auto text-white">
@@ -243,7 +235,7 @@ export const ListRedux = () => {
                 </div>
               </div>
             </button>
-            {/* <Accordion /> */}
+            <AccordionRedux sc />
           </>
         ))}
       </div>
