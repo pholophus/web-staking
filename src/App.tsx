@@ -15,8 +15,8 @@ function App() {
     <Provider store={store}>
       <div className="App">
         <Navbar />
-        <Container />
         <ContainerRedux />
+        <Container />
       </div>
     </Provider>
   );

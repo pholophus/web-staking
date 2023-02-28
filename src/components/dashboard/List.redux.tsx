@@ -103,8 +103,8 @@ export const ListRedux = () => {
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === stake.poolType
           );
-          dispatch(GET_POOL_DETAIL(filteredResp));
           getPoolDetail(filteredResp);
+          dispatch(GET_POOL_DETAIL(filteredResp));
         });
         break;
       case "inactive":
@@ -113,8 +113,8 @@ export const ListRedux = () => {
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === stake.poolType
           );
-          dispatch(GET_POOL_DETAIL(filteredResp));
           getPoolDetail(filteredResp);
+          dispatch(GET_POOL_DETAIL(filteredResp));
         });
         break;
     }
