@@ -13,6 +13,7 @@ import {
   vestedBalance,
   vestedList,
 } from "../../services";
+import { RootState } from "../Store";
 
 export const STAKING = {
   INIT_DATA: "INIT_DATA",
@@ -20,12 +21,13 @@ export const STAKING = {
   RESET: "RESET",
   ADD_INDEX: "ADD_INDEX",
   REMOVE_INDEX: "REMOVE_INDEX",
-  SHOW_ACCORDION: "SHOW_ACCORDION",
   FILTERING_SC: "FILTERING_SC",
   TOGGLE_FARM: "TOGGLE_FARM",
   SET_POOL_TYPE: "SET_POOL_TYPE",
   SET_POOL_STATUS: "SET_POOL_STATUS",
   CONVERT_USD: "CONVERT_USD",
+  SHOW_MODAL: "SHOW_MODAL",
+  HIDE_MODAL: "HIDE_MODAL",
 };
 
 //#reusable stakingAction fx
@@ -83,13 +85,35 @@ export const INIT_DATA = () => {
   };
 };
 
-export const USD_CONVERTER = (arr: any) => {
-  return async (dispatch: any) => {
+export const USD_CONVERTER = () => {
+  return async (dispatch: any, getState: any) => {
     try {
-      arr.map(async (i: any) => {
-        const oasisUSD = await convertUSD(i);
-        dispatch(STAKING.CONVERT_USD, oasisUSD);
-      });
+      const pendingOasis = getState().staking.pendingOasis;
+      const pendingVested = getState().staking.pendingVested;
+      const stakedAmount = getState().staking.stakedAmount;
+
+      const oasis = await Promise.all(
+        pendingOasis.map(async (i: any) => {
+          let item = await convertUSD(i);
+          return item;
+        })
+      );
+
+      const vest = await Promise.all(
+        pendingVested.map(async (i: any) => {
+          let item = await convertUSD(i);
+          return item;
+        })
+      );
+
+      const stake = await Promise.all(
+        stakedAmount.map(async (i: any) => {
+          let item = await convertUSD(i);
+          return item;
+        })
+      );
+
+      dispatch(stakingAction(STAKING.CONVERT_USD, { oasis, vest, stake }));
     } catch (e: any) {
       console.error(e.message);
     }

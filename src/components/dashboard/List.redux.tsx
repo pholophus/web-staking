@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import MetaBtn from "../metamask/metamask-btn";
-import { ethers } from "ethers";
+import { useEffect } from "react";
 import listSCJson from "../../data/oasis-smart-contract.json";
 import { SC as SCClass } from "../../interface/index";
 import AccordionRedux from "./Accordion.redux";
@@ -21,7 +19,6 @@ import {
   getPoolStatus,
   getPoolType,
   getSelectedIndex,
-  getShowAccordion,
   getStakedAmount,
   getTotalStake,
   getVisible,
@@ -30,7 +27,7 @@ import { activeSC, myFarm, readSC, unactiveSC } from "../../services";
 import { GET_POOL_DETAIL, STAKING, stakingAction } from "../../Redux/Action";
 
 export const ListRedux = () => {
-  const stake = {
+  const state = {
     poolStatus: useAppSelector(getPoolStatus),
     poolType: useAppSelector(getPoolType),
     farm: useAppSelector(getFarm),
@@ -46,7 +43,6 @@ export const ListRedux = () => {
     approvalCheck: useAppSelector(getApprovalCheck),
     listVested: useAppSelector(getListVested),
     maxCap: useAppSelector(getMaxCap),
-    showAccordion: useAppSelector(getShowAccordion),
     visible: useAppSelector(getVisible),
     filteredSC: useAppSelector(getFilteredSC),
   };
@@ -56,7 +52,7 @@ export const ListRedux = () => {
   useEffect(() => {
     initData();
     checkIfAccountChanged();
-  }, [stake.poolStatus, stake.poolType, stake.farm]);
+  }, [state.poolStatus, state.poolType, state.farm]);
 
   const initData = () => {
     dispatch(stakingAction(STAKING.INIT_DATA));
@@ -81,19 +77,19 @@ export const ListRedux = () => {
 
     var filteredFarm: any;
 
-    if (stake.farm) {
+    if (state.farm) {
       myFarm(listSC).then((resp: any) => {
         filteredFarm = resp.filter(
-          (item: { type: any }) => item.type === stake.poolType
+          (item: { type: any }) => item.type === state.poolType
         );
       });
     }
-    switch (stake.poolStatus) {
+    switch (state.poolStatus) {
       case "active":
         activeSC(listSC).then(async (resp: SCClass[]) => {
-          const farmCheck = stake.farm ? filteredFarm : resp;
+          const farmCheck = state.farm ? filteredFarm : resp;
           const filteredResp = farmCheck.filter(
-            (item: any) => item.type === stake.poolType
+            (item: any) => item.type === state.poolType
           );
           getPoolDetail(filteredResp);
           dispatch(GET_POOL_DETAIL(filteredResp));
@@ -101,9 +97,9 @@ export const ListRedux = () => {
         break;
       case "inactive":
         unactiveSC(listSC).then(async (resp: SCClass[]) => {
-          const farmCheck = stake.farm ? filteredFarm : resp;
+          const farmCheck = state.farm ? filteredFarm : resp;
           const filteredResp = farmCheck.filter(
-            (item: any) => item.type === stake.poolType
+            (item: any) => item.type === state.poolType
           );
           getPoolDetail(filteredResp);
           dispatch(GET_POOL_DETAIL(filteredResp));
@@ -122,31 +118,30 @@ export const ListRedux = () => {
   return (
     <>
       <div className="flex flex-col baloo mb-20">
-        {stake.filteredSC.map((sc: any, index: number) => (
+        {state.filteredSC.map((sc: any, index: number) => (
           <>
             <button
               className="cursor-default"
               onClick={() => {
-                if (stake.selectedIndex.includes(index)) {
+                if (state.selectedIndex.includes(index)) {
                   dispatch(stakingAction(STAKING.REMOVE_INDEX, index));
                 } else {
                   dispatch(stakingAction(STAKING.ADD_INDEX, index));
                 }
-                dispatch(stakingAction(STAKING.SHOW_ACCORDION));
               }}
             >
               <div className="overflow-x-auto text-white">
                 <div className="w-full inline-block align-middle">
                   <div
                     className={`${
-                      stake.visible && stake.selectedIndex.includes(index)
+                      state.visible && state.selectedIndex.includes(index)
                         ? "mt-[0.5rem]"
                         : "my-[0.5rem]"
                     } overflow-hidden `}
                   >
                     <table
                       className={`min-w-full divide-y divide-gray-50 bg-[#171616] h-[100px] ${
-                        stake.visible && stake.selectedIndex.includes(index)
+                        state.visible && state.selectedIndex.includes(index)
                           ? "rounded-t-xl"
                           : "rounded-xl"
                       }`}
@@ -163,14 +158,14 @@ export const ListRedux = () => {
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex ">
                               {`${
-                                stake.poolType == "single"
+                                state.poolType == "single"
                                   ? "Oasis Coins"
                                   : "Oasis - BNB"
                               }`}
                             </div>
                             <div className="flex ">
-                              {`${listSCJson[sc.index].days} Days ${
-                                stake.poolType == "single"
+                              {`${listSCJson[index].days} Days ${
+                                state.poolType == "single"
                                   ? "Single staking"
                                   : "LP"
                               }`}
@@ -180,13 +175,13 @@ export const ListRedux = () => {
                             <div className="flex">
                               <p className="text-[#8E8E8E]">Ends</p>
                             </div>
-                            <div className="flex">{stake.endPool[index]}</div>
+                            <div className="flex">{state.endPool[index]}</div>
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
                               <p className="text-[#8E8E8E]">APR</p>
                             </div>
-                            <div className="flex">{stake.APRValue[index]}</div>
+                            <div className="flex">{state.APRValue[index]}</div>
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
                             <div className="flex">
@@ -195,7 +190,7 @@ export const ListRedux = () => {
                               </p>
                             </div>
                             <div className="flex">
-                              ${stake.totalStake[index]}
+                              ${state.totalStake[index]}
                             </div>
                           </td>
                           <td className="pr-[5rem] py-4 text-sm  text-[#ffffff] whitespace-nowrap">
@@ -204,7 +199,7 @@ export const ListRedux = () => {
                                 <p className="text-[#8E8E8E]">Total Staked</p>
                               </div>
                               <p className="">
-                                {stake.percentagePoolValue[index]}%
+                                {state.percentagePoolValue[index]}%
                               </p>
                             </div>
                             <div className="flex justify-between mb-1"></div>
@@ -212,7 +207,7 @@ export const ListRedux = () => {
                               <div
                                 className="bg-[#16A34A] h-2.5 rounded-full"
                                 style={{
-                                  width: `${stake.percentagePoolValue[index]}%`,
+                                  width: `${state.percentagePoolValue[index]}%`,
                                 }}
                               ></div>
                             </div>
@@ -221,8 +216,8 @@ export const ListRedux = () => {
                             <div className="relative flex">
                               <p className="">Details</p>
                               <p className="text-white text-4xl px-6 w-2">
-                                {stake.visible &&
-                                stake.selectedIndex.includes(index)
+                                {state.visible &&
+                                state.selectedIndex.includes(index)
                                   ? hide
                                   : show}
                               </p>
@@ -235,7 +230,7 @@ export const ListRedux = () => {
                 </div>
               </div>
             </button>
-            <AccordionRedux sc />
+            <AccordionRedux sc={sc} index={index} />
           </>
         ))}
       </div>

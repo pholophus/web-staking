@@ -47,11 +47,6 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
         ...state,
         selectedIndex: [...state.selectedIndex, action.payload],
       };
-    case STAKING.SHOW_ACCORDION:
-      return {
-        ...state,
-        showAccordion: true,
-      };
     case STAKING.TOGGLE_FARM:
       return {
         ...state,
@@ -75,9 +70,22 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
     case STAKING.CONVERT_USD:
       return {
         ...state,
-        oasisUSD: action.payload,
-        // vestedUSD: action.payload.vest,
-        // stakeUSD: action.payload.stake,
+        oasisUSD: action.payload.oasis,
+        vestedUSD: action.payload.vest,
+        stakeUSD: action.payload.stake,
+      };
+    case STAKING.SHOW_MODAL:
+      return {
+        ...state,
+        modalIndex: [...state.modalIndex, action.payload],
+        showModal: true,
+      };
+    case STAKING.HIDE_MODAL:
+      return {
+        ...state,
+        modalIndex: state.modalIndex.filter(
+          (index: any) => index !== action.payload
+        ),
       };
 
     default:

@@ -13,10 +13,8 @@ export const getStakedAmount = (state: any) => state.staking.stakedAmount;
 export const getApprovalCheck = (state: any) => state.staking.approvalCheck;
 export const getListVested = (state: any) => state.staking.listVested;
 export const getMaxCap = (state: any) => state.staking.maxCap;
-export const getShowAccordion = (state: any) => state.staking.showAccordion;
 export const getVisible = (state: any) => state.staking.visible;
 export const getFilteredSC = (state: any) => state.staking.filteredSC;
-
 export const getoasisUSD = (state: any) => state.staking.oasisUSD;
 export const getvestedUSD = (state: any) => state.staking.vestedUSD;
 export const getstakeUSD = (state: any) => state.staking.stakeUSD;
@@ -24,4 +22,8 @@ export const getisClaimActive = (state: any) => state.staking.isClaimActive;
 export const getisCollectActive = (state: any) => state.staking.isCollectActive;
 export const getshowModal = (state: any) => state.staking.showModal;
 export const getvestIndex = (state: any) => state.staking.vestIndex;
+export const getdateVest = (state: any) => state.staking.dateVest;
+export const getamountVest = (state: any) => state.staking.amountVest;
+export const getcollectedVest = (state: any) => state.staking.collectedVest;
+export const getmodalIndex = (state:any) => state.staking.modalIndex
 

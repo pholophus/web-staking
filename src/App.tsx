@@ -16,7 +16,7 @@ function App() {
       <div className="App">
         <Navbar />
         <ContainerRedux />
-        <Container />
+        {/* <Container /> */}
       </div>
     </Provider>
   );
