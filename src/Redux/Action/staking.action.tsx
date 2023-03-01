@@ -31,6 +31,7 @@ export const STAKING = {
   SHOW_MODAL: "SHOW_MODAL",
   HIDE_MODAL: "HIDE_MODAL",
   UPDATE_STAKED_AMOUNT: "UPDATE_STAKED_AMOUNT",
+  UPDATE_OASIS_BAL: "UPDATE_OASIS_BAL",
 };
 
 //#reusable stakingAction fx
@@ -44,6 +45,7 @@ export const stakingAction = (type: any, data?: any) => {
 //#action creators (asynchronous fx)
 export const GET_POOL_DETAIL = (resp: any) => {
   return async (dispatch: any) => {
+    console.log(resp)
     try {
       for (const sc of resp) {
         const endPool = await poolEndTime(sc);

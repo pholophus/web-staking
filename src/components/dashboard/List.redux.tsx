@@ -13,6 +13,7 @@ import {
   getListSC,
   getListVested,
   getMaxCap,
+  getoasisBalance,
   getPendingOasis,
   getPendingVested,
   getPercentagePoolValue,
@@ -20,10 +21,20 @@ import {
   getPoolType,
   getSelectedIndex,
   getStakedAmount,
+  getstakeUSD,
   getTotalStake,
   getVisible,
 } from "../../Redux/Selector";
-import { activeSC, myFarm, readSC, stake, unactiveSC, unstake } from "../../services";
+import {
+  activeSC,
+  amountStaked,
+  myFarm,
+  readSC,
+  stake,
+  unactiveSC,
+  unstake,
+  userOasisBalance,
+} from "../../services";
 import { GET_POOL_DETAIL, STAKING, stakingAction } from "../../Redux/Action";
 
 export const ListRedux = () => {
@@ -45,6 +56,8 @@ export const ListRedux = () => {
     maxCap: useAppSelector(getMaxCap),
     visible: useAppSelector(getVisible),
     filteredSC: useAppSelector(getFilteredSC),
+    stakeUSD: useAppSelector(getstakeUSD),
+    oasisBalance: useAppSelector(getoasisBalance),
   };
 
   const dispatch = useAppDispatch();
@@ -52,7 +65,7 @@ export const ListRedux = () => {
   useEffect(() => {
     initData();
     checkIfAccountChanged();
-  }, [state.poolStatus, state.poolType, state.farm]);
+  }, [state.poolStatus, state.poolType, state.farm, state.oasisBalance]);
 
   const initData = () => {
     dispatch(stakingAction(STAKING.INIT_DATA));
@@ -110,9 +123,9 @@ export const ListRedux = () => {
 
   const getPoolDetail = async (resp: SCClass[]) => {
     dispatch(stakingAction(STAKING.FILTERING_SC, resp));
-    for (const sc of resp) {
-      dispatch(GET_POOL_DETAIL(sc));
-    }
+    // for (const sc of resp) {
+    dispatch(GET_POOL_DETAIL(resp));
+    // }
   };
 
   const stakeProcess = async (
@@ -131,10 +144,12 @@ export const ListRedux = () => {
     }
 
     const updatedStakedAmount = [...state.stakedAmount];
-    const amountStake = state.stakedAmount;
+    const amountStake = await amountStaked(sc);
     updatedStakedAmount[index] = amountStake;
     dispatch(stakingAction(STAKING.UPDATE_STAKED_AMOUNT, updatedStakedAmount));
-    // setStakedAmount(updatedStakedAmount);
+
+    const oasisBalance = await userOasisBalance(sc);
+    dispatch(stakingAction(STAKING.UPDATE_OASIS_BAL, oasisBalance));
   };
 
   return (

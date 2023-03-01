@@ -108,16 +108,13 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
   };
 
   useEffect(() => {
-    if (isStakeCompleted) {
-      // handle stake completion
-      console.log("Stake completed!");
-    }
-    if (isUnstakeCompleted) {
-      // handle unstake completion
-      console.log("Unstake completed!");
-    }
-  }, [isStakeCompleted, isUnstakeCompleted, state.stakedAmount]);
 
+  }, [
+    state.stakedAmount,
+    state.oasisBalance
+  ]);
+
+  
   return (
     <>
       <div className={`mx-auto ${notApproved}`}>

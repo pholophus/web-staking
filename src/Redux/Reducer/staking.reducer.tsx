@@ -93,8 +93,13 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
     case STAKING.UPDATE_STAKED_AMOUNT:
       return {
         ...state,
-        stakedAmount: action.payload
-      }
+        stakedAmount: action.payload,
+      };
+    case STAKING.UPDATE_OASIS_BAL:
+      return {
+        ...state,
+        oasisBalance: action.payload,
+      };
 
     default:
       return state;
