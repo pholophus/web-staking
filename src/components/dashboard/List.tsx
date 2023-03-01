@@ -186,6 +186,9 @@ const List = ({
     const amountStake = await amountStaked(sc);
     updatedStakedAmount[index] = amountStake;
     setStakedAmount(updatedStakedAmount);
+
+    const balanceAmount = await userOasisBalance(sc);
+    setOasisBalance(balanceAmount)
   }
 
   return (

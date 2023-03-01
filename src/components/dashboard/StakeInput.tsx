@@ -93,10 +93,17 @@ const StakeInput = ({
       // handle unstake completion
       console.log("Unstake completed!");
     }
-  }, [isStakeCompleted, isUnstakeCompleted, stakedAmount]);
+  }, [isStakeCompleted, isUnstakeCompleted, stakedAmount, oasisBalance]);
 
-  const onClickPercentage = (e: any) => {
-    setInputValue(e.target.value * oasisBalance);
+  const calculateInputValue = (value: number, balance: number) => {
+    return value * balance;
+  };
+
+  const selectPercent = (e: any) => {
+    const value = e.target.value;
+    const balance =
+      selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index];
+    setInputValue(calculateInputValue(value, balance).toString());
   };
 
   const stakeInput = (e: any) => {
@@ -177,12 +184,16 @@ const StakeInput = ({
                 {showErrorMsg && (
                   <p className="mr-auto text-red-600">{errorMsg}</p>
                 )}
-                <p className="ml-auto">{`${oasisBalance} $Oasis`}</p>
+                <p className="ml-auto">{`${
+                  selectStake?.stake === "Stake"
+                    ? oasisBalance
+                    : stakedAmount[index]
+                } $Oasis `}</p>
               </div>
               <div className="flex justify-between px-12 my-1">
                 {percentageBtn.map((i) => (
                   <button
-                    onClick={onClickPercentage}
+                    onClick={selectPercent}
                     key={i.value}
                     value={i.value}
                     className={`${selectStake?.color} text-[14px] rounded-md w-[3rem] py-[1px]`}
@@ -203,6 +214,7 @@ const StakeInput = ({
                   onClick={() => {
                     setShowInput(!showInput);
                     setShowErrorMsg(false);
+                    setInputValue(0);
                   }}
                   className={`${inactive} rounded-md py-2 w-[7rem]`}
                 >

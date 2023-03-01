@@ -38,10 +38,26 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
           stake: "Unstake",
           color: unstakeBg,
         };
+      default:
+        return state;
     }
   };
   const [selectStake, emit] = useReducer(postReducer, INITIAL_STATE);
   //#endregion
+
+  const calculateInputValue = (value: number, balance: number) => {
+    return value * balance;
+  };
+
+  const selectPercent = (e: any) => {
+    const value = e.target.value;
+    const balance =
+      selectStake?.stake === "Stake"
+        ? state.oasisBalance
+        : state.stakedAmount[index];
+    setInputValue((calculateInputValue(value, balance)).toString());
+    console.log(typeof(inputValue))
+  };
 
   //#region
   const [inputValue, setInputValue] = useState<any>(0);
@@ -90,10 +106,6 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
     }
   };
 
-  const onClickPercentage = (e: any) => {
-    setInputValue(e.target.value * state.oasisBalance);
-  };
-
   const stakeInput = (e: any) => {
     switch (e.target.value) {
       case "stake":
@@ -107,14 +119,8 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {}, [state.stakedAmount, state.oasisBalance]);
 
-  }, [
-    state.stakedAmount,
-    state.oasisBalance
-  ]);
-
-  
   return (
     <>
       <div className={`mx-auto ${notApproved}`}>
@@ -171,7 +177,7 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
               <div className="bg-[#474747] rounded-lg mx-10 flex mt-3">
                 <input
                   type="text"
-                  className="bg-transparent rounded-lg py-2 ml-4 "
+                  className="bg-transparent rounded-lg py-2 ml-4 focus:outline-none"
                   placeholder="0"
                   value={inputValue}
                   onChange={handleInputChange}
@@ -182,12 +188,16 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
                 {showErrorMsg && (
                   <p className="mr-auto text-red-600">{errorMsg}</p>
                 )}
-                <p className="ml-auto">{`${state.oasisBalance} $Oasis`}</p>
+                <p className="ml-auto">{`${
+                  selectStake.stake === "Stake"
+                    ? state.oasisBalance
+                    : state.stakedAmount[index]
+                } $Oasis `}</p>
               </div>
               <div className="flex justify-between px-12 my-1">
                 {percentageBtn.map((i) => (
                   <button
-                    onClick={onClickPercentage}
+                    onClick={selectPercent}
                     key={i.value}
                     value={i.value}
                     className={`${selectStake?.color} text-[14px] rounded-md w-[3rem] py-[1px]`}
@@ -208,6 +218,7 @@ const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
                   onClick={() => {
                     setShowInput(!showInput);
                     setShowErrorMsg(false);
+                    setInputValue(0);
                   }}
                   className={`${inactive} rounded-md py-2 w-[7rem]`}
                 >

@@ -65,7 +65,7 @@ export const ListRedux = () => {
   useEffect(() => {
     initData();
     checkIfAccountChanged();
-  }, [state.poolStatus, state.poolType, state.farm, state.oasisBalance]);
+  }, [state.poolStatus, state.poolType, state.farm]);
 
   const initData = () => {
     dispatch(stakingAction(STAKING.INIT_DATA));

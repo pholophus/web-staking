@@ -113,7 +113,7 @@ export const unactiveSC = async (listSC: SCClass[]) => {
 
       if (Date.now() / 1000 > poolInfo.unlockDate) unactiveSC.push(sc);
     } catch (e) {
-      //console.log('checkActiveContract')
+      // console.log('checkActiveContract')
       console.log(e);
     }
   }
