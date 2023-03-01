@@ -10,6 +10,7 @@ import rewardLocker from "../data/abi/rewardLocker.json";
 import pancakeSwap from "../data/abi/pancakeswapABI.json";
 import testnet from "../data/testnet.json";
 
+
 // const [getAccount(), setgetAccount()] = useState("");
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const { ethereum } = window;
@@ -37,8 +38,7 @@ export const getAccount = async () => {
 export const readSC = async () => {
   const listSC: any = [];
 
-  // const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
-  const listSCJson = SCJson;
+  const listSCJson = process.env.REACT_APP_DEBUG_MODE === "true" ? testnet : SCJson;
 
   for (const SCJson of listSCJson) {
     let sc: SCClass = new SCClass();
@@ -114,7 +114,7 @@ export const unactiveSC = async (listSC: SCClass[]) => {
       if (Date.now() / 1000 > poolInfo.unlockDate) unactiveSC.push(sc);
     } catch (e) {
       //console.log('checkActiveContract')
-      // console.log(e);
+      console.log(e);
     }
   }
 
@@ -284,30 +284,9 @@ export const checkApproval = async (sc: SCClass) => {
 
     const allowanceAmount = parseFloat(Web3.utils.fromWei(allowance, "ether"))
 
-    console.log(parseFloat(Web3.utils.fromWei(balanceUser, "ether")))
-    return parseFloat(Web3.utils.fromWei(balanceUser, "ether")) > 0
+    return allowanceAmount > 0
       ? true
       : false;
-  } catch (error: any) {
-    console.error(error.message);
-  }
-};
-
-/**
- * get allowance amount
- */
- export const allowanceAmount = async (sc: SCClass) => {
-  const getAcc = await getAccount();
-
-  try {
-
-    const masterchef = sc.masterchef._address
-
-    const allowance = await sc.rewardToken.methods.allowance(getAcc, masterchef).call()
-
-    const allowanceAmount = parseFloat(Web3.utils.fromWei(allowance, "ether"))
-
-    return allowanceAmount
 
   } catch (error: any) {
     console.error(error.message);
@@ -579,4 +558,4 @@ export const poolLimit = async (sc: SCClass) => {
   const poolLimit = Web3.utils.fromWei(maxCap.poolLimit, "ether");
   // console.log(poolLimit);
   return poolLimit;
-};
+}

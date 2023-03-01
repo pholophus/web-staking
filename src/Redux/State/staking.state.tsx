@@ -14,6 +14,8 @@ export const initialStakingState = {
   stakedAmount: [],
   approvalCheck: [],
   maxCap: [],
+  allowance:[],
+  oasisBalance: 0,
   visible: true,
   listVested: [],
   dateVest: [],

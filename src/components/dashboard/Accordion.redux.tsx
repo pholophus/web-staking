@@ -25,7 +25,7 @@ import {
 import ModalRedux from "./Modal.redux";
 import StakeInputRedux from "./StakeInput.redux";
 
-const Accordion = ({ sc, index }: any) => {
+const Accordion = ({ sc, index, stakeProcess }: any) => {
   const dispatch = useAppDispatch();
   const state = {
     pendingOasis: useAppSelector(getPendingOasis),
@@ -211,7 +211,7 @@ const Accordion = ({ sc, index }: any) => {
           <div>
             <StakeInputRedux
               {...{
-                sc, index, showStake
+                sc, index, showStake, stakeProcess
               }}
             />
           </div>

@@ -13,7 +13,7 @@ const StakeInput = ({
   selectedIndex,
   allowance,
   oasisBalance,
-  stakeProcess
+  stakeProcess,
 }: any) => {
   const INITIAL_STATE = {
     stake: "",
@@ -80,7 +80,7 @@ const StakeInput = ({
       setShowErrorMsg(true);
       setErrorMsg("Insufficient balance");
     } else {
-      stakeProcess(sc, inputValue, e.target.value, index)
+      stakeProcess(sc, inputValue, e.target.value, index);
     }
   };
 
@@ -111,15 +111,6 @@ const StakeInput = ({
         break;
     }
   };
-
-  // useEffect(() => {
-  //   if (selectedIndex.includes(index) === false) {
-  //     setShowInput(true);
-  //   } else {
-  //     setShowInput(false);
-  //   }
-  //   setErrorMsg("");
-  // }, [selectedIndex.includes(index)]);
 
   return (
     <>
@@ -186,7 +177,7 @@ const StakeInput = ({
                 {showErrorMsg && (
                   <p className="mr-auto text-red-600">{errorMsg}</p>
                 )}
-                <p className="ml-auto">{`${stakedAmount[index]} $Oasis`}</p>
+                <p className="ml-auto">{`${oasisBalance} $Oasis`}</p>
               </div>
               <div className="flex justify-between px-12 my-1">
                 {percentageBtn.map((i) => (
@@ -209,7 +200,10 @@ const StakeInput = ({
                   {selectStake?.stake}
                 </button>
                 <button
-                  onClick={() => {setShowInput(!showInput);setShowErrorMsg(false)}}
+                  onClick={() => {
+                    setShowInput(!showInput);
+                    setShowErrorMsg(false);
+                  }}
                   className={`${inactive} rounded-md py-2 w-[7rem]`}
                 >
                   Cancel

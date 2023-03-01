@@ -25,5 +25,7 @@ export const getvestIndex = (state: any) => state.staking.vestIndex;
 export const getdateVest = (state: any) => state.staking.dateVest;
 export const getamountVest = (state: any) => state.staking.amountVest;
 export const getcollectedVest = (state: any) => state.staking.collectedVest;
-export const getmodalIndex = (state:any) => state.staking.modalIndex
+export const getmodalIndex = (state:any) => state.staking.modalIndex;
+export const getallowance = (state:any) => state.staking.allowance;
+export const getoasisBalance = (state:any) => state.staking.oasisBalance;
 

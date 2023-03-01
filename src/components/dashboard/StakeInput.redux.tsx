@@ -4,17 +4,21 @@ import { active, inactive, stakeBg, unstakeBg } from "../../variable";
 import coin from "../../images/coin.png";
 import { useAppDispatch, useAppSelector } from "../../Redux/Hook";
 import {
+  getallowance,
   getApprovalCheck,
+  getoasisBalance,
   getStakedAmount,
   getstakeUSD,
 } from "../../Redux/Selector";
 
-const StakeInput = ({ sc, index, showStake }: any) => {
+const StakeInput = ({ sc, index, showStake, stakeProcess }: any) => {
   const dispatch = useAppDispatch();
   const state = {
     approvalCheck: useAppSelector(getApprovalCheck),
     stakedAmount: useAppSelector(getStakedAmount),
     stakeUSD: useAppSelector(getstakeUSD),
+    oasisBalance: useAppSelector(getoasisBalance),
+    allowance: useAppSelector(getallowance),
   };
 
   //#region useReducer for styling
@@ -44,6 +48,8 @@ const StakeInput = ({ sc, index, showStake }: any) => {
   const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const [isStakeCompleted, setIsStakeCompleted] = useState(false);
+  const [isUnstakeCompleted, setIsUnstakeCompleted] = useState(false);
 
   const approved = state.approvalCheck[index] ? "block" : "hidden";
   const notApproved = state.approvalCheck[index] ? "hidden" : "block";
@@ -73,37 +79,19 @@ const StakeInput = ({ sc, index, showStake }: any) => {
   };
 
   const onClickStaking = async (e: any) => {
-    switch (e.target.value) {
-      case "Stake":
-        if (!inputValue || inputValue == "0.00") {
-          setShowErrorMsg(true);
-          setErrorMsg("Please insert amount");
-        } else if (Number(inputValue) > Number(state.stakedAmount[index])) {
-          setShowErrorMsg(true);
-          setErrorMsg("Insufficient balance");
-        } else {
-          await stake(sc, inputValue);
-        }
-        break;
-      case "Unstake":
-        if (!inputValue || inputValue == "0.00") {
-          setShowErrorMsg(true);
-          setErrorMsg("Please insert amount");
-        } else if (Number(inputValue) > Number(state.stakedAmount[index])) {
-          setShowErrorMsg(true);
-          setErrorMsg("Insufficient balance");
-        } else {
-          await unstake(sc, inputValue);
-        }
-        break;
-
-      default:
-        break;
+    if (!inputValue || inputValue == "0.00") {
+      setShowErrorMsg(true);
+      setErrorMsg("Please insert amount");
+    } else if (Number(inputValue) > Number(state.allowance[index])) {
+      setShowErrorMsg(true);
+      setErrorMsg("Insufficient balance");
+    } else {
+      stakeProcess(sc, inputValue, e.target.value, index);
     }
   };
 
   const onClickPercentage = (e: any) => {
-    setInputValue(e.target.value * state.stakedAmount[index]);
+    setInputValue(e.target.value * state.oasisBalance);
   };
 
   const stakeInput = (e: any) => {
@@ -119,14 +107,16 @@ const StakeInput = ({ sc, index, showStake }: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedIndex.includes(index) === false) {
-  //     setShowInput(true);
-  //   } else {
-  //     setShowInput(false);
-  //   }
-  //   setErrorMsg("");
-  // }, [selectedIndex.includes(index)]);
+  useEffect(() => {
+    if (isStakeCompleted) {
+      // handle stake completion
+      console.log("Stake completed!");
+    }
+    if (isUnstakeCompleted) {
+      // handle unstake completion
+      console.log("Unstake completed!");
+    }
+  }, [isStakeCompleted, isUnstakeCompleted, state.stakedAmount]);
 
   return (
     <>
@@ -195,7 +185,7 @@ const StakeInput = ({ sc, index, showStake }: any) => {
                 {showErrorMsg && (
                   <p className="mr-auto text-red-600">{errorMsg}</p>
                 )}
-                <p className="ml-auto">{`${state.stakedAmount[index]} $Oasis`}</p>
+                <p className="ml-auto">{`${state.oasisBalance} $Oasis`}</p>
               </div>
               <div className="flex justify-between px-12 my-1">
                 {percentageBtn.map((i) => (

@@ -19,6 +19,8 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
         approvalCheck: [...state.approvalCheck, action.payload.approvalCheck],
         listVested: [...state.listVested, action.payload.listVested],
         maxCap: [...state.maxCap, action.payload.maxCap],
+        allowance: [...state.allowance, action.payload.allowance],
+        oasisBalance: action.payload.oasisBalance,
       };
     case STAKING.RESET:
       return {
@@ -29,6 +31,7 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
         percentagePoolValue: [],
         selectedIndex: [],
         approvalCheck: [],
+        allowance: [],
       };
     case STAKING.INIT_DATA:
       return {
@@ -87,6 +90,11 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
           (index: any) => index !== action.payload
         ),
       };
+    case STAKING.UPDATE_STAKED_AMOUNT:
+      return {
+        ...state,
+        stakedAmount: action.payload
+      }
 
     default:
       return state;

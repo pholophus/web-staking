@@ -1,5 +1,6 @@
 import { SC as SCClass } from "../../interface";
 import {
+  allowanceAmount,
   amountStaked,
   APR,
   checkApproval,
@@ -10,6 +11,7 @@ import {
   poolLimit,
   readSC,
   totalStakePool,
+  userOasisBalance,
   vestedBalance,
   vestedList,
 } from "../../services";
@@ -28,6 +30,7 @@ export const STAKING = {
   CONVERT_USD: "CONVERT_USD",
   SHOW_MODAL: "SHOW_MODAL",
   HIDE_MODAL: "HIDE_MODAL",
+  UPDATE_STAKED_AMOUNT: "UPDATE_STAKED_AMOUNT",
 };
 
 //#reusable stakingAction fx
@@ -53,6 +56,8 @@ export const GET_POOL_DETAIL = (resp: any) => {
         const approvalCheck = await checkApproval(sc);
         const listVested = await vestedList(sc);
         const maxCap = await poolLimit(sc);
+        const allowance = await allowanceAmount(sc);
+        const oasisBalance = await userOasisBalance(sc);
         dispatch(
           stakingAction(STAKING.GET_DETAIL, {
             endPool,
@@ -65,6 +70,8 @@ export const GET_POOL_DETAIL = (resp: any) => {
             approvalCheck,
             listVested,
             maxCap,
+            allowance,
+            oasisBalance,
           })
         );
       }

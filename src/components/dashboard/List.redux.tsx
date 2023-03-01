@@ -23,7 +23,7 @@ import {
   getTotalStake,
   getVisible,
 } from "../../Redux/Selector";
-import { activeSC, myFarm, readSC, unactiveSC } from "../../services";
+import { activeSC, myFarm, readSC, stake, unactiveSC, unstake } from "../../services";
 import { GET_POOL_DETAIL, STAKING, stakingAction } from "../../Redux/Action";
 
 export const ListRedux = () => {
@@ -113,6 +113,28 @@ export const ListRedux = () => {
     for (const sc of resp) {
       dispatch(GET_POOL_DETAIL(sc));
     }
+  };
+
+  const stakeProcess = async (
+    sc: SCClass,
+    inputValue: any,
+    process: string,
+    index: number
+  ) => {
+    switch (process) {
+      case "Stake":
+        await stake(sc, inputValue);
+        break;
+      case "Unstake":
+        await unstake(sc, inputValue);
+        break;
+    }
+
+    const updatedStakedAmount = [...state.stakedAmount];
+    const amountStake = state.stakedAmount;
+    updatedStakedAmount[index] = amountStake;
+    dispatch(stakingAction(STAKING.UPDATE_STAKED_AMOUNT, updatedStakedAmount));
+    // setStakedAmount(updatedStakedAmount);
   };
 
   return (
@@ -230,7 +252,7 @@ export const ListRedux = () => {
                 </div>
               </div>
             </button>
-            <AccordionRedux sc={sc} index={index} />
+            <AccordionRedux sc={sc} index={index} stakeProcess={stakeProcess} />
           </>
         ))}
       </div>
