@@ -15,7 +15,12 @@ const MetaBtn = () => {
     try {
       const { ethereum } = window;
       ethereum.on("accountsChanged", (accounts: any) => {
-        setAccountAddress(accounts[0]);
+
+        const firstFour = accounts[0].slice(0, 4);
+        const  lastFour = accounts[0].slice(-4);
+        const result = firstFour + "..." + lastFour;
+        
+        setAccountAddress(result);
       });
     } catch (error) {
       console.log(error);
@@ -37,7 +42,11 @@ const MetaBtn = () => {
         method: "eth_requestAccounts",
       });
 
-      setAccountAddress(accounts[0]);
+      const firstFour = accounts[0].slice(0, 4);
+      const  lastFour = accounts[0].slice(-4);
+      const result = firstFour + "..." + lastFour;
+
+      setAccountAddress(result);
       setIsConnected(true);
     } else {
       setIsConnected(false);
@@ -50,6 +59,20 @@ const MetaBtn = () => {
     checkConnectivity();
   }, []);
 
+  const disconnectWallet = async () => {
+    await window.ethereum.request({
+      method: 'wallet_requestPermissions',
+      params: [
+        {
+          eth_accounts: {},
+        },
+        {
+          provider: 'metamask',
+        },
+      ],
+    });
+  }
+
   const connectWallet = async () => {
     try {
       if (!ethereum) {
@@ -59,7 +82,11 @@ const MetaBtn = () => {
         method: "eth_requestAccounts",
       });
 
-      setAccountAddress(accounts[0]);
+      const firstFour = accounts[0].slice(0, 4);
+      const  lastFour = accounts[0].slice(-4);
+      const result = firstFour + "..." + lastFour;
+
+      setAccountAddress(result);
 
       setIsConnected(true);
     } catch (error) {
@@ -72,11 +99,12 @@ const MetaBtn = () => {
       {haveMetamask ? (
         <div>
           {isConnected && (
-            <div className="card">
-              <div className="card-row text-white">
-                <p className="text-[#FEAE34]">{accountAddress}</p>
-              </div>
-            </div>
+            <button
+            className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[130px] h-[41px] rounded-xl"
+            onClick={disconnectWallet}
+            >
+              {accountAddress}
+            </button>
           )}
           {isConnected == false && (
             <button
