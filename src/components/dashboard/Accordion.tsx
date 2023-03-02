@@ -26,7 +26,8 @@ const Accordion = ({
   maxCap,
   allowance,
   oasisBalance,
-  stakeProcess
+  stakeProcess,
+  poolStatus
 }: any) => {
   const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
@@ -213,7 +214,8 @@ const Accordion = ({
                 selectedIndex,
                 allowance,
                 oasisBalance,
-                stakeProcess
+                stakeProcess,
+                poolStatus
               }}
             />
           </div>

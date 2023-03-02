@@ -53,14 +53,28 @@ const List = ({
   const [oasisBalance, setOasisBalance] = useState<any>(0);
 
   useEffect(() => {
-    initData();
-    checkIfAccountChanged();
+    (async () => {
+      await initData();
+      await checkIfAccountChanged();
+    })();
     
   }, [poolStatus, poolType, farm]);
 
-  const initData = () => {
-    readSC().then((res) => {
-      filterPool(res);
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      for(const sc of filteredSC){
+        await updatePool(sc, sc.index)
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [oasisBalance]);
+
+  const initData = async () => {
+    await readSC().then(async (res) => {
+      await filterPool(res);
     });
   };
 
@@ -77,11 +91,10 @@ const List = ({
 
   const filterPool = async (listSC: SCClass[]) => {
 
-    //#region
     var filteredFarm: any;
 
     if (farm) {
-      myFarm(listSC).then((resp) => {
+      await myFarm(listSC).then((resp) => {
         filteredFarm = resp.filter(
           (item: { type: any }) => item.type === poolType
         );
@@ -89,30 +102,32 @@ const List = ({
     }
     switch (poolStatus) {
       case "active":
-        activeSC(listSC).then(async (resp: SCClass[]) => {
+        await activeSC(listSC).then(async (resp: SCClass[]) => {
           const farmCheck = farm ? filteredFarm : resp;
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === poolType
           );
-          getPoolDetail(filteredResp);
+          console.log("sebelum get pool detail")
+          await getPoolDetail(filteredResp);
+          setFilteredSC(resp);
         });
         break;
       case "inactive":
-        unactiveSC(listSC).then(async (resp: SCClass[]) => {
+        await unactiveSC(listSC).then(async (resp: SCClass[]) => {
           const farmCheck = farm ? filteredFarm : resp;
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === poolType
           );
-          getPoolDetail(filteredResp);
+          console.log("sebelum get pool detail")
+          await getPoolDetail(filteredResp);
+          setFilteredSC(resp);
         });
         break;
     }
-    //#endregion
   };
 
   const getPoolDetail = async (resp: SCClass[]) => {
 
-    setFilteredSC(resp);
     /*reset value*/
     setEndPool([]);
     setAPRValue([]);
@@ -171,7 +186,44 @@ const List = ({
     }
   };
 
-  const stakeProcess = async(sc: SCClass, inputValue: any, process: string, index: number) => {
+  const updatePool = async(sc: SCClass, index: number) => {
+    
+    const [amountStake, oasisBalance, valueAPR, totalStakeValue, percentagePoolLatest] = await Promise.all([
+      amountStaked(sc),
+      userOasisBalance(sc),
+      APR(sc),
+      totalStakePool(sc),
+      percentagePool(sc)
+    ]);
+  
+    setStakedAmount(prev => {
+      const updated = [...prev];
+      updated[index] = amountStake;
+      return updated;
+    });
+  
+    setOasisBalance(oasisBalance);
+  
+    setAPRValue(prev => {
+      const updated = [...prev];
+      updated[index] = valueAPR;
+      return updated;
+    });
+  
+    setTotalStake(prev => {
+      const updated = [...prev];
+      updated[index] = totalStakeValue;
+      return updated;
+    });
+  
+    setPercentagePoolValue(prev => {
+      const updated = [...prev];
+      updated[index] = percentagePoolLatest;
+      return updated;
+    });
+  }
+
+  const stakeProcess = async (sc: SCClass, inputValue: any, process: string, index: number) => {
 
     switch (process) {
       case "Stake":
@@ -182,11 +234,8 @@ const List = ({
         break;
     }
 
-    const updatedStakedAmount = [...stakedAmount];
-    const amountStake = await amountStaked(sc);
-    updatedStakedAmount[index] = amountStake;
-    setStakedAmount(updatedStakedAmount);
-  }
+    await updatePool(sc, sc.index)
+  };
 
   return (
     <>
@@ -319,7 +368,8 @@ const List = ({
                 maxCap,
                 allowance,
                 oasisBalance,
-                stakeProcess
+                stakeProcess,
+                poolStatus
               }}
             />
           </>

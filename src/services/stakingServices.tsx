@@ -501,7 +501,15 @@ export const userOasisBalance = async (sc: SCClass) => {
 
     const balanceAmount = parseFloat(Web3.utils.fromWei(balanceUser, "ether"))
 
-    return balanceAmount.toFixed(2);
+    const masterchef = sc.masterchef._address
+
+    const allowance = await sc.rewardToken.methods.allowance(getAcc, masterchef).call()
+
+    const allowanceAmount = parseFloat(Web3.utils.fromWei(allowance, "ether"))
+
+    const balanceOasis = balanceAmount > allowanceAmount ? allowanceAmount.toFixed(2) : balanceAmount.toFixed(2);
+
+    return balanceOasis;
 
   } catch (error) {
     console.log(error)

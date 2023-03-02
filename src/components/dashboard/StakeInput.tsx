@@ -13,7 +13,8 @@ const StakeInput = ({
   selectedIndex,
   allowance,
   oasisBalance,
-  stakeProcess
+  stakeProcess,
+  poolStatus
 }: any) => {
   const INITIAL_STATE = {
     stake: "",
@@ -44,6 +45,7 @@ const StakeInput = ({
   const [showInput, setShowInput] = useState(false);
   const [isStakeCompleted, setIsStakeCompleted] = useState(false);
   const [isUnstakeCompleted, setIsUnstakeCompleted] = useState(false);
+  const [currentOasisBalance, setCurrentOasisBalance] = useState(0)
 
   const approved = approvalCheck[index] ? "block" : "hidden";
   const notApproved = approvalCheck[index] ? "hidden" : "block";
@@ -73,10 +75,15 @@ const StakeInput = ({
   };
 
   const onClickStaking = async (e: any) => {
+
+    const oasisValue = e.target.value == "Stake" ? Number(oasisBalance) : Number(stakedAmount[index])
+
+    setCurrentOasisBalance(oasisValue)
+
     if (!inputValue || inputValue == "0.00") {
       setShowErrorMsg(true);
       setErrorMsg("Please insert amount");
-    } else if (Number(inputValue) > Number(allowance[index])) {
+    } else if (Number(inputValue) > oasisValue) {
       setShowErrorMsg(true);
       setErrorMsg("Insufficient balance");
     } else {
@@ -85,18 +92,14 @@ const StakeInput = ({
   };
 
   useEffect(() => {
-    if (isStakeCompleted) {
-      // handle stake completion
-      console.log("Stake completed!");
-    }
-    if (isUnstakeCompleted) {
-      // handle unstake completion
-      console.log("Unstake completed!");
-    }
-  }, [isStakeCompleted, isUnstakeCompleted, stakedAmount]);
+  }, [stakedAmount]);
 
   const onClickPercentage = (e: any) => {
-    setInputValue(e.target.value * oasisBalance);
+    setShowErrorMsg(false);
+    const value = e.target.value;
+    const balance = selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index];
+    const stakeAmount =  value * balance
+    setInputValue(stakeAmount.toString());
   };
 
   const stakeInput = (e: any) => {
@@ -111,15 +114,6 @@ const StakeInput = ({
         break;
     }
   };
-
-  // useEffect(() => {
-  //   if (selectedIndex.includes(index) === false) {
-  //     setShowInput(true);
-  //   } else {
-  //     setShowInput(false);
-  //   }
-  //   setErrorMsg("");
-  // }, [selectedIndex.includes(index)]);
 
   return (
     <>
@@ -151,14 +145,17 @@ const StakeInput = ({
               <button
                 value="stake"
                 onClick={stakeInput}
-                className={`${stakeBg} w-[120px] py-2 rounded-md`}
+                className={`${poolStatus == "active" ? stakeBg : inactive} w-[120px] py-2 rounded-md`}
+                disabled={poolStatus != "active"}
               >
                 Stake
               </button>
+
               <button
                 value="unstake"
                 onClick={stakeInput}
-                className={`${unstakeBg} w-[120px] py-2 rounded-md`}
+                className={`${poolStatus == "inactive" ? unstakeBg : inactive} w-[120px] py-2 rounded-md`}
+                disabled={poolStatus != "inactive"}
               >
                 Unstake
               </button>
@@ -182,12 +179,16 @@ const StakeInput = ({
                 />
                 <img src={coin} className="object-contain mr-4" alt="" />
               </div>
+
               <div className="flex justify-between mt-1 text-[14px] mx-12">
                 {showErrorMsg && (
                   <p className="mr-auto text-red-600">{errorMsg}</p>
                 )}
-                <p className="ml-auto">{`${stakedAmount[index]} $Oasis`}</p>
+                <p className="ml-auto">{`${selectStake?.stake === "Stake"
+                    ? oasisBalance
+                    : stakedAmount[index]} $Oasis`}</p>
               </div>
+
               <div className="flex justify-between px-12 my-1">
                 {percentageBtn.map((i) => (
                   <button
@@ -200,6 +201,7 @@ const StakeInput = ({
                   </button>
                 ))}
               </div>
+
               <div className="flex justify-between  my-4 mx-12">
                 <button
                   value={selectStake?.stake}
@@ -209,7 +211,7 @@ const StakeInput = ({
                   {selectStake?.stake}
                 </button>
                 <button
-                  onClick={() => {setShowInput(!showInput);setShowErrorMsg(false)}}
+                  onClick={() => {setShowInput(!showInput); setShowErrorMsg(false); setInputValue(0)}}
                   className={`${inactive} rounded-md py-2 w-[7rem]`}
                 >
                   Cancel
