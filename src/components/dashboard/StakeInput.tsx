@@ -73,14 +73,32 @@ const StakeInput = ({
   };
 
   const onClickStaking = async (e: any) => {
-    if (!inputValue || inputValue == "0.00") {
-      setShowErrorMsg(true);
-      setErrorMsg("Please insert amount");
-    } else if (Number(inputValue) > Number(allowance[index])) {
-      setShowErrorMsg(true);
-      setErrorMsg("Insufficient balance");
-    } else {
-      stakeProcess(sc, inputValue, e.target.value, index);
+    switch (e.target.value) {
+      case "Stake":
+        if (!inputValue || inputValue == "0") {
+          setShowErrorMsg(true);
+          setErrorMsg("Please insert amount");
+        } else if (Number(inputValue) > Number(oasisBalance)) {
+          setShowErrorMsg(true);
+          setErrorMsg("Insufficient balance");
+        } else {
+          stakeProcess(sc, inputValue, e.target.value, index);
+        }
+        break;
+      case "Unstake":
+        if (!inputValue || inputValue == "0") {
+          setShowErrorMsg(true);
+          setErrorMsg("Please insert amount");
+        } else if (Number(inputValue) > Number(stakedAmount[index])) {
+          setShowErrorMsg(true);
+          setErrorMsg("Insufficient balance");
+        } else {
+          stakeProcess(sc, inputValue, e.target.value, index);
+        }
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -100,6 +118,7 @@ const StakeInput = ({
   };
 
   const selectPercent = (e: any) => {
+    setShowErrorMsg(false);
     const value = e.target.value;
     const balance =
       selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index];

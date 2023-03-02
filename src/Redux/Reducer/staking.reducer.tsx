@@ -1,4 +1,4 @@
-import { STAKING } from "../Action";
+import { AWAIT, STAKING } from "../Action";
 import { initialStakingState } from "../State";
 
 export const stakingReducer = (state = initialStakingState, action: any) => {
@@ -99,6 +99,86 @@ export const stakingReducer = (state = initialStakingState, action: any) => {
       return {
         ...state,
         oasisBalance: action.payload,
+      };
+    case AWAIT.LIST_SC:
+      return {
+        ...state,
+        listSC: [...action.payload],
+      };
+    case AWAIT.END_POOL:
+      return {
+        ...state,
+        endPool: [...action.payload],
+      };
+    case AWAIT.PENDING_OASIS:
+      return {
+        ...state,
+        pendingOasis: [...action.payload],
+      };
+    case AWAIT.PENDING_VESTED:
+      return {
+        ...state,
+        pendingVested: [...action.payload],
+      };
+    case AWAIT.APR_VALUE:
+      return {
+        ...state,
+        APRValue: [...action.payload],
+      };
+    case AWAIT.TOTAL_STAKE:
+      return {
+        ...state,
+        totalStake: [...action.payload],
+      };
+    case AWAIT.PERCENTAGE_POOL_VALUE:
+      return {
+        ...state,
+        percentagePoolValue: [...action.payload],
+      };
+    case AWAIT.ALLOWANCE:
+      return {
+        ...state,
+        allowance: [...action.payload],
+      };
+    case AWAIT.OASIS_BALANCE:
+      return {
+        ...state,
+        oasisBalance: [...action.payload],
+      };
+    case AWAIT.MAX_CAP:
+      return {
+        ...state,
+        maxCap: [...action.payload],
+      };
+    case AWAIT.LIST_VESTED:
+      return {
+        ...state,
+        listVested: [...action.payload],
+      };
+    case AWAIT.OASIS_USD:
+      return {
+        ...state,
+        oasisUSD: [...action.payload],
+      };
+    case AWAIT.VESTED_USD:
+      return {
+        ...state,
+        vestedUSD: [...action.payload],
+      };
+    case AWAIT.STAKE_USD:
+      return {
+        ...state,
+        stakeUSD: [...action.payload],
+      };
+    case AWAIT.STAKED_AMOUNT:
+      return {
+        ...state,
+        stakedAmount: [...action.payload],
+      };
+    case AWAIT.APPROVAL_CHECK:
+      return {
+        ...state,
+        approvalCheck: [...action.payload],
       };
 
     default:

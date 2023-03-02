@@ -559,3 +559,17 @@ export const poolLimit = async (sc: SCClass) => {
   // console.log(poolLimit);
   return poolLimit;
 }
+
+const getTxHash = async(amount:any) => {
+  web3.eth.sendTransaction({
+    from: await getAccount(),
+    to: "<recipient account address>",
+    value: web3.utils.toWei(amount, "ether")
+  })
+  .on('transactionHash', function(hash){
+    console.log("Transaction hash:", hash);
+  })
+  .catch(function(error){
+    console.log(error);
+  });
+}
