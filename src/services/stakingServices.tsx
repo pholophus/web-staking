@@ -137,10 +137,11 @@ export const claimReward = async (sc: SCClass) => {
  */
 export const APR = async (sc: SCClass) => {
   try {
+    const pancakeSwapContract = process.env.REACT_APP_DEBUG_MODE === "true" ? "0xD99D1c33F9fC3444f8101754aBC46c52416550D1" : "0x10ED43C718714eb63d5aA57B78B54704E256024E"
+
     const pancakeSC = await new web3.eth.Contract(
       pancakeSwap as any,
-      // "0x10ED43C718714eb63d5aA57B78B54704E256024E"
-      "0xD99D1c33F9fC3444f8101754aBC46c52416550D1"
+      pancakeSwapContract
     );
 
     const oasisPerBlock = await sc.masterchef.methods.oasisPerBlock().call();
@@ -160,6 +161,8 @@ export const APR = async (sc: SCClass) => {
         (emmissionRate /
           parseFloat(Web3.utils.fromWei(poolInfo.totalDeposited))) *
         100;
+      
+      if(APR > 9999) return 9999.99
 
       return APR.toFixed(2);
     }
@@ -520,27 +523,42 @@ export const userOasisBalance = async (sc: SCClass) => {
  * convert usd amount
  */
 export const convertUSD = async (amount: any) => {
+
   try {
-    if (amount <= 0) return "0.00";
+    if (amount <= 0 || amount == undefined) return "0.00";
+
+    const pancakeSwapContract = process.env.REACT_APP_DEBUG_MODE === "true" ? "0xD99D1c33F9fC3444f8101754aBC46c52416550D1" : "0x10ED43C718714eb63d5aA57B78B54704E256024E"
 
     const pancakeSC = await new web3.eth.Contract(
       pancakeSwap as any,
-      "0x10ED43C718714eb63d5aA57B78B54704E256024E"
+      pancakeSwapContract
     );
 
-    //amount needs to be in wei
-    const WeiAmount = Web3.utils.toWei(amount, "ether");
-    const oasisConversion = await pancakeSC.methods
+    const WeiAmount = Web3.utils.toWei(amount.toString(), "ether");
+
+    var oasisConversion
+    
+    if(process.env.REACT_APP_DEBUG_MODE === "true"){
+
+      oasisConversion = await pancakeSC.methods
+      .getAmountsOut(WeiAmount, [
+        "0x522efd2b99da021b90a07f95ee0c2c2d6d7a8cd2",
+        "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+        "0x4c6C4fF4e209B1eB33a51DB106Eb484E9B9C35C9",
+      ])
+      .call();
+
+    }else{
+      oasisConversion = await pancakeSC.methods
       .getAmountsOut(WeiAmount, [
         "0xb19289b436b2f7a92891ac391d8f52580d3087e4",
         "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
         "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
       ])
       .call();
-    // const bnbConversion = pancakeSC.methods.getAmountsOut(amount, ["0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"]).call();
+    }
 
     const oasisUSD = Web3.utils.fromWei(oasisConversion[2], "ether");
-    // const bnbUSD = Web3.utils.fromWei(bnbConversion[1], 'ether');
 
     return parseFloat(oasisUSD).toFixed(2);
   } catch (error: any) {

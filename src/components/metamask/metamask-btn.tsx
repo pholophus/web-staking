@@ -16,9 +16,9 @@ const MetaBtn = () => {
       const { ethereum } = window;
       ethereum.on("accountsChanged", (accounts: any) => {
 
-        const firstFour = accounts[0].slice(0, 4);
-        const  lastFour = accounts[0].slice(-4);
-        const result = firstFour + "..." + lastFour;
+        const firstSix = accounts[0].slice(0, 6);
+        const lastSix = accounts[0].slice(-6);
+        const result = firstSix + "..." + lastSix;
         
         setAccountAddress(result);
       });
@@ -42,9 +42,9 @@ const MetaBtn = () => {
         method: "eth_requestAccounts",
       });
 
-      const firstFour = accounts[0].slice(0, 4);
-      const  lastFour = accounts[0].slice(-4);
-      const result = firstFour + "..." + lastFour;
+      const firstSix = accounts[0].slice(0, 6);
+      const lastSix = accounts[0].slice(-6);
+      const result = firstSix + "..." + lastSix;
 
       setAccountAddress(result);
       setIsConnected(true);
@@ -60,17 +60,15 @@ const MetaBtn = () => {
   }, []);
 
   const disconnectWallet = async () => {
-    await window.ethereum.request({
-      method: 'wallet_requestPermissions',
-      params: [
-        {
-          eth_accounts: {},
-        },
-        {
-          provider: 'metamask',
-        },
-      ],
-    });
+    await window.ethereum.request(
+      { 
+        method: 'wallet_requestPermissions', 
+        params: [{ eth_accounts: {} }] 
+      }
+    )
+    .then(() => {
+      console.log('Logged out of Metamask');
+    })
   }
 
   const connectWallet = async () => {
@@ -82,9 +80,9 @@ const MetaBtn = () => {
         method: "eth_requestAccounts",
       });
 
-      const firstFour = accounts[0].slice(0, 4);
-      const  lastFour = accounts[0].slice(-4);
-      const result = firstFour + "..." + lastFour;
+      const firstSix = accounts[0].slice(0, 6);
+      const lastSix = accounts[0].slice(-6);
+      const result = firstSix + "..." + lastSix;
 
       setAccountAddress(result);
 
@@ -96,28 +94,33 @@ const MetaBtn = () => {
 
   return (
     <div className="App">
-      {haveMetamask ? (
-        <div>
-          {isConnected && (
-            <button
-            className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[130px] h-[41px] rounded-xl"
-            onClick={disconnectWallet}
-            >
-              {accountAddress}
-            </button>
-          )}
-          {isConnected == false && (
-            <button
-              className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[250px] h-[41px] rounded-xl"
-              onClick={connectWallet}
-            >
-              Connect Wallet
-            </button>
-          )}
-        </div>
-      ) : (
-        <p>Please Install MataMask</p>
-      )}
+      {
+        haveMetamask ? 
+          (
+            <div>
+              {isConnected && (
+                <button disabled={true}
+                className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[150px] h-[41px] rounded-xl"
+                onClick={disconnectWallet}
+                >
+                  {accountAddress}
+                </button>
+              )}
+              {isConnected == false && (
+                <button
+                  className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[250px] h-[41px] rounded-xl"
+                  onClick={connectWallet}
+                >
+                  Connect Wallet
+                </button>
+              )}
+            </div>
+          ) 
+        : 
+          (
+            <p>Please Install MataMask</p>
+          )
+      }
     </div>
   );
 };

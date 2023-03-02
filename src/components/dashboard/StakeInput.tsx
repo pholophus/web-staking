@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from "react";
 import { active, inactive, stakeBg, unstakeBg } from "../../variable";
 import coin from "../../images/coin.png";
+import {convertUSD} from "../../services/stakingServices"
 
 const StakeInput = ({
   sc,
@@ -8,18 +9,30 @@ const StakeInput = ({
   index,
   approvalCheck,
   showStake,
-  stakeUSD,
   visible,
   selectedIndex,
   allowance,
   oasisBalance,
   stakeProcess,
-  poolStatus
+  poolStatus,
+  stakedAmountUSD
 }: any) => {
   const INITIAL_STATE = {
     stake: "",
     color: "",
   };
+
+  useEffect(() => {
+    ( 
+      async () => {
+        const convertAmount = selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index]
+        await convertUSD(convertAmount).then((usd) => {
+          setOasisUSD(usd)
+        })
+      }
+    )();
+    
+  }, []);
 
   const postReducer = (state: any, action: any) => {
     switch (action.type) {
@@ -43,9 +56,8 @@ const StakeInput = ({
   const [showErrorMsg, setShowErrorMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showInput, setShowInput] = useState(false);
-  const [isStakeCompleted, setIsStakeCompleted] = useState(false);
-  const [isUnstakeCompleted, setIsUnstakeCompleted] = useState(false);
   const [currentOasisBalance, setCurrentOasisBalance] = useState(0)
+  const [oasisUSD, setOasisUSD] = useState<any>(0)
 
   const approved = approvalCheck[index] ? "block" : "hidden";
   const notApproved = approvalCheck[index] ? "hidden" : "block";
@@ -139,14 +151,22 @@ const StakeInput = ({
             <div className="my-5">
               <p className="text-[20px] text-[#8E8E8E]">Your $Oasis Staked</p>
               <p className="text-[24px]">{`${stakedAmount[index]} $OASIS`}</p>
-              <p className="mb-5">{`(${stakeUSD ?? "0.00"} $USD)`}</p>
+              <p className="mb-5">{`(${oasisUSD ?? "0.00"} $USD)`}</p>
             </div>
             <div className="mt-4 px-8 flex justify-between">
               <button
                 value="stake"
                 onClick={stakeInput}
-                className={`${poolStatus == "active" ? stakeBg : inactive} w-[120px] py-2 rounded-md`}
-                disabled={poolStatus != "active"}
+                className={`
+                  ${
+                    process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                      stakeBg
+                    :  
+                      poolStatus == "inactive" ? stakeBg : inactive
+                  } 
+                  w-[120px] py-2 rounded-md`
+                }
+                disabled={process.env.REACT_APP_DEBUG_MODE == "true" ? false : poolStatus != "active"}
               >
                 Stake
               </button>
@@ -154,8 +174,16 @@ const StakeInput = ({
               <button
                 value="unstake"
                 onClick={stakeInput}
-                className={`${poolStatus == "inactive" ? unstakeBg : inactive} w-[120px] py-2 rounded-md`}
-                disabled={poolStatus != "inactive"}
+                className={`
+                  ${
+                    process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                      unstakeBg
+                    :  
+                      poolStatus == "inactive" ? unstakeBg : inactive
+                  } 
+                  w-[120px] py-2 rounded-md`
+                }
+                disabled={process.env.REACT_APP_DEBUG_MODE == "true" ? false : poolStatus != "inactive"}
               >
                 Unstake
               </button>

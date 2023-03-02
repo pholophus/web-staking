@@ -27,9 +27,11 @@ const Accordion = ({
   allowance,
   oasisBalance,
   stakeProcess,
-  poolStatus
+  poolStatus,
+  pendingOasisUSD,
+  pendingVestedUSD
 }: any) => {
-  const [oasisUSD, setOasisUSD] = useState<any>("");
+  // const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
   const [stakeUSD, setStakeUSD] = useState<any>("");
   const [isClaimActive, setIsClaimActive] = useState(false);
@@ -37,9 +39,20 @@ const Accordion = ({
   const [showModal, setShowModal] = useState(false);
   const [vestIndex, setVestIndex] = useState(0);
 
-  // useEffect(() => {
+  useEffect(() => {
+    checkClickable("claim");
+    checkClickable("collect");
 
-  // }, [pendingOasis]);
+    findIndexByNotCollectedYet();
+    const index = findIndexByNotCollectedYet();
+    if (index !== undefined) {
+      setVestIndex(0);
+    }
+  }, [
+    approvalCheck[index],
+    listVested[index],
+    isClaimActive,
+  ]);
 
   const claimPendingReward = () => {
     claimReward(sc);
@@ -47,7 +60,6 @@ const Accordion = ({
 
   const collectPendingReward = () => {
     collectReward(sc);
-    // setVestIndex(vestIndex + 1)
   };
 
   const showStake = async () => {
@@ -77,26 +89,17 @@ const Accordion = ({
   const checkClickable = (type: string) => {
     switch (type) {
       case "claim":
-        if (pendingOasis[index])
-          setIsClaimActive(
-            pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
-          );
+        setIsClaimActive(!vestCollectStatus());
         break;
       case "collect":
-        setIsCollectActive(!vestCollectStatus());
+        if (pendingOasis[index])
+        setIsCollectActive(
+            pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
+          );
         break;
       default:
         break;
     }
-  };
-
-  const converter = async () => {
-    const convertedOasis = await convertUSD(pendingOasis[index]);
-    const convertedVested = await convertUSD(pendingVested[index]);
-    const convertedStake = await convertUSD(stakedAmount[index]);
-    setOasisUSD(convertedOasis);
-    setVestedUSD(convertedVested);
-    setStakeUSD(convertedStake);
   };
 
   const findIndexByNotCollectedYet = () => {
@@ -108,24 +111,6 @@ const Accordion = ({
     );
   };
 
-  useEffect(() => {
-    checkClickable("claim");
-    checkClickable("collect");
-    converter();
-
-    findIndexByNotCollectedYet();
-    const index = findIndexByNotCollectedYet();
-    if (index !== undefined) {
-      setVestIndex(0);
-    }
-  }, [
-    approvalCheck[index],
-    pendingOasis[index],
-    pendingVested[index],
-    listVested[index],
-    isClaimActive,
-  ]);
-
   return (
     <div
       className={`${
@@ -136,6 +121,7 @@ const Accordion = ({
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
       <div className="flex text-white mx-4 my-10">
+
         <div className="mr-3 pr-2 my-auto text-left text-[13px]">
           <p className="mb-4">{`Deposit Lock Duration : ${
             listSCJson[sc.index].days
@@ -151,15 +137,15 @@ const Accordion = ({
             <p className="text-[24px]">{`${
               pendingOasis[index] ?? "0.00"
             } $OASIS`}</p>
-            <p className="mb-5">{`(${oasisUSD ?? "0.00"} $USD)`}</p>
+            <p className="mb-5">{`(${pendingOasisUSD[index] ?? "0.00"} $USD)`}</p>
           </div>
           <div className="">
             <button
-              disabled={isClaimActive}
-              onClick={claimPendingReward}
-              className={` ${
-                isClaimActive ? inactive : active
-              }  font-bold py-2 px-12 rounded `}
+              disabled={isCollectActive}
+              onClick={collectPendingReward}
+              className={`${
+                isCollectActive ? inactive : active
+              } font-bold py-2 px-12 rounded `}
             >
               CLAIM
             </button>
@@ -170,7 +156,7 @@ const Accordion = ({
           <div className="my-5">
             <p className="text-[20px] text-[#8E8E8E]">Vest Rewards</p>
             <p className="text-[24px]">{pendingVested[index] ?? "0"} $OASIS</p>
-            <p className="mb-5">{`(${vestedUSD ?? "0"} $USD)`}</p>
+            <p className="mb-5">{`(${pendingVestedUSD[index] ?? "0"} $USD)`}</p>
           </div>
 
           <div className="px-4 flex flex-col my-auto">
@@ -189,11 +175,11 @@ const Accordion = ({
                 </div>
               </button>
               <button
-                disabled={isCollectActive}
-                onClick={collectPendingReward}
-                className={`${
-                  isCollectActive ? inactive : active
-                } font-bold py-2 px-4 rounded `}
+                disabled={isClaimActive}
+                onClick={claimPendingReward}
+                className={` ${
+                  isClaimActive ? inactive : active
+                }  font-bold py-2 px-4 rounded `}
               >
                 COLLECT
               </button>
@@ -232,11 +218,12 @@ const Accordion = ({
                 collectPendingReward,
                 isCollectActive,
                 stakeUSD,
-                selectedIndex,
+                selectedIndex
               }}
             />
           )}
         </div>
+        
       </div>
     </div>
   );

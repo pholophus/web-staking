@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import MetaBtn from "../metamask/metamask-btn";
 import {
   readSC,
   activeSC,
@@ -38,7 +37,9 @@ const List = ({
   const [filteredSC, setFilteredSC] = useState<SCClass[]>([]);
   const [endPool, setEndPool] = useState<any[]>([]);
   const [pendingOasis, setPendingOasis] = useState<any[]>([]);
+  const [pendingOasisUSD, setPendingOasisUSD] = useState<any[]>([]);
   const [pendingVested, setPendingVested] = useState<any[]>([]);
+  const [pendingVestedUSD, setPendingVestedUSD] = useState<any[]>([]);
   const [APRValue, setAPRValue] = useState<any[]>([]);
   const [totalStake, setTotalStake] = useState<any[]>([]);
   const [percentagePoolValue, setPercentagePoolValue] = useState<any[]>([]);
@@ -64,6 +65,7 @@ const List = ({
     const intervalId = setInterval(async () => {
       for(const sc of filteredSC){
         await updatePool(sc, sc.index)
+        await updateConversion(sc.index)
       }
     }, 10000);
 
@@ -107,9 +109,7 @@ const List = ({
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === poolType
           );
-          console.log("sebelum get pool detail")
           await getPoolDetail(filteredResp);
-          setFilteredSC(resp);
         });
         break;
       case "inactive":
@@ -118,15 +118,15 @@ const List = ({
           const filteredResp = farmCheck.filter(
             (item: any) => item.type === poolType
           );
-          console.log("sebelum get pool detail")
           await getPoolDetail(filteredResp);
-          setFilteredSC(resp);
         });
         break;
     }
   };
 
   const getPoolDetail = async (resp: SCClass[]) => {
+
+    setFilteredSC(resp);
 
     /*reset value*/
     setEndPool([]);
@@ -138,6 +138,8 @@ const List = ({
     setListVested([]);
     setMaxCap([]);
     setAllowance([]);
+    setPendingOasisUSD([]);
+    setPendingVestedUSD([]);
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
@@ -159,13 +161,19 @@ const List = ({
         ]);
       });
 
-      await pendingAmount(sc).then((resp) => {
+      await pendingAmount(sc).then(async (resp) => {
         setPendingOasis((pendingOasis) => [...pendingOasis, resp]);
+        await convertUSD(resp).then((usd) => {
+          setPendingOasisUSD((pendingOasisUSD) => [...pendingOasisUSD, usd]);
+        })
       });
-      await vestedBalance(sc).then((resp) => {
+      await vestedBalance(sc).then(async (resp) => {
         setPendingVested((pendingVested) => [...pendingVested, resp]);
+        await convertUSD(resp).then((usd) => {
+          setPendingVestedUSD((pendingVestedUSD) => [...pendingVestedUSD, usd]);
+        })
       });
-      await amountStaked(sc).then((resp) => {
+      await amountStaked(sc).then(async (resp) => {
         setStakedAmount((stakedAmount) => [...stakedAmount, resp]);
       });
       await checkApproval(sc).then((resp) => {
@@ -186,14 +194,35 @@ const List = ({
     }
   };
 
+  const updateConversion = async(index: number) => {
+    const [updatePendingVestedUSD, updatePendingOasisUSD] = await Promise.all([
+      convertUSD(pendingVestedUSD[index]),
+      convertUSD(pendingOasisUSD[index])
+    ]);
+
+    setPendingVestedUSD(prev => {
+      const updated = [...prev];
+      updated[index] = updatePendingVestedUSD;
+      return updated;
+    });
+
+    setPendingOasisUSD(prev => {
+      const updated = [...prev];
+      updated[index] = updatePendingOasisUSD;
+      return updated;
+    });
+  }
+
   const updatePool = async(sc: SCClass, index: number) => {
     
-    const [amountStake, oasisBalance, valueAPR, totalStakeValue, percentagePoolLatest] = await Promise.all([
+    const [amountStake, oasisBalance, valueAPR, totalStakeValue, percentagePoolLatest, pendingOasis, pendingVested] = await Promise.all([
       amountStaked(sc),
       userOasisBalance(sc),
       APR(sc),
       totalStakePool(sc),
-      percentagePool(sc)
+      percentagePool(sc),
+      pendingAmount(sc),
+      vestedBalance(sc)
     ]);
   
     setStakedAmount(prev => {
@@ -221,6 +250,19 @@ const List = ({
       updated[index] = percentagePoolLatest;
       return updated;
     });
+
+    setPendingOasis(prev => {
+      const updated = [...prev];
+      updated[index] = pendingOasis;
+      return updated;
+    });
+
+    setPendingVested(prev => {
+      const updated = [...prev];
+      updated[index] = pendingVested;
+      return updated;
+    });
+
   }
 
   const stakeProcess = async (sc: SCClass, inputValue: any, process: string, index: number) => {
@@ -284,39 +326,40 @@ const List = ({
                             />
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
-                            <div className="flex ">
+                            <div className="flex flex-col items-center">
                               {`${
                                 poolType == "single"
                                   ? "Oasis Coins"
                                   : "Oasis - BNB"
                               }`}
                             </div>
-                            <div className="flex ">
+                            <div className="flex flex-col items-center">
                               {`${listSCJson[sc.index].days} Days ${
                                 poolType == "single" ? "Single staking" : "LP"
                               }`}
                             </div>
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
-                            <div className="flex">
+                            <div className="flex flex-col items-center">
                               <p className="text-[#8E8E8E]">Ends</p>
                             </div>
-                            <div className="flex">{endPool[index]}</div>
+                            <div className="flex flex-col items-center">{endPool[index]}</div>
                           </td>
                           <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
-                            <div className="flex">
+                            <div className="flex flex-col items-center">
                               <p className="text-[#8E8E8E]">APR</p>
                             </div>
-                            <div className="flex">{APRValue[index]}</div>
+                            <div className="flex flex-col items-center">{APRValue[index]}%</div>
                           </td>
-                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap">
-                            <div className="flex">
+                          <td className="py-4 text-sm text-[#ffffff] whitespace-nowrap ">
+                            <div className="flex flex-col items-center">
                               <p className="text-[#8E8E8E]">
                                 Total Volume Staked
                               </p>
                             </div>
-                            <div className="flex">${totalStake[index]}</div>
+                            <div className="flex flex-col items-center">${totalStake[index]}</div>
                           </td>
+
                           <td className="pr-[5rem] py-4 text-sm  text-[#ffffff] whitespace-nowrap">
                             <div className="flex justify-between">
                               <div className="flex">
@@ -369,7 +412,9 @@ const List = ({
                 allowance,
                 oasisBalance,
                 stakeProcess,
-                poolStatus
+                poolStatus,
+                pendingOasisUSD,
+                pendingVestedUSD
               }}
             />
           </>
