@@ -67,7 +67,7 @@ const MetaBtn = () => {
       }
     )
     .then(() => {
-      console.log('Logged out of Metamask');
+      // console.log('Logged out of Metamask');
     })
   }
 

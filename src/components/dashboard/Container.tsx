@@ -6,7 +6,7 @@ import Menu from "./Menu";
 const Container = () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const { ethereum } = window;
-  const [poolStatus, setPoolStatus] = useState("inactive");
+  const [poolStatus, setPoolStatus] = useState("active");
   const [poolType, setPoolType] = useState("single");
   const [farm, setFarm] = useState(false);
 

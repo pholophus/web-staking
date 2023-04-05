@@ -15,7 +15,8 @@ const StakeInput = ({
   oasisBalance,
   stakeProcess,
   poolStatus,
-  stakedAmountUSD
+  stakedAmountUSD,
+  setStakedAmountUSD
 }: any) => {
   const INITIAL_STATE = {
     stake: "",
@@ -23,16 +24,31 @@ const StakeInput = ({
   };
 
   useEffect(() => {
-    ( 
-      async () => {
-        const convertAmount = selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index]
-        await convertUSD(convertAmount).then((usd) => {
-          setOasisUSD(usd)
-        })
-      }
-    )();
+
+    const intervalId = setInterval(async () => {
+      await updateConversion(index)
+    }, 10000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
     
-  }, []);
+  });
+
+  const updateConversion = async(index: number) => {
+
+    const convertAmount = selectStake?.stake === "Stake" ? oasisBalance : stakedAmount[index]
+
+    const [updateStakedAmountUSD] = await Promise.all([
+      convertUSD(convertAmount),
+    ]);
+
+    setStakedAmountUSD(( prev: any) => {
+      const updated = [...prev];
+      updated[index] = updateStakedAmountUSD;
+      return updated;
+    });
+  }
 
   const postReducer = (state: any, action: any) => {
     switch (action.type) {
@@ -104,7 +120,7 @@ const StakeInput = ({
   };
 
   useEffect(() => {
-  }, [stakedAmount]);
+  }, [stakedAmount[index]]);
 
   const onClickPercentage = (e: any) => {
     setShowErrorMsg(false);
@@ -145,28 +161,39 @@ const StakeInput = ({
         </div>
       </div>
 
-      {!showInput && (
+      {!showInput && 
+      (
         <div className={`mx-auto ${approved}`}>
           <div className="items-center place-content-center mr-8 border-[#3D3D3D] border-2 w-[330px] rounded-lg py-6 my-auto h-[15rem]">
             <div className="my-5">
               <p className="text-[20px] text-[#8E8E8E]">Your $Oasis Staked</p>
               <p className="text-[24px]">{`${stakedAmount[index]} $OASIS`}</p>
-              <p className="mb-5">{`(${oasisUSD ?? "0.00"} $USD)`}</p>
+              <p className="mb-5">{`(${stakedAmountUSD[index] ?? "0.00"} $USD)`}</p>
             </div>
             <div className="mt-4 px-8 flex justify-between">
               <button
                 value="stake"
                 onClick={stakeInput}
-                className={`
+                className={
+                  `
                   ${
-                    process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                      process.env.REACT_APP_DEBUG_MODE == "true" ?
+                      stakeBg 
+                    :
+                      (process.env.REACT_APP_DEBUG_MODE == "false" && poolStatus == "active" && oasisBalance > 0) ? 
                       stakeBg
                     :  
-                      poolStatus == "inactive" ? stakeBg : inactive
+                      inactive
                   } 
                   w-[120px] py-2 rounded-md`
                 }
-                disabled={process.env.REACT_APP_DEBUG_MODE == "true" ? false : poolStatus != "active"}
+                disabled={
+                  process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                    false : 
+                    true
+                    &&
+                    oasisBalance <= 0 
+                  }
               >
                 Stake
               </button>
@@ -176,14 +203,23 @@ const StakeInput = ({
                 onClick={stakeInput}
                 className={`
                   ${
-                    process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                    process.env.REACT_APP_DEBUG_MODE == "true" ?
+                    unstakeBg 
+                    :
+                    (process.env.REACT_APP_DEBUG_MODE == "false" && poolStatus == "inactive" && stakedAmount[index] > 0) ? 
                       unstakeBg
                     :  
-                      poolStatus == "inactive" ? unstakeBg : inactive
+                      inactive 
                   } 
                   w-[120px] py-2 rounded-md`
                 }
-                disabled={process.env.REACT_APP_DEBUG_MODE == "true" ? false : poolStatus != "inactive"}
+                disabled={
+                  process.env.REACT_APP_DEBUG_MODE == "true" ? 
+                      false : 
+                      true
+                    &&
+                    stakedAmount[index] <= 0 
+                }
               >
                 Unstake
               </button>
@@ -191,6 +227,7 @@ const StakeInput = ({
           </div>
         </div>
       )}
+
 
       {showInput && (
         <div className={`mx-auto ${approved}`}>

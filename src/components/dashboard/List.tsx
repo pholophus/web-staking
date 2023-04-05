@@ -46,6 +46,7 @@ const List = ({
   const [visible, setVisible] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<any[]>([]);
   const [stakedAmount, setStakedAmount] = useState<any[]>([]);
+  const [stakedAmountUSD, setStakedAmountUSD] = useState<any[]>([]);
   const [approvalCheck, setApprovalCheck] = useState<any[]>([]);
   const [listVested, setListVested] = useState<any[]>([]);
   const [showAccordion, setShowAccordion] = useState(false)
@@ -60,19 +61,6 @@ const List = ({
     })();
     
   }, [poolStatus, poolType, farm]);
-
-  useEffect(() => {
-    const intervalId = setInterval(async () => {
-      for(const sc of filteredSC){
-        await updatePool(sc, sc.index)
-        await updateConversion(sc.index)
-      }
-    }, 10000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [oasisBalance]);
 
   const initData = async () => {
     await readSC().then(async (res) => {
@@ -133,13 +121,17 @@ const List = ({
     setAPRValue([]);
     setTotalStake([]);
     setPercentagePoolValue([]);
-    setSelectedIndex([]);
+    setPendingOasis([]);
+    setPendingVested([]);
+    setStakedAmount([]);
     setApprovalCheck([]);
     setListVested([]);
     setMaxCap([]);
     setAllowance([]);
+    setSelectedIndex([]);
     setPendingOasisUSD([]);
     setPendingVestedUSD([]);
+    setStakedAmountUSD([]);
 
     for (const sc of resp) {
       await poolEndTime(sc).then((resp) => {
@@ -168,13 +160,14 @@ const List = ({
         })
       });
       await vestedBalance(sc).then(async (resp) => {
-        setPendingVested((pendingVested) => [...pendingVested, resp]);
-        await convertUSD(resp).then((usd) => {
-          setPendingVestedUSD((pendingVestedUSD) => [...pendingVestedUSD, usd]);
-        })
+        setPendingVested((pendingVested) => [...pendingVested, resp?.totalAmount]);
+        setPendingVestedUSD((pendingVestedUSD) => [...pendingVestedUSD, resp?.totalUSDAmount]);
       });
       await amountStaked(sc).then(async (resp) => {
         setStakedAmount((stakedAmount) => [...stakedAmount, resp]);
+        await convertUSD(resp).then((usd) => {
+          setStakedAmountUSD((stakedAmountUSD) => [...stakedAmountUSD, usd]);
+        })
       });
       await checkApproval(sc).then((resp) => {
         setApprovalCheck((approvalCheck) => [...approvalCheck, resp]);
@@ -193,25 +186,6 @@ const List = ({
       })
     }
   };
-
-  const updateConversion = async(index: number) => {
-    const [updatePendingVestedUSD, updatePendingOasisUSD] = await Promise.all([
-      convertUSD(pendingVestedUSD[index]),
-      convertUSD(pendingOasisUSD[index])
-    ]);
-
-    setPendingVestedUSD(prev => {
-      const updated = [...prev];
-      updated[index] = updatePendingVestedUSD;
-      return updated;
-    });
-
-    setPendingOasisUSD(prev => {
-      const updated = [...prev];
-      updated[index] = updatePendingOasisUSD;
-      return updated;
-    });
-  }
 
   const updatePool = async(sc: SCClass, index: number) => {
     
@@ -259,7 +233,7 @@ const List = ({
 
     setPendingVested(prev => {
       const updated = [...prev];
-      updated[index] = pendingVested;
+      updated[index] = pendingVested?.totalAmount;
       return updated;
     });
 
@@ -414,7 +388,11 @@ const List = ({
                 stakeProcess,
                 poolStatus,
                 pendingOasisUSD,
-                pendingVestedUSD
+                setPendingOasisUSD,
+                pendingVestedUSD,
+                setPendingVestedUSD,
+                stakedAmountUSD,
+                setStakedAmountUSD
               }}
             />
           </>

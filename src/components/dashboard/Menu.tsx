@@ -10,6 +10,7 @@ export const Menu = ({
   farm,
   setFarm,
 }: any) => {
+  
   const [txt, setTxt] = useState("Single Staking");
 
   const handleClickStatus = (event: any) => {
@@ -59,7 +60,7 @@ export const Menu = ({
             </button>
           </div>
         </div>
-        <div className="mr-[24rem]">
+        {/* <div className="mr-[24rem]">
           <p>Staked Only</p>
           <div className="pt-2">
             <label className="relative inline-flex items-center mr-5 cursor-pointer">
@@ -75,7 +76,7 @@ export const Menu = ({
               />
             </label>
           </div>
-        </div>
+        </div> */}
         <div className="flex justify-between w-[22rem] text-[30px]">
           <button
             className={poolType === "single" ? "text-[#FEAE34]" : ""}

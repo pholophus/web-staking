@@ -6,7 +6,7 @@ const Modal = ({
   setShowModal,
   index,
   listVested,
-  collectPendingReward,
+  collectVestingReward,
   isCollectActive,
 }: any) => {
   return (
@@ -43,16 +43,24 @@ const Modal = ({
                       </p>
                     </div>
                     {listVested[index].map((item: Vest, i: number) => (
-                      <div className="flex justify-between my-3 px-12 py-[0.5rem] bg-[#2E2E2E]">
-                        <p>{item.date}</p>
-                        <p>{item.amount}</p>
-                        <p>{item.collected ? "collected" : "uncollected"}</p>
+                      <div className="py-[0.5rem]">
+                        <div className="py-[0.5rem] bg-[#2E2E2E] grid grid-cols-3 gap-y-4">
+                          <div> 
+                            <p>{item.date}</p>
+                          </div>
+                          <div>
+                            <p>{item.amount}</p>
+                          </div>
+                          <div>
+                            <p>{item.collected}</p>
+                          </div>
+                        </div>
                       </div>
                     ))}
                     <div className="mb-4">
                       <button
                         disabled={isCollectActive}
-                        onClick={collectPendingReward}
+                        onClick={collectVestingReward}
                         className={`${
                           isCollectActive ? inactive : active
                         } py-2 px-4 mt-4 rounded-lg w-[10rem]`}

@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Web3 from "web3";
 import SCJson from "../data/oasis-smart-contract.json";
-import { SC as SCClass, Vest } from "../interface/index";
+import { SC as SCClass, Vest, VestTotal } from "../interface/index";
 import lp from "../data/abi/lp.json";
 import masterchef from "../data/abi/masterchef.json";
 import oasis from "../data/abi/oasis.json";
 import rewardLocker from "../data/abi/rewardLocker.json";
 import pancakeSwap from "../data/abi/pancakeswapABI.json";
 import testnet from "../data/testnet.json";
+import { parse } from "node:path/win32";
 
 
 // const [getAccount(), setgetAccount()] = useState("");
@@ -25,6 +26,10 @@ export const getAccount = async () => {
       method: "eth_requestAccounts",
     });
 
+    //darien
+    // return "0x7Ed095A49eA82Bd8c29d60cf524f94BbBaD74356"
+    // return "0xE30a861b24351536d0E5067A1c9A7c712f447605"
+    //TL
     // return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
     return accounts[0];
   } catch (error) {
@@ -124,7 +129,7 @@ export const unactiveSC = async (listSC: SCClass[]) => {
 /**
  * claim reward process
  */
-export const claimReward = async (sc: SCClass) => {
+export const claimPending = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
@@ -349,7 +354,7 @@ export const myFarm = async (listSC: SCClass[]) => {
 /**
  * collect reward process
  */
-export const collectReward = async (sc: SCClass) => {
+export const collectVesting = async (sc: SCClass) => {
   try {
     const getAcc = await getAccount();
 
@@ -418,19 +423,58 @@ export const percentagePool = async (sc: SCClass) => {
  * balance for vested
  */
 export const vestedBalance = async (sc: SCClass) => {
+  // try {
+  //   const getAcc = await getAccount();
+
+  //   const stakeAddress =
+  //     sc.type == "single"
+  //       ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
+  //       : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
+
+  //   const vestedBalance = await sc.reward.methods
+  //     .accountVestedBalance(getAcc, stakeAddress)
+  //     .call();
+
+  //   return parseFloat(Web3.utils.fromWei(vestedBalance, "ether")).toFixed(2);
+  // } catch (error) {}
+
+  //manually calculate
   try {
+    const stakeAddress = "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
+
     const getAcc = await getAccount();
 
-    const stakeAddress =
-      sc.type == "single"
-        ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
-        : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
-
-    const vestedBalance = await sc.reward.methods
-      .accountVestedBalance(getAcc, stakeAddress)
+    const vestList = await sc.reward.methods
+      .getVestingSchedules(getAcc, stakeAddress)
       .call();
 
-    return parseFloat(Web3.utils.fromWei(vestedBalance, "ether")).toFixed(2);
+    var totalAmount = 0
+    var totalUSDAmount = 0
+
+    const vestRewardTotal: VestTotal = new VestTotal();
+
+    for (const vest of vestList) {
+
+      const startBlock = (await web3.eth.getBlock(vest.startBlock)).timestamp;
+
+      var vestTimestamp = (startBlock as any) + (parseFloat(sc.days as any) * 24 * 60 * 60);
+
+      const timeLeft = await timeConversion((vestTimestamp as any) - Math.ceil(Date.now() / 1000));
+
+      let amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2);
+      let USDAmount = await convertUSD(parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2));
+
+      if(timeLeft == "0D:0H:0M" && (vest.quantity != vest.vestedQuantity)){
+        totalAmount = totalAmount + parseFloat(amount);
+        totalUSDAmount = totalUSDAmount + parseFloat((USDAmount as any));
+      }
+
+    }
+
+    vestRewardTotal.totalAmount = totalAmount.toFixed(2)
+    vestRewardTotal.totalUSDAmount = totalUSDAmount.toFixed(2)
+    
+    return vestRewardTotal;
   } catch (error) {}
 };
 
@@ -439,10 +483,7 @@ export const vestedBalance = async (sc: SCClass) => {
  */
 export const vestedList = async (sc: SCClass) => {
   try {
-    const stakeAddress =
-      sc.type == "single"
-        ? "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
-        : "0xa487E06cB74790a09948a69C81A44a12f8FFA6C3";
+    const stakeAddress = "0xb19289b436b2f7a92891ac391d8f52580d3087e4"
 
     const getAcc = await getAccount();
 
@@ -453,33 +494,30 @@ export const vestedList = async (sc: SCClass) => {
     var vestRewardList: Vest[] = [];
 
     for (const vest of vestList) {
+
       const vestReward: Vest = new Vest();
 
-      const vestTimestamp = (await web3.eth.getBlock(vest.endBlock)).timestamp;
+      const startBlock = (await web3.eth.getBlock(vest.startBlock)).timestamp;
 
-      const timeLeft = await timeConversion(
-        (vestTimestamp as any) - Math.ceil(Date.now() / 1000)
-      );
+      var vestTimestamp = (startBlock as any) + (parseFloat(sc.days as any) * 24 * 60 * 60);
 
-      // console.log(`now ---> ${Math.ceil(Date.now() / 1000)}`);
-      // console.log(`block timestamp ---> ${parseFloat(vestTimestamp as any)}`);
-      // console.log(
-      //   "true or false ---> ",
-      //   parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
-      // );
+      const timeLeft = await timeConversion((vestTimestamp as any) - Math.ceil(Date.now() / 1000));
 
-      vestReward.date =
-        parseFloat(vestTimestamp as any) > Math.ceil(Date.now() / 1000)
-          ? (timeLeft as any)
-          : await timeConversion(0);
+      vestReward.date = timeLeft
 
-      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(
-        2
-      );
-      vestReward.collected =
-        vest.quantity == vest.vestedQuantity ? true : false;
+      vestReward.amount = parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2);
+      vestReward.USDAmount = await convertUSD(parseFloat(Web3.utils.fromWei(vest.quantity)).toFixed(2));
+
+      if(timeLeft != "0D:0H:0M") {
+        vestReward.collected = "Locked"
+      }else if(timeLeft == "0D:0H:0M" && (vest.quantity != vest.vestedQuantity)){
+        vestReward.collected = "Uncollected"
+      }else if(timeLeft == "0D:0H:0M" && (vest.quantity == vest.vestedQuantity)){
+        vestReward.collected = "Collected"
+      }
 
       vestRewardList.push(vestReward);
+
     }
     /**
          * 
@@ -488,7 +526,6 @@ export const vestedList = async (sc: SCClass) => {
         quantity;
         vestedQuantity;
          */
-    // console.log(vestRewardList);
     return vestRewardList;
   } catch (error) {}
 };
@@ -567,7 +604,7 @@ export const convertUSD = async (amount: any) => {
 };
 
 const timeConversion = async (seconds: any) => {
-  if (seconds == 0) return `0D:0H:0M`;
+  if (seconds <= 0) return `0D:0H:0M`;
 
   const minutes = seconds / 60;
   const hours = minutes / 60;

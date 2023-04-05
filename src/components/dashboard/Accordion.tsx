@@ -2,8 +2,8 @@ import { invariant } from "@remix-run/router";
 import { useEffect, useState } from "react";
 import { Vest } from "../../interface";
 import {
-  claimReward,
-  collectReward,
+  claimPending,
+  collectVesting,
   approve,
   convertUSD,
 } from "../../services/stakingServices";
@@ -29,7 +29,11 @@ const Accordion = ({
   stakeProcess,
   poolStatus,
   pendingOasisUSD,
-  pendingVestedUSD
+  setPendingOasisUSD,
+  pendingVestedUSD,
+  setPendingVestedUSD,
+  stakedAmountUSD,
+  setStakedAmountUSD
 }: any) => {
   // const [oasisUSD, setOasisUSD] = useState<any>("");
   const [vestedUSD, setVestedUSD] = useState<any>("");
@@ -42,24 +46,49 @@ const Accordion = ({
   useEffect(() => {
     checkClickable("claim");
     checkClickable("collect");
-
-    findIndexByNotCollectedYet();
-    const index = findIndexByNotCollectedYet();
-    if (index !== undefined) {
-      setVestIndex(0);
-    }
   }, [
     approvalCheck[index],
     listVested[index],
     isClaimActive,
+    isCollectActive
   ]);
 
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+          await updateConversion(index)
+    }, 10000);
+  
+      return () => {
+        clearInterval(intervalId);
+      };
+  })
+
+  const updateConversion = async(index: number) => {
+
+    const [updatePendingVestedUSD, updatePendingOasisUSD] = await Promise.all([
+      convertUSD(pendingVested[index]),
+      convertUSD(pendingOasis[index])
+    ]);
+
+    setPendingVestedUSD(( prev: any) => {
+      const updated = [...prev];
+      updated[index] = updatePendingVestedUSD;
+      return updated;
+    });
+ 
+    setPendingOasisUSD(( prev: any) => {
+      const updated = [...prev];
+      updated[index] = updatePendingOasisUSD;
+      return updated;
+    });
+  }
+
   const claimPendingReward = () => {
-    claimReward(sc);
+    claimPending(sc);
   };
 
-  const collectPendingReward = () => {
-    collectReward(sc);
+  const collectVestingReward = () => {
+    collectVesting(sc);
   };
 
   const showStake = async () => {
@@ -77,38 +106,115 @@ const Accordion = ({
   };
 
   const vestCollectStatus = () => {
-    if (listVested[index]) {
-      return (
-        listVested[index] &&
-        listVested[index].length > 0 &&
-        listVested[index][vestIndex].collected === false
-      );
+    const filter = listVested[index]?.findIndex((el: any) => el.collected == "Uncollected")
+
+    if(filter != -1){
+      return false;
     }
+
+    return true;
   };
+
+  const indexTime = (vest: any[]) => {
+
+    const fullyLocked = listVested[index]?.every((el: any) => el.collected == "Locked")
+
+    const existUncollect = listVested[index]?.findIndex((el: any) => el.collected == "Uncollected")
+
+    const existLocked = listVested[index]?.findIndex((el: any) => el.collected == "Locked")
+
+    if(fullyLocked){
+
+      return listVested[index]?.[0]?.date
+
+    }else if(existUncollect != -1){
+
+      return "0D:0H:0M"
+
+    }else if(existLocked != -1){
+
+      return listVested[index]?.[existLocked]?.date
+
+    }else{
+      return "0D:0H:0M"
+    }
+
+  }
+
+  const vestRewardAmount = (vest: any[]) => {
+
+    const fullyLocked = listVested[index]?.every((el: any) => el.collected == "Locked")
+
+    const existUncollect = listVested[index]?.findIndex((el: any) => el.collected == "Uncollected")
+
+    const existLocked = listVested[index]?.findIndex((el: any) => el.collected == "Locked")
+
+    if(fullyLocked){
+
+      let amount = listVested[index]?.[0].amount
+
+      return (parseFloat(amount).toFixed(2))
+
+    }else if(existUncollect != -1){
+
+      return pendingVested[index]
+
+    }else if(existLocked != -1){
+
+      let amount = listVested[index]?.[existLocked].amount
+
+      return (parseFloat(amount).toFixed(2))
+
+    }else{
+      return "0.00"
+    }
+
+  }
+
+  const vestRewardUSDAmount = (vest: any[]) => {
+
+    const fullyLocked = listVested[index]?.every((el: any) => el.collected == "Locked")
+
+    const existUncollect = listVested[index]?.findIndex((el: any) => el.collected == "Locked")
+
+    const existLocked = listVested[index]?.findIndex((el: any) => el.collected == "Uncollected")
+
+    if(fullyLocked){
+
+      let usdAmount = listVested[index]?.[0].USDAmount
+
+      return (parseFloat(usdAmount).toFixed(2))
+
+    }else if(existUncollect != -1){
+
+      return pendingVestedUSD[index]
+
+    }else if(existLocked != -1){
+
+      let amount = listVested[index]?.[existLocked].USDAmount
+
+      return (parseFloat(amount).toFixed(2))
+
+    }else{
+      return "0.00"
+    }
+
+  }
 
   const checkClickable = (type: string) => {
     switch (type) {
       case "claim":
-        setIsClaimActive(!vestCollectStatus());
-        break;
-      case "collect":
         if (pendingOasis[index])
-        setIsCollectActive(
+        setIsClaimActive(
             pendingOasis[index] === "0.00" || pendingOasis[index] === "0"
           );
+        break;
+      case "collect":
+        setIsCollectActive(vestCollectStatus());
         break;
       default:
         break;
     }
-  };
-
-  const findIndexByNotCollectedYet = () => {
-    return (
-      listVested[index] &&
-      listVested[index]?.findIndex((item: any) =>
-        listVested[index] && listVested[index] ? !item.collected : ""
-      )
-    );
   };
 
   return (
@@ -130,6 +236,7 @@ const Accordion = ({
             maxCap[index] ?? "0"
           } $OASIS`}</p>
         </div>
+        
 
         <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg py-6 my-auto h-[15rem]">
           <div className="my-5">
@@ -141,10 +248,10 @@ const Accordion = ({
           </div>
           <div className="">
             <button
-              disabled={isCollectActive}
-              onClick={collectPendingReward}
+              disabled={isClaimActive}
+              onClick={claimPendingReward}
               className={`${
-                isCollectActive ? inactive : active
+                isClaimActive ? inactive : active
               } font-bold py-2 px-12 rounded `}
             >
               CLAIM
@@ -154,12 +261,39 @@ const Accordion = ({
 
         <div className="mr-3 border-[#3D3D3D] border-2 w-[290px] rounded-lg py-6 my-auto h-[15rem]">
           <div className="my-5">
-            <p className="text-[20px] text-[#8E8E8E]">Vest Rewards</p>
-            <p className="text-[24px]">{pendingVested[index] ?? "0"} $OASIS</p>
-            <p className="mb-5">{`(${pendingVestedUSD[index] ?? "0"} $USD)`}</p>
+            <p className="text-[20px] text-[#8E8E8E]">Available Vest Rewards</p>
+            <p className="text-[24px]">
+              {
+                `
+                  ${
+                    listVested[index] && listVested[index].length > 0 ? 
+                    vestRewardAmount(listVested[index]) : 
+                    "0.00"
+                  }
+                  $OASIS
+                `
+              } 
+             
+            </p>
+            <p className="mb-5">
+              {
+                `(
+                  ${
+                    listVested[index] && listVested[index].length > 0 ? 
+                    vestRewardUSDAmount(listVested[index]) : 
+                    "0.00"
+                  }
+                  $USD
+                )`
+              }
+             
+            </p>
           </div>
 
           <div className="px-4 flex flex-col my-auto">
+            <div className="px-8 flex justify-start">
+              Next Unlock
+            </div>
             <div className="flex justify-center">
               <button
                 onClick={openModal}
@@ -168,17 +302,23 @@ const Accordion = ({
                 <div className="flex">
                   <img src={countdown} className="scale-[0.8] mr-2" alt="" />
                   <p className="">
-                    {listVested[index] && listVested[index].length > 0
-                      ? listVested[index][vestIndex]?.date
-                      : "0D:0H:0M"}
+                    {
+                      `
+                        ${
+                          listVested[index] && listVested[index].length > 0 ? 
+                          indexTime(listVested[index]) : 
+                          "0D:0H:0M"
+                        }
+                      `
+                    }
                   </p>
                 </div>
               </button>
               <button
-                disabled={isClaimActive}
-                onClick={claimPendingReward}
+                disabled={isCollectActive}
+                onClick={collectVestingReward}
                 className={` ${
-                  isClaimActive ? inactive : active
+                  isCollectActive ? inactive : active
                 }  font-bold py-2 px-4 rounded `}
               >
                 COLLECT
@@ -201,7 +341,9 @@ const Accordion = ({
                 allowance,
                 oasisBalance,
                 stakeProcess,
-                poolStatus
+                poolStatus,
+                stakedAmountUSD,
+                setStakedAmountUSD
               }}
             />
           </div>
@@ -215,7 +357,7 @@ const Accordion = ({
                 setShowModal,
                 index,
                 listVested,
-                collectPendingReward,
+                collectVestingReward,
                 isCollectActive,
                 stakeUSD,
                 selectedIndex
