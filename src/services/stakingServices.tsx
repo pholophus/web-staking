@@ -31,8 +31,8 @@ export const getAccount = async () => {
     // return "0x7Ed095A49eA82Bd8c29d60cf524f94BbBaD74356"
     // return "0xE30a861b24351536d0E5067A1c9A7c712f447605"
     //TL
-    return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
-    // return accounts[0];
+    // return "0x132dB02195a983399603F93a3f3BDf39B6dEcf71";
+    return accounts[0];
   } catch (error) {
     console.log(error);
   }
