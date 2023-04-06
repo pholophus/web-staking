@@ -7,9 +7,9 @@ const Navbar = () => {
   return (
     <>
       <nav className=" relative flex flex-wrap items-center justify-between px-2 py-auto bg-[#242424] h-[100px]">
-        <div className="container px-4 mx-14 flex flex-wrap items-center justify-between">
+        <div className="container px-4 md:mx-14 flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
-            <img src={logo} className="scale-[0.8]" alt="" />
+            <img src={logo} className="w-1/4 md:scale-[0.8]" alt="" />
 
             <button
               className="text-white cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"

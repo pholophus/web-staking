@@ -226,9 +226,9 @@ const Accordion = ({
       } py-1 bg-[#171616] text-white rounded-b-xl border-t border-[#3A3A3A]`}
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      <div className="flex text-white mx-4 my-10">
+      <div className="flex text-white mx-4 my-10 flex-col-reverse lg:flex-row">
 
-        <div className="mr-3 pr-2 my-auto text-left text-[13px]">
+        <div className="mr-3 pr-2 my-auto text-left text-[13px] ">
           <p className="mb-4">{`Deposit Lock Duration : ${
             listSCJson[sc.index].days
           } Days`}</p>
@@ -237,6 +237,103 @@ const Accordion = ({
           } $OASIS`}</p>
         </div>
         
+        <div className="flex flex-row">
+        <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]">
+          <div className="mt-5 mb-20 lg:my-5">
+            <p className="text-sm lg:text-[20px] text-[#8E8E8E]">Pending Rewards</p>
+            <p className="text-sm lg:text-[24px]">{`${
+              pendingOasis[index] ?? "0.00"
+            } $OASIS`}</p>
+            <p className="mb-5">{`(${pendingOasisUSD[index] ?? "0.00"} $USD)`}</p>
+          </div>
+          <div className="">
+            <button
+              disabled={isClaimActive}
+              onClick={claimPendingReward}
+              className={`${
+                isClaimActive ? inactive : active
+              } font-bold py-2 px-12 rounded `}
+            >
+              CLAIM
+            </button>
+          </div>
+        </div>
+
+        <div className="mr-3 border-[#3D3D3D] border-2 w-[290px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]">
+          <div className="my-5">
+            <p className="text-[20px] text-[#8E8E8E] hidden lg:block">Available Vest Rewards</p>
+            <p className="text-sm text-[#8E8E8E] lg:hidden">Vest Rewards</p>
+            <p className="text-sm lg:text-[24px]">
+              {
+                `
+                  ${
+                    listVested[index] && listVested[index].length > 0 ? 
+                    vestRewardAmount(listVested[index]) : 
+                    "0.00"
+                  }
+                  $OASIS
+                `
+              } 
+             
+            </p>
+            <p className="mb-5">
+              {
+                `(
+                  ${
+                    listVested[index] && listVested[index].length > 0 ? 
+                    vestRewardUSDAmount(listVested[index]) : 
+                    "0.00"
+                  }
+                  $USD
+                )`
+              }
+             
+            </p>
+          </div>
+
+          <div className="px-4 flex flex-col my-auto">
+            <div className="px-8 hidden lg:flex justify-start ">
+              Next Unlock
+            </div>
+            <div className="flex flex-col lg:flex-row justify-center gap-3">
+              <button
+                onClick={openModal}
+                className={` font-bold py-2 px-4 rounded border border-[#3D3D3D]`}
+              >
+                <div className="flex">
+                  <img src={countdown} className="scale-[0.8] mr-2" alt="" />
+                  <p className="">
+                    {
+                      `
+                        ${
+                          listVested[index] && listVested[index].length > 0 ? 
+                          indexTime(listVested[index]) : 
+                          "0D:0H:0M"
+                        }
+                      `
+                    }
+                  </p>
+                </div>
+              </button>
+              <button
+                disabled={isCollectActive}
+                onClick={collectVestingReward}
+                className={` ${
+                  isCollectActive ? inactive : active
+                }  font-bold py-2 px-4 rounded `}
+              >
+                COLLECT
+              </button>
+            </div>
+          </div>
+        </div>
+
+        </div>
+
+
+
+
+        {/* <div className="hidden lg:flex">
 
         <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg py-6 my-auto h-[15rem]">
           <div className="my-5">
@@ -326,6 +423,7 @@ const Accordion = ({
             </div>
           </div>
         </div>
+        </div> */}
 
         <div className="w-[280px] flex items-center">
           <div>
