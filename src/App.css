@@ -16,6 +16,14 @@
 }
 
 @font-face {
+  font-family: "baloo-semibold";
+  src: url("../src/font/BalooBhaina2-SemiBold.ttf") format("opentype");
+}
+@font-face {
+  font-family: "baloo-medium";
+  src: url("../src/font/BalooBhaina2-Medium.ttf") format("opentype");
+}
+@font-face {
   font-family: "baloo-bold";
   src: url("../src/font/Baloo-bold.ttf") format("opentype");
 }
@@ -23,7 +31,12 @@
 .baloo {
   font-family: "baloo";
 }
-
+.baloo-semibold {
+  font-family: "baloo-semibold";
+}
+.baloo-medium {
+  font-family: "baloo-medium";
+}
 .baloo-bold {
   font-family: "baloo-bold";
 }
@@ -92,3 +105,20 @@ body {
   box-shadow: 5px 5px 10px #1e2b3c, -5px -5px 10px #364f6e;
 }
 
+.ReactModal__Content.ReactModal__Content--after-open {
+  background: #242424 !important;
+}
+
+@media only screen and (min-width: 768px) {
+  .ReactModal__Content.ReactModal__Content--after-open {
+    width: 40% !important;
+  }
+}
+
+@media only screen and (max-width:900px) {
+  .ReactModal__Content.ReactModal__Content--after-open {
+    width: 92% !important;
+    padding: 0px !important;
+    border-radius: 16px !important;
+  }
+}

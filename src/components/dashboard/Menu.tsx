@@ -10,7 +10,6 @@ export const Menu = ({
   farm,
   setFarm,
 }: any) => {
-  
   const [txt, setTxt] = useState("Single Staking");
 
   const handleClickStatus = (event: any) => {
@@ -36,10 +35,10 @@ export const Menu = ({
   return (
     <div className="text-white text-left">
       <img className="mt-10" src={txt} alt="" />
-      <div className="flex justify-between text-[20px] my-10">
-        <div>
+      <div className="flex flex-col lg:flex-row justify-between text-[20px] lg:my-10">
+        <div className="ml-1">
           <p>Filter by</p>
-          <div className="flex bg-[#292929] rounded-md w-[170px]">
+          <div className="flex bg-[#292929] rounded-md w-[170px] h-[40px] lg:h-auto">
             <button
               onClick={handleClickStatus}
               value="active"
@@ -77,7 +76,8 @@ export const Menu = ({
             </label>
           </div>
         </div> */}
-        <div className="flex justify-between w-[22rem] text-[30px]">
+        <div className="flex gap-3 lg:gap-0 lg:justify-between w-[22rem] lg:text-[30px]
+        text-2xl mt-10 mb-3 my-3 ml-1 lg:mt-0 lg:mb-0 lg:my-0 ml:ml-0">
           <button
             className={poolType === "single" ? "text-[#FEAE34]" : ""}
             value="single"

@@ -13,8 +13,9 @@ export default function NavBar() {
             <a href="/">
               <img src={logo} className="w-1/2 md:w-[80%]" alt="" />
             </a>
-            <div className="md:hidden">
-              <button
+            <div className="flex gap-2 md:hidden">
+            <MetaBtn />
+              {/* <button
                 className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
                 onClick={() => setNavbar(!navbar)}
               >
@@ -47,7 +48,7 @@ export default function NavBar() {
                     />
                   </svg>
                 )}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -57,11 +58,11 @@ export default function NavBar() {
               navbar ? "block" : "hidden"
             }`}
           >
-            <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
+            {/* <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
               <li className="text-white hover:text-indigo-200">
                 <MetaBtn />
               </li>
-            </ul>
+            </ul> */}
           </div>
         </div>
         <div className="hidden space-x-2 md:inline-block">

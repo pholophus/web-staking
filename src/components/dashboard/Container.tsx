@@ -23,7 +23,8 @@ const Container = () => {
       </div>
 
       <div className={`w-full lg:w-[1100px] md:mx-auto px-4 md:px-0  lg:hidden`}>
-        <MenuMobile {...menuProps} />
+        {/* <MenuMobile {...menuProps} /> */}
+        <Menu {...menuProps} />
         <ListMobile {...listProps} />
       </div>
     </>

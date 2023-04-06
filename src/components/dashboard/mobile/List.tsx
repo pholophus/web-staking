@@ -297,7 +297,8 @@ const ListMobile = ({
                     } overflow-hidden `}
                   >
                     <div
-                      className={`min-w-full divide-y divide-gray-50 bg-[#171616]  ${
+                      className={`min-w-full divide-y divide-gray-50 bg-[#171616]
+                      py-[0.5rem] lg:py-0  ${
                         visible && selectedIndex.includes(index)
                           ? "rounded-t-xl"
                           : "rounded-xl"

@@ -8,7 +8,7 @@ import {
   convertUSD,
 } from "../../services/stakingServices";
 import { active, greenBtn, inactive, listIcon } from "../../variable";
-import Modal from "./Modal";
+import Modalapp from "./Modal";
 import StakeInput from "./StakeInput";
 import countdown from "../../images/countdown.png";
 
@@ -238,14 +238,14 @@ const Accordion = ({
         </div>
         
         <div className="flex flex-row">
-        <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]
+        <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg lg:py-6 my-auto h-[230px] lg:h-[15rem]
         px-2 lg:px-0">
-          <div className="mt-5 mb-20 lg:my-5 lg:!pb-3">
+          <div className="mt-9 lg:mt-5 mb-14 lg:my-5 lg:!pb-3">
             <p className="text-sm lg:text-[20px] text-[#8E8E8E] pb-1">Pending Rewards</p>
-            <p className="text-sm lg:text-[24px]">{`${
+            <p className="baloo-bold text-base lg:text-[24px]">{`${
               pendingOasis[index] ?? "0.00"
             } $OASIS`}</p>
-            <p className="mb-5">{`(${pendingOasisUSD[index] ?? "0.00"} $USD)`}</p>
+            <p className="mb-5 baloo-bold text-sm">{`(${pendingOasisUSD[index] ?? "0.00"} $USD)`}</p>
           </div>
           <div className="">
             <button
@@ -260,11 +260,11 @@ const Accordion = ({
           </div>
         </div>
 
-        <div className="mr-3 border-[#3D3D3D] border-2 w-[290px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]">
+        <div className="lg:mr-3 border-[#3D3D3D] border-2 w-[290px] rounded-lg lg:py-6 my-auto h-[230px] lg:h-[15rem]">
           <div className="my-5">
             <p className="text-[20px] text-[#8E8E8E] hidden lg:block">Available Vest Rewards</p>
             <p className="text-sm text-[#8E8E8E] lg:hidden">Vest Rewards</p>
-            <p className="text-sm lg:text-[24px]">
+            <p className="baloo-bold text-base lg:text-[24px]">
               {
                 `
                   ${
@@ -277,7 +277,7 @@ const Accordion = ({
               } 
              
             </p>
-            <p className="mb-5">
+            <p className="mb-5 baloo-bold text-sm">
               {
                 `(
                   ${
@@ -292,14 +292,14 @@ const Accordion = ({
             </p>
           </div>
 
-          <div className="px-4 flex flex-col my-auto">
+          <div className="px-2 lg:px-4 flex flex-col my-auto">
             <div className="px-8 hidden lg:flex justify-start ">
               Next Unlock
             </div>
             <div className="flex flex-col lg:flex-row justify-center gap-3">
               <button
                 onClick={openModal}
-                className={` font-bold py-2 px-4 rounded border border-[#3D3D3D]`}
+                className={` font-bold py-2 px-2 lg:px-4 rounded border border-[#3D3D3D]`}
               >
                 <div className="flex">
                   <img src={countdown} className="scale-[0.8] mr-2" alt="" />
@@ -450,7 +450,7 @@ const Accordion = ({
 
         <div className={approvalCheck[index] ? "block" : "hidden"}>
           {showModal && (
-            <Modal
+            <Modalapp
               {...{
                 showModal,
                 setShowModal,

@@ -13,7 +13,7 @@ export const MenuMobile = ({
   
   const [txt, setTxt] = useState("Single Staking");
 
-  const handleClickStatus = (event: any) => {
+  const handleClickStatus = (event: any) => {    
     setPoolStatus(event.target.value);
   };
 
@@ -36,8 +36,8 @@ export const MenuMobile = ({
   return (
     <div className="text-white text-left">
       <img className="mt-10 w-[80%]" src={txt} alt="" />
-      <div className="flex justify-between text-[20px] my-10">
-        <div>
+      <div className="flex flex-col lg:flex-row gap-3 justify-between text-[20px] my-5 mb-0 lg:my-10 lg:mb-10">
+        <div className="ml-1">
           <p>Filter by</p>
           <div className="flex bg-[#292929] rounded-md w-[170px]">
             <button
@@ -47,7 +47,7 @@ export const MenuMobile = ({
                 poolStatus === "active" ? "bg-[#2AB930] rounded-md" : ""
               }`}
             >
-              Live
+              <p className="pt-1">Live</p>
             </button>
             <button
               onClick={handleClickStatus}
@@ -56,7 +56,9 @@ export const MenuMobile = ({
                 poolStatus === "inactive" ? "bg-[#2AB930] rounded-md" : ""
               }`}
             >
+              <p className="pt-1">
               Finished
+              </p>
             </button>
           </div>
         </div>
@@ -77,16 +79,16 @@ export const MenuMobile = ({
             </label>
           </div>
         </div> */}
-        <div className="flex justify-between w-[22rem] text-[30px] hidden">
+        <div className="flex gap-3 w-[22rem] text-2xl mb-3 my-3 ml-1">
           <button
-            className={poolType === "single" ? "text-[#FEAE34]" : ""}
+            className={poolType === "single" ? "text-[#FEAE34] baloo-semibold" : ""}
             value="single"
             onClick={handleClickPoolType}
           >
             Single
           </button>
           <button
-            className={poolType === "lp" ? "text-[#FEAE34]" : ""}
+            className={poolType === "lp" ? "text-[#FEAE34] baloo-semibold" : ""}
             value="lp"
             onClick={handleClickPoolType}
           >
