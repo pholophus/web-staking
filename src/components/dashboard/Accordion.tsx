@@ -262,8 +262,8 @@ const Accordion = ({
 
         <div className="lg:mr-3 border-[#3D3D3D] border-2 w-[290px] rounded-lg lg:py-6 my-auto h-[230px] lg:h-[15rem]">
           <div className="my-5">
-            <p className="text-[20px] text-[#8E8E8E] hidden lg:block">Available Vest Rewards</p>
-            <p className="text-sm text-[#8E8E8E] lg:hidden">Vest Rewards</p>
+            <p className="text-[20px] text-[#8E8E8E] hidden lg:block">Available Vested Rewards</p>
+            <p className="text-sm text-[#8E8E8E] lg:hidden">Vested Rewards</p>
             <p className="baloo-bold text-base lg:text-[24px]">
               {
                 `
