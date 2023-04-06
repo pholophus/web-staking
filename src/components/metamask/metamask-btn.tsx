@@ -100,7 +100,7 @@ const MetaBtn = () => {
             <div>
               {isConnected && (
                 <button disabled={true}
-                className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[150px] h-[41px] rounded-xl"
+                className="btn  bg-[#FEAE34] text-[#cc4527] w-[150px] py-2 rounded-xl"
                 onClick={disconnectWallet}
                 >
                   {accountAddress}
@@ -108,7 +108,7 @@ const MetaBtn = () => {
               )}
               {isConnected == false && (
                 <button
-                  className="btn mt-4 bg-[#FEAE34] text-[#cc4527] w-[250px] h-[41px] rounded-xl"
+                  className="btn bg-[#FEAE34] text-[#cc4527] w-[250px] py-2 rounded-xl"
                   onClick={connectWallet}
                 >
                   Connect Wallet

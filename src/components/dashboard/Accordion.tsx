@@ -226,7 +226,7 @@ const Accordion = ({
       } py-1 bg-[#171616] text-white rounded-b-xl border-t border-[#3A3A3A]`}
       style={{ transform: visible ? "translateY(0)" : "translateY(-100%)" }}
     >
-      <div className="flex text-white mx-4 my-10 flex-col-reverse lg:flex-row">
+      <div className="flex text-white mx-4 my-10 flex-col-reverse lg:flex-row gap-5 md:gap-0">
 
         <div className="mr-3 pr-2 my-auto text-left text-[13px] ">
           <p className="mb-4">{`Deposit Lock Duration : ${
@@ -238,9 +238,10 @@ const Accordion = ({
         </div>
         
         <div className="flex flex-row">
-        <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]">
-          <div className="mt-5 mb-20 lg:my-5">
-            <p className="text-sm lg:text-[20px] text-[#8E8E8E]">Pending Rewards</p>
+        <div className="mr-3 border-[#3D3D3D] border-2 w-[220px] rounded-lg lg:py-6 my-auto h-[250px] lg:h-[15rem]
+        px-2 lg:px-0">
+          <div className="mt-5 mb-20 lg:my-5 lg:!pb-3">
+            <p className="text-sm lg:text-[20px] text-[#8E8E8E] pb-1">Pending Rewards</p>
             <p className="text-sm lg:text-[24px]">{`${
               pendingOasis[index] ?? "0.00"
             } $OASIS`}</p>

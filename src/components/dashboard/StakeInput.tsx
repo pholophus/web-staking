@@ -146,7 +146,7 @@ const StakeInput = ({
   return (
     <>
       <div className={`mx-auto ${notApproved}`}>
-        <div className="flex items-center place-content-center mr-8 border-[#3D3D3D] border-2 w-[330px] rounded-lg py-6 my-auto h-[15rem]">
+        <div className="flex items-center place-content-center mr-8 border-[#3D3D3D] border-2 w-[330px] rounded-lg py-6 my-auto lg:h-[15rem]">
           <div className="my-auto">
             <p className="text-[20px] text-[#8E8E8E] mb-5">
               Your $Oasis Staked

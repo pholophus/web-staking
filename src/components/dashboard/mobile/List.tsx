@@ -268,7 +268,7 @@ const ListMobile = ({
 
   return (
     <>
-      <div className="flex flex-col baloo mb-20">
+      <div className="flex flex-col baloo mb-20 md:m-[2rem]">
         {filteredSC.map((sc, index) => (
           <>
             <button
@@ -326,7 +326,7 @@ const ListMobile = ({
                                 }`}
                               </div>
                             </div>
-                            <p className="text-white text-4xl px-6 w-2">
+                            <p className="text-white text-4xl px-6 w-2 absolute right-[10%]">
                                 {visible && selectedIndex.includes(index)
                                   ? hide
                                   : show}

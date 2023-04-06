@@ -17,12 +17,12 @@ const Container = () => {
 
   return (
     <>
-      <div className={`w-full md:w-[1100px] md:mx-auto px-4 md:px-0 hidden lg:block`}>
+      <div className={`w-full lg:w-[1100px] md:mx-auto px-4 md:px-0 hidden lg:block`}>
         <Menu {...menuProps} />
         <List {...listProps} />
       </div>
 
-      <div className={`w-full md:w-[1100px] md:mx-auto px-4 md:px-0  lg:hidden`}>
+      <div className={`w-full lg:w-[1100px] md:mx-auto px-4 md:px-0  lg:hidden`}>
         <MenuMobile {...menuProps} />
         <ListMobile {...listProps} />
       </div>
